@@ -27,7 +27,8 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('Tech');
-    const [duration, setDuration] = useState(2);
+    const [durationHours, setDurationHours] = useState(2);
+    const [durationMinutes, setDurationMinutes] = useState(0);
     const [submitting, setSubmitting] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [locationError, setLocationError] = useState<string | null>(null);
@@ -35,12 +36,8 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
     const [isDurationOpen, setIsDurationOpen] = useState(false);
 
     const categories = ['Tech', 'Music', 'Food', 'Entertainment'];
-    const durations = [
-        { label: '1 Hour', value: 1 },
-        { label: '2 Hours', value: 2 },
-        { label: '4 Hours', value: 4 },
-        { label: '8 Hours', value: 8 }
-    ];
+    const hourOptions = [0, 1, 2, 3, 4, 6, 8, 12];
+    const minuteOptions = [0, 15, 30, 45];
 
     const checkLocationAndSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -88,7 +85,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                     category,
                     lat,
                     lng,
-                    duration_hours: duration,
+                    duration_hours: durationHours + (durationMinutes / 60),
                 }),
             });
             if (response.ok) {
@@ -195,7 +192,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                 className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
                             >
                                 <span className="text-sm font-black italic uppercase text-foreground">
-                                    {durations.find(d => d.value === duration)?.label}
+                                    {durationHours}h {durationMinutes}m
                                 </span>
                                 <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isDurationOpen ? 'rotate-180' : ''}`} />
                             </div>
@@ -203,20 +200,43 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isDurationOpen && (
                                 <>
                                     <div className="fixed inset-0 z-10" onClick={() => setIsDurationOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#0a0a0f] border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
-                                        {durations.map((d) => (
-                                            <div
-                                                key={d.value}
-                                                onClick={() => {
-                                                    setDuration(d.value);
-                                                    setIsDurationOpen(false);
-                                                }}
-                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-colors ${duration === d.value ? 'bg-primary text-white' : 'text-foreground/60 hover:bg-white/5 hover:text-white'}`}
-                                            >
-                                                {d.label}
-                                                {duration === d.value && <Check className="w-3 h-3" />}
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-[140%] -left-[20%] bg-[#0a0a0f] border border-white/10 rounded-[2rem] shadow-2xl p-6 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="space-y-3">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-foreground/30 text-center">Hours</p>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {hourOptions.map((h) => (
+                                                        <div
+                                                            key={h}
+                                                            onClick={() => setDurationHours(h)}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationHours === h ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-foreground/40 hover:bg-white/10'}`}
+                                                        >
+                                                            {h}H
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        ))}
+                                            <div className="space-y-3">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-foreground/30 text-center">Minutes</p>
+                                                <div className="flex flex-col gap-2">
+                                                    {minuteOptions.map((m) => (
+                                                        <div
+                                                            key={m}
+                                                            onClick={() => setDurationMinutes(m)}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-foreground/40 hover:bg-white/10'}`}
+                                                        >
+                                                            {m}M
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => setIsDurationOpen(false)}
+                                            className="w-full mt-6 py-3 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black uppercase rounded-xl transition-all"
+                                        >
+                                            Set Time
+                                        </button>
                                     </div>
                                 </>
                             )}
