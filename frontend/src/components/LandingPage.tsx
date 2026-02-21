@@ -51,12 +51,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
         <div className={`w-full min-h-screen transition-colors duration-700 ${isDarkMode ? 'bg-[#030303] text-white' : 'bg-[#fafafa] text-[#1a1a1a]'} selection:bg-primary/30 font-sans relative overflow-x-hidden scroll-smooth`}>
             {/* Dynamic Background */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className={`absolute top-[-10%] left-[-10%] w-[80%] h-[70%] blur-[180px] rounded-full animate-pulse transition-all duration-1000 ${isDarkMode ? 'bg-primary/10 opacity-40' : 'bg-primary/5 opacity-60'}`}></div>
-                <div className={`absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] blur-[120px] rounded-full animate-pulse transition-all duration-1000 ${isDarkMode ? 'bg-secondary/15 opacity-30' : 'bg-secondary/10 opacity-40'}`}></div>
+                <div className={`absolute top-[-10%] left-[-10%] w-[80%] h-[70%] blur-[180px] rounded-full animate-pulse transition-all duration-[3000ms] ${isDarkMode ? 'bg-primary/10 opacity-40' : 'bg-primary/5 opacity-60'}`}></div>
+                <div className={`absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] blur-[120px] rounded-full animate-pulse transition-all duration-[4000ms] ${isDarkMode ? 'bg-secondary/15 opacity-30' : 'bg-secondary/10 opacity-40'}`}></div>
                 <div className={`absolute inset-0 opacity-10 contrast-125 mix-blend-overlay ${isDarkMode ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] grayscale invert'}`}></div>
 
                 {/* Visual Grid Layer */}
-                <div className={`absolute inset-0 opacity-[0.03] ${isDarkMode ? 'bg-[radial-gradient(#ffffff_1px,transparent_1px)]' : 'bg-[radial-gradient(#000000_1px,transparent_1px)]'} [background-size:40px_40px]`}></div>
+                <div className={`absolute inset-0 opacity-[0.03] ${isDarkMode ? 'bg-[radial-gradient(#ffffff_2px,transparent_2px)]' : 'bg-[radial-gradient(#000000_2px,transparent_2px)]'} [background-size:60px_60px]`}></div>
             </div>
 
             {/* Modern Floating Navbar */}
@@ -126,12 +126,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         The definitive community-powered ecosystem for York Lions. <br className="hidden md:block" /> Every update, event, and alert verified in real-time by the pack.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-8 w-full sm:w-auto px-10">
+                    <div className="flex flex-col sm:flex-row gap-8 w-full sm:w-auto px-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
                         <button
                             onClick={handleLaunch}
-                            className={`group relative px-12 md:px-20 py-6 md:py-8 rounded-[2.5rem] text-lg md:text-2xl font-black italic tracking-tighter overflow-hidden transition-all hover:scale-[1.03] active:scale-[0.98] shadow-2xl ${isDarkMode ? 'bg-primary text-white shadow-primary/30' : 'bg-primary text-white shadow-primary/40'}`}
+                            className={`group relative px-12 md:px-20 py-6 md:py-8 rounded-[2.5rem] text-lg md:text-2xl font-black italic tracking-tighter overflow-hidden transition-all hover:scale-[1.05] active:scale-[0.98] shadow-2xl ${isDarkMode ? 'bg-primary text-white shadow-primary/30' : 'bg-primary text-white shadow-primary/40'}`}
                         >
-                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                            <div className="absolute inset-x-0 bottom-0 h-0 bg-white/20 group-hover:h-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
                             <span className="relative flex items-center justify-center gap-5">
                                 ENTER ENGINE <Layout className="w-6 h-6 md:w-8 md:h-8" />
                             </span>
@@ -236,6 +236,24 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     </footer>
                 </section>
             </main>
+
+            <style>{`
+                @keyframes float {
+                    0%, 100% { transform: translateY(0) rotate(0deg); }
+                    50% { transform: translateY(-20px) rotate(2deg); }
+                }
+                .animate-float {
+                    animation: float 8s ease-in-out infinite;
+                }
+                .animate-scan {
+                    animation: scan 4s linear infinite;
+                }
+                @keyframes scan {
+                    0% { transform: translateY(-100%) opacity(0); }
+                    50% { opacity(0.5); }
+                    100% { transform: translateY(500%) opacity(0); }
+                }
+            `}</style>
         </div>
     );
 };
