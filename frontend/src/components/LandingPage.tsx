@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ArrowRight, Users, Star, Layout, Globe, X, MapPin, Menu, Zap, Target } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Users, Layout, Globe, X, MapPin, Zap, Target } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: () => void;
@@ -10,13 +10,10 @@ interface LandingPageProps {
 const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggleTheme }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
-
     const [showLocationGuide, setShowLocationGuide] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLaunch = () => {
         if (navigator.geolocation) {
-            // Explicitly set options for iOS compatibility
             navigator.geolocation.getCurrentPosition(() => {
                 onEnter();
             }, (err) => {
@@ -24,7 +21,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                 if (err.code === 1) { // PERMISSION_DENIED
                     setShowLocationGuide(true);
                 } else {
-                    onEnter(); // Still enter even if location fails (timeout/position unavailable)
+                    onEnter();
                 }
             }, {
                 enableHighAccuracy: true,
@@ -61,7 +58,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
     }, []);
 
     return (
-        <div className={`w-full min-h-screen transition-colors duration-700 ${isDarkMode ? 'bg-[#030303] text-white' : 'bg-[#fafafa] text-[#1a1a1a]'} selection:bg-primary/30 font-sans relative overflow-x-hidden scroll-smooth`}>
+        <div className={`w-full min-h-screen transition-colors duration-700 ${isDarkMode ? 'bg-[#030303] text-white' : 'bg-[#fafafa] text-[#1a1a1a]'} selection:bg-primary/30 font-sans relative overflow-x-hidden scroll-smooth text-left`}>
             {/* Location Permission Denied Guide Overlay */}
             {showLocationGuide && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-xl p-6 animate-in fade-in duration-500">
@@ -83,7 +80,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             Safari on iOS requires you to manually allow location access for verified campus posting.
                         </p>
 
-                        <div className="space-y-6 text-left mb-10">
+                        <div className="space-y-6 text-left mb-10 mx-auto max-w-[280px]">
                             {[
                                 { step: '1', text: 'Tap the (AA) or "Website Settings" icon in Safari bar' },
                                 { step: '2', text: 'Go to Website Settings' },
@@ -126,12 +123,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         <span className="text-xl md:text-2xl font-black tracking-tighter italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent uppercase">UNISPOT</span>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.25em] transition-colors">
-                        <a href="#how-it-works" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Logic</a>
-                        <a href="#community" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Community</a>
-                        <a href="#access" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Connect</a>
-                    </div>
-
                     <div className="flex items-center gap-3 md:gap-6">
                         {/* Theme Toggle Button */}
                         <button
@@ -153,31 +144,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                                 Launch <ArrowRight className="w-4 h-4" />
                             </span>
                         </button>
-
-                        {/* Mobile Menu Toggle */}
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className={`lg:hidden p-3 rounded-2xl transition-all border ${isDarkMode ? 'bg-white/5 border-white/10 text-white' : 'bg-black/5 border-black/10 text-black'}`}
-                        >
-                            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                        </button>
                     </div>
                 </nav>
-
-                {/* Mobile Menu Overlay */}
-                {isMenuOpen && (
-                    <div className={`fixed inset-0 z-[90] lg:hidden animate-in fade-in duration-300 ${isDarkMode ? 'bg-[#030303]/95' : 'bg-[#fafafa]/95'} backdrop-blur-xl flex flex-col items-center justify-center gap-8 p-10`}>
-                        <a href="#how-it-works" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic uppercase tracking-tighter hover:text-primary transition-colors">How it works</a>
-                        <a href="#community" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic uppercase tracking-tighter hover:text-primary transition-colors">Community</a>
-                        <a href="#access" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic uppercase tracking-tighter hover:text-primary transition-colors">Connect</a>
-                        <button
-                            onClick={() => { setIsMenuOpen(false); handleLaunch(); }}
-                            className="mt-8 px-12 py-6 bg-primary text-white rounded-full text-xl font-black italic uppercase tracking-widest shadow-2xl"
-                        >
-                            Get Started
-                        </button>
-                    </div>
-                )}
             </div>
 
             {/* Main Content Sections */}
@@ -211,7 +179,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             className={`group relative px-12 md:px-20 py-6 md:py-8 rounded-[2.5rem] text-lg md:text-2xl font-black italic tracking-tighter overflow-hidden transition-all hover:scale-[1.05] active:scale-[0.98] shadow-2xl ${isDarkMode ? 'bg-primary text-white shadow-primary/30' : 'bg-primary text-white shadow-primary/40'}`}
                         >
                             <div className="absolute inset-x-0 bottom-0 h-0 bg-white/20 group-hover:h-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
-                            <span className="relative flex items-center justify-center gap-5">
+                            <span className="relative flex items-center justify-center gap-5 uppercase">
                                 ENTER ENGINE <Layout className="w-6 h-6 md:w-8 md:h-8" />
                             </span>
                         </button>
@@ -220,97 +188,46 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     <div className={`mt-16 flex items-center gap-8 text-[10px] font-bold uppercase tracking-widest opacity-30 ${isDarkMode ? 'text-white' : 'text-black'}`}>
                         <div className="flex -space-x-3">
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className={`w-10 h-10 rounded-full border-4 ${isDarkMode ? 'border-[#030303] bg-white/10' : 'border-[#fafafa] bg-black/10'} flex items-center justify-center backdrop-blur-sm`}>
+                                <div key={i} className={`w-10 h-10 rounded-full border-4 ${isDarkMode ? 'border-primary/10 bg-white/10' : 'border-primary/10 bg-black/10'} flex items-center justify-center backdrop-blur-sm`}>
                                     <Users className="w-4 h-4" />
                                 </div>
                             ))}
                         </div>
                         Join 2,000+ Students
                     </div>
-                </section >
+                </section>
 
-                {/* How it Works */}
-                < section id="how-it-works" className={`py-40 md:py-60 relative overflow-hidden px-6`}>
-                    <div className="max-w-7xl mx-auto">
-                        <div className="text-center mb-24">
-                            <h2 className="text-[12vw] md:text-8xl font-black italic tracking-tighter uppercase mb-8 leading-[0.8] antialiased">HOW IT WORKS</h2>
-                            <p className={`text-base md:text-xl font-bold uppercase tracking-[0.2em] ${isDarkMode ? 'text-primary' : 'text-primary'}`}>The simple campus logic.</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* How it Works / Logic */}
+                <section id="how-it-works" className={`py-32 md:py-48 relative overflow-hidden px-6 text-center`}>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             {[
-                                { icon: Target, title: 'DISCOVER', desc: 'See live markers on the map.', step: '01' },
-                                { icon: ShieldCheck, title: 'VERIFY', desc: 'Confirm markers in real-time.', step: '02' },
-                                { icon: Zap, title: 'DROP', desc: 'Pin your own live updates.', step: '03' }
+                                { icon: Target, title: 'SCAN', desc: 'Real-time GPS mapping.', step: '01' },
+                                { icon: ShieldCheck, title: 'VOUCH', desc: 'Community verification.', step: '02' },
+                                { icon: Zap, title: 'BLAST', desc: 'Deploy instant pins.', step: '03' }
                             ].map((s, i) => (
-                                <div key={i} className={`p-10 md:p-14 rounded-[3.5rem] border transition-all duration-500 group relative overflow-hidden flex flex-col items-center text-center ${isDarkMode ? 'bg-white/[0.02] border-white/5 hover:border-primary/40' : 'bg-white border-black/5 hover:border-primary/30 shadow-sm'}`}>
-                                    <div className="absolute top-8 right-10 text-6xl md:text-8xl font-black italic opacity-5 transition-opacity group-hover:opacity-10">{s.step}</div>
-                                    <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-10 transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-primary/10 text-primary' : 'bg-primary text-white'}`}>
-                                        <s.icon className="w-12 h-12" />
+                                <div key={i} className="flex flex-col items-center group">
+                                    <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center mb-8 transition-all duration-500 shadow-xl ${isDarkMode ? 'bg-white/5 text-primary border border-white/10 group-hover:bg-primary group-hover:text-white' : 'bg-black/5 text-primary border border-black/5 group-hover:bg-primary group-hover:text-white'}`}>
+                                        <s.icon className="w-10 h-10" />
                                     </div>
-                                    <h3 className="font-black text-4xl mb-6 italic uppercase tracking-tighter">{s.title}</h3>
-                                    <p className={`text-sm md:text-base font-bold uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{s.desc}</p>
+                                    <h3 className="font-black text-2xl mb-4 italic uppercase tracking-tighter">{s.title}</h3>
+                                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] ${isDarkMode ? 'text-white/30' : 'text-black/30'}`}>{s.desc}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </section >
+                </section>
 
-                {/* Community Section */}
-                < section id="community" className="py-40 md:py-60 flex flex-col items-center justify-center px-6 relative overflow-hidden" >
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] rounded-full blur-[140px] -skew-y-12 transition-all duration-1000 ${isDarkMode ? 'bg-primary/5' : 'bg-primary/[0.03]'}`}></div>
-                    <div className={`w-32 h-32 md:w-48 md:h-48 rounded-[3rem] bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-16 shadow-[0_0_80px_rgba(79,70,229,0.3)] rotate-3 animate-pulse`}>
-                        <Users className="w-16 h-16 md:w-24 md:h-24 text-white" />
-                    </div>
-                    <h2 className={`text-[12vw] md:text-[9vw] font-black italic tracking-tighter uppercase mb-16 text-center leading-[0.8] antialiased ${isDarkMode ? 'text-white' : 'text-black'}`}>THE PACK <br />IS WAITING.</h2>
-                    <div className="flex flex-wrap gap-6 md:gap-14 justify-center max-w-6xl px-4">
-                        {['Scott Library', 'Vari Hall', 'The Village', 'Lassonde', 'Stong College', 'York Lanes'].map((loc, i) => (
-                            <div key={i} className="flex items-center gap-6">
-                                <span className={`text-xl md:text-5xl font-black italic uppercase transition-all duration-500 hover:scale-110 cursor-default ${isDarkMode ? 'text-white/20 hover:text-primary' : 'text-black/20 hover:text-primary'}`}>{loc}</span>
-                                {i < 5 && <span className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-primary/40 animate-pulse"></span>}
-                            </div>
-                        ))}
-                    </div>
-                </section >
-
-                {/* Final CTA */}
-                < section id="access" className="py-32 md:py-48 px-6 relative overflow-hidden" >
-                    <div className={`max-w-6xl mx-auto p-12 md:p-32 rounded-[4rem] border relative overflow-hidden group shadow-2xl transition-all duration-1000 ${isDarkMode ? 'bg-gradient-to-br from-[#111] to-black border-white/5' : 'bg-white border-black/5 shadow-primary/20'}`}>
-                        <div className={`absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] transition-all duration-1000 ${isDarkMode ? 'bg-primary/10 -translate-y-1/2 translate-x-1/2' : 'bg-primary/5 -translate-y-1/2 translate-x-1/2'}`}></div>
-
-                        <div className="relative z-10 text-center flex flex-col items-center">
-                            <Star className="w-16 h-16 md:w-24 md:h-24 text-primary mb-12 animate-spin-slow" />
-                            <h2 className="text-4xl md:text-7xl font-black italic tracking-tighter mb-12 uppercase leading-[0.9]">READY FOR THE <br />REAL EXPERIENCE?</h2>
-
-                            <button
-                                onClick={handleLaunch}
-                                className={`w-full sm:w-auto px-16 md:px-24 py-8 md:py-10 rounded-full text-xl md:text-3xl font-black italic uppercase transition-all duration-500 shadow-2xl active:scale-[0.95] ${isDarkMode ? 'bg-white text-black hover:bg-white/90 hover:shadow-white/20' : 'bg-primary text-white hover:bg-primary-dark hover:shadow-primary/40'}`}
-                            >
-                                START SCANNING
-                            </button>
-
-                            <p className={`mt-12 text-sm md:text-lg font-black uppercase tracking-[0.4em] transition-opacity duration-1000 ${isDarkMode ? 'text-white/30' : 'text-black/30'}`}>Official Platform v1.2</p>
+                <footer className={`py-20 flex flex-col items-center gap-6 transition-opacity duration-1000 ${isDarkMode ? 'opacity-20' : 'opacity-30'}`}>
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-primary p-1.5 min-w-[24px]">
+                            <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain brightness-0 invert" />
                         </div>
+                        <span className="text-sm font-black italic tracking-tighter uppercase">UNISPOT v1.2</span>
                     </div>
-
-                    <footer className={`mt-40 md:mt-60 pb-16 flex flex-col items-center gap-10 transition-opacity duration-1000 ${isDarkMode ? 'opacity-30' : 'opacity-50'}`}>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center p-2">
-                                <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain brightness-0 invert" />
-                            </div>
-                            <span className="text-xl md:text-2xl font-black italic tracking-tighter uppercase">UNISPOT</span>
-                        </div>
-                        <div className="flex flex-col items-center gap-4">
-                            <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.6em] text-center max-w-xs leading-loose">Engineered with precision for the Lions of York University.</p>
-                            <div className="flex gap-10 text-[9px] font-black uppercase tracking-[0.2em] mt-4">
-                                <a href="#" className="hover:text-primary transition-colors">Privacy</a>
-                                <a href="#" className="hover:text-primary transition-colors">Terms</a>
-                                <a href="#" className="hover:text-primary transition-colors">Github</a>
-                            </div>
-                        </div>
-                    </footer>
-                </section >
-            </main >
+                    <p className="text-[8px] font-black uppercase tracking-[0.5em]">YORK UNIVERSITY • LIONS ONLY</p>
+                </footer>
+            </main>
 
             <style>{`
                 @keyframes float {
@@ -329,7 +246,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     100% { transform: translateY(500%) opacity(0); }
                 }
             `}</style>
-        </div >
+        </div>
     );
 };
 
