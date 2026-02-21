@@ -103,9 +103,19 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         }))
     };
 
+    // Robust ISO parsing to handle various backend formats consistently
+    const parseEventDate = (timeStr: string) => {
+        if (!timeStr) return new Date();
+        // Replace space with T to satisfy strict ISO 8601 (essential for Safari/iOS)
+        const normalized = timeStr.replace(' ', 'T');
+        // If it doesn't have a timezone suffix, assume UTC from our backend
+        const iso = normalized.includes('Z') || normalized.includes('+') ? normalized : `${normalized}Z`;
+        return new Date(iso);
+    };
+
     // Calculate time left helper
     const getTimeStatus = (endTimeStr: string) => {
-        const end = new Date(endTimeStr);
+        const end = parseEventDate(endTimeStr);
         const diffMs = end.getTime() - currentTime.getTime();
 
         if (diffMs <= 0) return { text: 'Ended', active: false, urgent: false };
@@ -131,14 +141,12 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     // Format time helper (HH:MM AM/PM) - Standard for Canada/York U
     const formatTime = (timeStr: string) => {
         try {
-            // Ensure strings without Z are treated as UTC if they come from our Go backend
-            const isoStr = timeStr.includes('Z') || timeStr.includes('+') ? timeStr : `${timeStr.replace(' ', 'T')}Z`;
-            const date = new Date(isoStr);
-            return date.toLocaleTimeString('en-CA', {
+            const date = parseEventDate(timeStr);
+            return date.toLocaleTimeString('en-US', {
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
-            });
+            }).replace(/\./g, ''); // Clean AM/PM
         } catch (e) {
             return '';
         }
