@@ -56,9 +56,33 @@ function App() {
 
   useEffect(() => {
     fetchEvents();
-    // Poll every 5 seconds to keep events synched with Supabase in real-time
-    const interval = setInterval(fetchEvents, 5000);
-    return () => clearInterval(interval);
+
+    // WebSocket for real-time updates
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+    const wsUrl = apiUrl.replace(/^http/, 'ws') + '/ws';
+
+    let socket: WebSocket;
+    const connectWS = () => {
+      socket = new WebSocket(wsUrl);
+
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.action === 'new_event') {
+          setEvents(prev => [message.data, ...prev]);
+        } else if (message.action === 'verify_event') {
+          setEvents(prev => prev.map(e =>
+            e.id === message.data.id ? { ...e, verified_count: message.data.verified_count } : e
+          ));
+        }
+      };
+
+      socket.onclose = () => {
+        setTimeout(connectWS, 3000); // Reconnect after 3s
+      };
+    };
+
+    connectWS();
+    return () => socket?.close();
   }, [fetchEvents]);
 
   const handleMapClick = (lat: number, lng: number) => {
@@ -126,8 +150,8 @@ function App() {
         />
 
         {isSelectingLocation && (
-          <div className="fixed md:absolute top-24 md:top-10 left-1/2 -translate-x-1/2 z-[45] bg-primary/90 backdrop-blur-xl px-8 py-4 rounded-full shadow-[0_20px_40px_rgba(79,70,229,0.4)] text-white font-black italic flex items-center gap-4 animate-in slide-in-from-top-6 duration-700 border border-white/20 text-xs md:text-base whitespace-nowrap group">
-            <div className="w-2.5 h-2.5 bg-white rounded-full animate-ping shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+          <div className="fixed md:absolute top-24 md:top-10 left-1/2 -translate-x-1/2 z-[45] bg-primary/95 backdrop-blur-xl px-6 py-3 rounded-full shadow-[0_20px_40px_rgba(79,70,229,0.3)] text-white font-bold flex items-center gap-3 animate-in slide-in-from-top-6 duration-700 border border-white/20 text-[10px] md:text-sm whitespace-nowrap group tracking-wider">
+            <div className="w-2 h-2 bg-white rounded-full animate-ping shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
             TAP ANYWHERE TO MARK EVENT
             <button
               onClick={() => setIsSelectingLocation(false)}
