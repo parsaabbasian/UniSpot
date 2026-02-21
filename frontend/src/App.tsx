@@ -102,7 +102,13 @@ function App() {
     : events.filter(e => e.category === selectedCategory);
 
   if (!showMap) {
-    return <LandingPage onEnter={() => { window.location.hash = 'map'; }} />;
+    return (
+      <LandingPage
+        onEnter={() => { window.location.hash = 'map'; }}
+        isDarkMode={isDarkMode}
+        onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+      />
+    );
   }
 
   return (

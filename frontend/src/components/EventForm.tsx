@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Clock, Tag, MapPin, AlignLeft, ShieldCheck, AlertCircle, ChevronDown, Check } from 'lucide-react';
+import { X, Clock, Tag, MapPin, AlignLeft, ShieldCheck, AlertCircle, ChevronDown, Check, ChevronUp } from 'lucide-react';
 
 interface EventFormProps {
     lat: number;
@@ -186,35 +186,64 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             )}
                         </div>
 
-                        {/* Duration Input Field */}
+                        {/* Duration Input Field with 'Scroll' Icons */}
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
                                 <Clock className="w-3 h-3 text-primary" /> End Time
                             </label>
-                            <div className="flex gap-2">
-                                <div className="relative flex-1 group">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="24"
-                                        placeholder="H"
-                                        className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-black italic text-center text-foreground placeholder:text-foreground/10"
-                                        value={durationHours || ''}
-                                        onChange={(e) => setDurationHours(parseInt(e.target.value) || 0)}
-                                    />
-                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[8px] font-black text-foreground/20 pointer-events-none group-focus-within:text-primary transition-colors">HRS</span>
+                            <div className="flex gap-3">
+                                {/* Hours Scroll Selector */}
+                                <div className="flex-1 bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col items-center group transition-all hover:border-primary/30">
+                                    <button
+                                        type="button"
+                                        onClick={() => setDurationHours(Math.min(24, durationHours + 1))}
+                                        className="w-full py-1 text-foreground/20 hover:text-primary transition-colors flex justify-center"
+                                    >
+                                        <ChevronUp className="w-4 h-4" />
+                                    </button>
+                                    <div className="relative flex items-center justify-center w-full py-1">
+                                        <input
+                                            type="number"
+                                            className="w-full bg-transparent border-none text-center text-lg font-black italic text-foreground focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            value={durationHours}
+                                            onChange={(e) => setDurationHours(Math.max(0, Math.min(24, parseInt(e.target.value) || 0)))}
+                                        />
+                                        <span className="absolute right-2 text-[7px] font-black text-foreground/20 pointer-events-none uppercase">HRS</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setDurationHours(Math.max(0, durationHours - 1))}
+                                        className="w-full py-1 text-foreground/20 hover:text-primary transition-colors flex justify-center"
+                                    >
+                                        <ChevronDown className="w-4 h-4" />
+                                    </button>
                                 </div>
-                                <div className="relative flex-1 group">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="59"
-                                        placeholder="M"
-                                        className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-black italic text-center text-foreground placeholder:text-foreground/10"
-                                        value={durationMinutes || ''}
-                                        onChange={(e) => setDurationMinutes(parseInt(e.target.value) || 0)}
-                                    />
-                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[8px] font-black text-foreground/20 pointer-events-none group-focus-within:text-primary transition-colors">MIN</span>
+
+                                {/* Minutes Scroll Selector */}
+                                <div className="flex-1 bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col items-center group transition-all hover:border-primary/30">
+                                    <button
+                                        type="button"
+                                        onClick={() => setDurationMinutes(Math.min(59, durationMinutes + 5))}
+                                        className="w-full py-1 text-foreground/20 hover:text-primary transition-colors flex justify-center"
+                                    >
+                                        <ChevronUp className="w-4 h-4" />
+                                    </button>
+                                    <div className="relative flex items-center justify-center w-full py-1">
+                                        <input
+                                            type="number"
+                                            className="w-full bg-transparent border-none text-center text-lg font-black italic text-foreground focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            value={durationMinutes}
+                                            onChange={(e) => setDurationMinutes(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
+                                        />
+                                        <span className="absolute right-2 text-[7px] font-black text-foreground/20 pointer-events-none uppercase">MIN</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setDurationMinutes(Math.max(0, durationMinutes - 5))}
+                                        className="w-full py-1 text-foreground/20 hover:text-primary transition-colors flex justify-center"
+                                    >
+                                        <ChevronDown className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         </div>
