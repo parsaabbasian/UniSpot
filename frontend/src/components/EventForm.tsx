@@ -166,20 +166,45 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isCategoryOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsCategoryOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-[70] animate-in fade-in slide-in-from-top-2 duration-200">
-                                        {categories.map((cat) => (
-                                            <div
-                                                key={cat}
-                                                onClick={() => {
-                                                    setCategory(cat);
-                                                    setIsCategoryOpen(false);
-                                                }}
-                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
-                                            >
-                                                {cat}
-                                                {category === cat && <Check className="w-3 h-3" />}
+                                    <div className="absolute inset-0 bg-[#0a0a0f] z-[70] flex flex-col p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500 rounded-[2.5rem] mt-[-2px] ml-[-2px] mr-[-2px] mb-[-2px] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+                                        <div className="flex items-center justify-between mb-8 md:mb-12">
+                                            <div>
+                                                <h3 className="text-2xl md:text-3xl font-black italic uppercase text-white tracking-widest leading-none mb-1">Category</h3>
+                                                <p className="text-[10px] md:text-xs text-primary font-black uppercase tracking-[0.5em] opacity-80 italic">Select Event Type</p>
                                             </div>
-                                        ))}
+                                            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl md:rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
+                                                <Tag className="w-7 h-7 md:w-8 md:h-8 text-primary animate-pulse" />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col justify-center gap-4">
+                                            {categories.map((cat) => (
+                                                <button
+                                                    key={cat}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setCategory(cat);
+                                                        setIsCategoryOpen(false);
+                                                    }}
+                                                    className={`w-full py-5 px-8 rounded-2xl flex items-center justify-between transition-all group ${category === cat
+                                                        ? 'bg-primary text-white shadow-[0_0_40px_rgba(99,102,241,0.4)] scale-105 border border-white/20'
+                                                        : 'bg-white/5 text-foreground/40 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+                                                >
+                                                    <span className="text-base md:text-lg font-black uppercase italic tracking-wider">{cat}</span>
+                                                    {category === cat && <Check className="w-5 h-5 animate-in zoom-in duration-300" />}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <div className="mt-auto pt-10">
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsCategoryOpen(false)}
+                                                className="w-full py-6 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white font-black uppercase italic rounded-2xl transition-all border border-white/5"
+                                            >
+                                                Back to Form
+                                            </button>
+                                        </div>
                                     </div>
                                 </>
                             )}
