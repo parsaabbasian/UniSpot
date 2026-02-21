@@ -104,9 +104,8 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     };
 
     // Calculate time left helper
-    const getTimeStatus = (startTimeStr: string, durationHours: number) => {
-        const start = new Date(startTimeStr);
-        const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
+    const getTimeStatus = (endTimeStr: string) => {
+        const end = new Date(endTimeStr);
         const diffMs = end.getTime() - currentTime.getTime();
 
         if (diffMs <= 0) return { text: 'Ended', active: false, urgent: false };
@@ -118,7 +117,6 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
         const isUrgent = hours === 0 && minutes <= 30;
 
-        // Pad with zeros
         const hDisp = hours > 0 ? `${hours}H ` : '';
         const mDisp = `${minutes.toString().padStart(2, '0')}M `;
         const sDisp = `${seconds.toString().padStart(2, '0')}S`;
@@ -275,7 +273,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
     const hasVoted = popupInfo ? votedEvents.includes(popupInfo.id) : false;
     const isPopular = popupInfo ? popupInfo.verified_count >= 10 : false;
-    const timeStatus = popupInfo ? getTimeStatus(popupInfo.start_time, popupInfo.duration_hours || 2) : null;
+    const timeStatus = popupInfo ? getTimeStatus(popupInfo.end_time) : null;
 
     // Helper for category icons
     const getCategoryIcon = (category: string) => {
@@ -340,7 +338,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                     </Source>
                 )}
 
-                {events.map((event) => {
+                {events.filter(event => new Date(event.end_time) > currentTime).map((event) => {
                     const isHot = event.verified_count >= 10;
                     const catColor = categoryColors[event.category] || '#6366f1';
 
