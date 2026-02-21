@@ -62,14 +62,14 @@ func Connect() {
 		seedSQL := `
 			INSERT INTO events (title, description, category, location, start_time, end_time) 
 			VALUES 
-			('York U Hackathon', 'Main Student Centre - Hub', 'Tech', ST_GeogFromText('POINT(-79.5019 43.7735)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '5 hours'),
-			('Free Pizza @ Lassonde', 'Bergeron Centre Lobby - First come first serve!', 'Food', ST_GeogFromText('POINT(-79.5048 43.7766)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '2 hours'),
-			('Finals Prep: Discrete Math', 'Scott Library 2nd Floor - Bring coffee.', 'Study', ST_GeogFromText('POINT(-79.5025 43.7725)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '4 hours'),
-			('Intramural Soccer', 'Alumni Field - Need 2 more players!', 'Sports', ST_GeogFromText('POINT(-79.5075 43.7755)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '3 hours'),
-			('Winter Coat Sale', 'Central Square - Up to 70%% off!', 'Sale', ST_GeogFromText('POINT(-79.5030 43.7738)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '6 hours'),
-			('Tait McKenzie Gym Blast', 'Full body workout - Open to all levels.', 'Sports', ST_GeogFromText('POINT(-79.5065 43.7715)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '1 hour'),
-			('Evening Safety Patrol', 'Walking from Vari Hall to Quad.', 'Safety', ST_GeogFromText('POINT(-79.5035 43.7742)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '2 hours'),
-			('Used Textbook Swap', 'Student Centre - Mostly CS/Eng books.', 'Sale', ST_GeogFromText('POINT(-79.5015 43.7732)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '8 hours');
+			('York U Hackathon', 'Main Student Centre - Hub', 'Tech', ST_GeogFromText('POINT(-79.5019 43.7735)'), now(), now() + INTERVAL '5 hours'),
+			('Free Pizza @ Lassonde', 'Bergeron Centre Lobby - First come first serve!', 'Food', ST_GeogFromText('POINT(-79.5048 43.7766)'), now(), now() + INTERVAL '2 hours'),
+			('Finals Prep: Discrete Math', 'Scott Library 2nd Floor - Bring coffee.', 'Study', ST_GeogFromText('POINT(-79.5025 43.7725)'), now(), now() + INTERVAL '4 hours'),
+			('Intramural Soccer', 'Alumni Field - Need 2 more players!', 'Sports', ST_GeogFromText('POINT(-79.5075 43.7755)'), now(), now() + INTERVAL '3 hours'),
+			('Winter Coat Sale', 'Central Square - Up to 70%% off!', 'Sale', ST_GeogFromText('POINT(-79.5030 43.7738)'), now(), now() + INTERVAL '6 hours'),
+			('Tait McKenzie Gym Blast', 'Full body workout - Open to all levels.', 'Sports', ST_GeogFromText('POINT(-79.5065 43.7715)'), now(), now() + INTERVAL '1 hour'),
+			('Evening Safety Patrol', 'Walking from Vari Hall to Quad.', 'Safety', ST_GeogFromText('POINT(-79.5035 43.7742)'), now(), now() + INTERVAL '2 hours'),
+			('Used Textbook Swap', 'Student Centre - Mostly CS/Eng books.', 'Sale', ST_GeogFromText('POINT(-79.5015 43.7732)'), now(), now() + INTERVAL '8 hours');
 		`
 		DB.Exec(seedSQL)
 	}

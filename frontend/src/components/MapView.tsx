@@ -128,11 +128,17 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         };
     };
 
-    // Format time helper (HH:MM)
+    // Format time helper (HH:MM AM/PM) - Standard for Canada/York U
     const formatTime = (timeStr: string) => {
         try {
-            const date = new Date(timeStr);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+            // Ensure strings without Z are treated as UTC if they come from our Go backend
+            const isoStr = timeStr.includes('Z') || timeStr.includes('+') ? timeStr : `${timeStr.replace(' ', 'T')}Z`;
+            const date = new Date(isoStr);
+            return date.toLocaleTimeString('en-CA', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
         } catch (e) {
             return '';
         }
