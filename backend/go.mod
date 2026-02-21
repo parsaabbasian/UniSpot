@@ -1,6 +1,7 @@
 module github.com/parsaabbasian/unispot/backend
 
-go 1.24.0
+// Forced trigger for Render sync
+go 1.22.0
 
 require (
 	github.com/gin-gonic/gin v1.11.0

@@ -50,6 +50,9 @@ func main() {
 		api.GET("/events", handlers.GetEvents)
 		api.POST("/events", handlers.CreateEvent)
 		api.POST("/events/:id/verify", handlers.VerifyEvent)
+		api.GET("/health", func(c *gin.Context) {
+			c.JSON(200, gin.H{"status": "ok", "version": "1.0.1"})
+		})
 	}
 
 	r.GET("/ws", func(c *gin.Context) {
