@@ -200,7 +200,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isDurationOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsDurationOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] right-0 w-[120%] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-4 z-[70] animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <div className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[140%] min-w-[280px] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.8)] p-6 z-[70] animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-300">
                                         <div className="flex gap-4 h-48">
                                             {/* Hours Column */}
                                             <div className="flex-1 flex flex-col">
