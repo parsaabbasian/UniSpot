@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -72,4 +78,39 @@ body {
 
 .mapboxgl-popup-tip {
   display: none !important;
+}
+
+/* Custom Animations */
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translateY(500%);
+    opacity: 0;
+  }
+}
+
+.animate-scan {
+  animation: scan 4s linear infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
 }

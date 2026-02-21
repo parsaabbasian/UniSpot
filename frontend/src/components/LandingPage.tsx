@@ -61,13 +61,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                         <Globe className="w-3.5 h-3.5 md:w-4 md:h-4 animate-spin-slow" /> Live @ York University
                     </div>
 
-                    <h1 className="text-[10vw] md:text-[6.5vw] font-black tracking-tight mb-8 md:mb-10 leading-[0.9] italic uppercase select-none">
-                        CAMPUS <br />
-                        <span className="text-primary italic relative">
-                            UNCENSORED.
-                            <span className="absolute -bottom-1 md:-bottom-2 left-0 w-full h-1 bg-primary/30 blur-sm rounded-full"></span>
-                        </span>
-                    </h1>
+                    <div className="relative group">
+                        <div className="absolute inset-0 bg-primary/20 blur-[100px] group-hover:bg-primary/30 transition-all duration-1000"></div>
+                        <h1 className="text-[10vw] md:text-[6.5vw] font-black tracking-tight mb-8 md:mb-10 leading-[0.9] italic uppercase select-none relative z-10">
+                            CAMPUS <br />
+                            <span className="text-primary italic relative">
+                                UNCENSORED.
+                                <span className="absolute -bottom-1 md:-bottom-2 left-0 w-full h-1 bg-primary/30 blur-sm rounded-full"></span>
+                            </span>
+                        </h1>
+                        {/* Subtle Scan Line */}
+                        <div className="absolute top-0 left-0 w-full h-1 bg-primary/20 shadow-[0_0_15px_rgba(79,70,229,0.5)] animate-scan z-20 pointer-events-none opacity-30"></div>
+                    </div>
 
                     <p className="max-w-3xl text-white/50 text-sm md:text-lg font-medium leading-relaxed mb-12 md:mb-16 px-4 md:px-0">
                         The first community-powered live engine for York Lions. Every event, <br className="hidden md:block" /> every update, verified in real-time by your peers.
@@ -95,32 +100,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                             <div className="w-16 md:w-20 h-1 md:h-1.5 bg-primary mx-auto md:mx-0"></div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-white/[0.04] border border-white/5 hover:border-primary/50 transition-all duration-700 group relative overflow-hidden">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-white/[0.04] transition-all duration-500 group relative overflow-hidden">
                                 <div className="absolute -right-4 -top-4 w-32 h-32 bg-primary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform relative z-10">
                                     <Smartphone className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                                 </div>
-                                <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none">Instant <br />Alerts.</h3>
-                                <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic">Real-time alerts on food, events, and campus safety—at your fingertips.</p>
+                                <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none relative z-10">Instant <br />Alerts.</h3>
+                                <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic relative z-10">Real-time alerts on food, events, and campus safety—at your fingertips.</p>
                             </div>
 
-                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-white/[0.04] border border-white/5 hover:border-secondary/50 transition-all duration-700 group relative overflow-hidden">
+                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-secondary/40 hover:bg-white/[0.04] transition-all duration-500 group relative overflow-hidden">
                                 <div className="absolute -right-4 -top-4 w-32 h-32 bg-secondary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-secondary/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-secondary/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform relative z-10">
                                     <ShieldCheck className="w-8 h-8 md:w-10 md:h-10 text-secondary" />
                                 </div>
-                                <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none">GPS <br />Verified.</h3>
-                                <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic">GPS-locked posts ensure only real events make it to the community pack.</p>
+                                <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none relative z-10">GPS <br />Verified.</h3>
+                                <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic relative z-10">GPS-locked posts ensure only real events make it to the community pack.</p>
                             </div>
 
-                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-white/[0.04] border border-white/5 hover:border-white/20 transition-all duration-700 group relative overflow-hidden">
+                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-white/20 hover:bg-white/[0.04] transition-all duration-500 group relative overflow-hidden">
                                 <div className="absolute -right-4 -top-4 w-32 h-32 bg-white/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform relative z-10">
                                     <Coffee className="w-8 h-8 md:w-10 md:h-10 text-white" />
                                 </div>
-                                <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none">Campus <br />Perks.</h3>
-                                <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic">From free food to study spots, find out where the action is before anyone else.</p>
+                                <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none relative z-10">Campus <br />Perks.</h3>
+                                <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic relative z-10">From free food to study spots, find out where the action is before anyone else.</p>
                             </div>
                         </div>
                     </div>
