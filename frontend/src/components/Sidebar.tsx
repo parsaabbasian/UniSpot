@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:rotate-6 transition-transform">
                         <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(79,70,229,0.5)]" />
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-black tracking-tighter bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent uppercase">
+                    <h1 className="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent uppercase">
                         UNISPOT
                     </h1>
                 </div>
@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Post Event Primary Action */}
             <button
                 onClick={onToggleSelectLocation}
-                className={`w-full flex items-center justify-center gap-3 py-4 md:py-5 rounded-xl md:rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl relative overflow-hidden group ${isSelectingLocation
+                className={`w-full flex items-center justify-center gap-3 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-xl relative overflow-hidden group ${isSelectingLocation
                     ? 'bg-red-500 text-white shadow-red-500/30 hover:scale-[1.02]'
                     : 'bg-primary text-white shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-95'
                     }`}
@@ -73,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {/* Navigation */}
             <div className="flex flex-col gap-3 md:gap-4 relative z-10 flex-1">
-                <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-foreground/30 px-1">Filter Reality</p>
+                <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-foreground/40 px-1">Filter Reality</p>
                 <div className="space-y-1.5 md:space-y-2">
                     {categories.map((cat) => {
                         const Icon = cat.icon;
@@ -88,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                     }`}
                             >
                                 <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 group-hover:scale-110 ${active ? 'text-white' : 'text-primary'}`} />
-                                <span className="font-black tracking-tight text-sm md:text-base uppercase">{cat.name}</span>
+                                <span className="font-bold tracking-tight text-sm uppercase">{cat.name}</span>
                                 {active && (
                                     <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
                                 )}
@@ -103,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-3 text-secondary group cursor-help">
                         <ShieldCheck className="w-6 h-6 md:w-7 md:h-7 opacity-70 group-hover:opacity-100 transition-opacity" />
-                        <span className="text-[10px] md:text-xs font-black uppercase tracking-widest italic opacity-60">Verified Mode</span>
+                        <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-60">Verified Mode</span>
                     </div>
                     <button
                         onClick={onToggleTheme}
@@ -115,8 +115,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                 <div className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-primary via-primary-dark to-accent text-white shadow-xl shadow-primary/20 overflow-hidden group relative">
                     <div className="absolute -right-4 -bottom-4 w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000"></div>
-                    <h4 className="font-black text-xs md:text-sm uppercase tracking-tighter mb-1">Stay Safe, Lions.</h4>
-                    <p className="text-[10px] md:text-xs text-white/70 leading-relaxed font-bold">
+                    <h4 className="font-bold text-xs md:text-sm uppercase tracking-tight mb-1">Stay Safe, Lions.</h4>
+                    <p className="text-[10px] text-white/70 leading-relaxed font-medium">
                         Report real events only. <br />Your rep depends on it.
                     </p>
                 </div>

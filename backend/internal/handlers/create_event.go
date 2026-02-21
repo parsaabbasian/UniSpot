@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/parsaabbasian/unispot/backend/internal/database"
 	"github.com/parsaabbasian/unispot/backend/internal/models"
+	"github.com/parsaabbasian/unispot/backend/internal/ws"
 )
 
 type CreateEventRequest struct {
@@ -52,5 +53,11 @@ func CreateEvent(c *gin.Context) {
 	}
 
 	event.ID = id
+	event.Latitude = req.Latitude
+	event.Longitude = req.Longitude
+
+	// Broadcast the new event to all connected clients
+	ws.GlobalHub.BroadcastEvent("new_event", event)
+
 	c.JSON(http.StatusCreated, event)
 }

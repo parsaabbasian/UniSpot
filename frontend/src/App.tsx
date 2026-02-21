@@ -133,7 +133,7 @@ function App() {
               onClick={() => setIsSelectingLocation(false)}
               className="ml-4 bg-white/20 hover:bg-white/40 p-2 rounded-full transition-all hover:rotate-90"
             >
-              <SidebarX className="w-4 h-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         )}
@@ -154,12 +154,5 @@ function App() {
     setIsSelectingLocation(!isSelectingLocation);
   }
 }
-
-// Simple internal icon for the cancel button
-const SidebarX = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
 
 export default App;

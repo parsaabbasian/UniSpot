@@ -7,11 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/parsaabbasian/unispot/backend/internal/database"
 	"github.com/parsaabbasian/unispot/backend/internal/handlers"
+	"github.com/parsaabbasian/unispot/backend/internal/ws"
 )
 
 func main() {
 	// Connect to database
 	database.Connect()
+
+	// Start WebSocket hub
+	go ws.GlobalHub.Run()
 
 	r := gin.Default()
 
@@ -34,6 +38,10 @@ func main() {
 		api.POST("/events", handlers.CreateEvent)
 		api.POST("/events/:id/verify", handlers.VerifyEvent)
 	}
+
+	r.GET("/ws", func(c *gin.Context) {
+		ws.HandleConnections(c.Writer, c.Request)
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
