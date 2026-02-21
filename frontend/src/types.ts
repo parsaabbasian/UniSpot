@@ -7,4 +7,6 @@ export interface Event {
     lng: number;
     verified_count: number;
     duration_hours?: number;
+    start_time: string;
+    end_time: string;
 }

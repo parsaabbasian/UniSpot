@@ -48,8 +48,8 @@ function App() {
       console.error('Failed to fetch events:', error);
       // Fallback mock data
       setEvents([
-        { id: 1, title: 'York U Hackathon', description: 'Main Student Centre', category: 'Tech', lat: 43.7735, lng: -79.5019, verified_count: 10 },
-        { id: 2, title: 'Coffee Chat @ Vari Hall', description: 'Free coffee for students', category: 'Food', lat: 43.7740, lng: -79.5035, verified_count: 3 },
+        { id: 1, title: 'York U Hackathon', description: 'Main Student Centre', category: 'Tech', lat: 43.7735, lng: -79.5019, verified_count: 10, start_time: new Date().toISOString(), end_time: new Date(Date.now() + 7200000).toISOString() },
+        { id: 2, title: 'Coffee Chat @ Vari Hall', description: 'Free coffee for students', category: 'Food', lat: 43.7740, lng: -79.5035, verified_count: 3, start_time: new Date().toISOString(), end_time: new Date(Date.now() + 7200000).toISOString() },
       ]);
     }
   }, []);

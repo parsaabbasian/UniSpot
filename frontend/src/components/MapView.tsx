@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Map, { Source, Layer, NavigationControl, Popup } from 'react-map-gl/mapbox';
+import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -46,6 +46,25 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         }))
     };
 
+    // Calculate time left helper
+    const getTimeStatus = (startTimeStr: string, durationHours: number) => {
+        const start = new Date(startTimeStr);
+        const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
+        const now = new Date();
+        const diffMs = end.getTime() - now.getTime();
+
+        if (diffMs <= 0) return { text: 'Ended', active: false, urgent: false };
+
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+        const minsRemaining = diffMins % 60;
+
+        if (diffHours === 0 && diffMins <= 30) {
+            return { text: `Ends in ${diffMins}m`, active: true, urgent: true };
+        }
+        return { text: `${diffHours}h ${minsRemaining}m left`, active: true, urgent: false };
+    };
+
     const categoryColors: Record<string, string> = {
         'Tech': '#4f46e5',
         'Music': '#ec4899',
@@ -81,30 +100,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         }
     };
 
-    const unclusteredPointLayer: any = {
-        id: 'unclustered-point',
-        type: 'circle',
-        source: 'events',
-        filter: ['!', ['has', 'point_count']],
-        paint: {
-            'circle-color': [
-                'match',
-                ['get', 'category'],
-                'Tech', '#4f46e5',
-                'Music', '#ec4899',
-                'Food', '#f59e0b',
-                'Entertainment', '#10b981',
-                '#6366f1'
-            ],
-            'circle-radius': [
-                'case',
-                ['>=', ['get', 'verified_count'], 10], 14,
-                9
-            ],
-            'circle-stroke-width': 3,
-            'circle-stroke-color': '#fff'
-        }
-    };
+    // We removed unclusteredPointLayer because we will render rich HTML Markers instead.
 
     const handleMapClick = (event: any) => {
         const feature = event.features?.[0];
@@ -144,7 +140,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
             localStorage.setItem('unispot_votes', JSON.stringify(newVotes));
             onVerify(id);
             if (popupInfo && popupInfo.id === id) {
-                setPopupInfo({ ...popupInfo, verified_count: (popupInfo.verified_count || 0) + 1 });
+                setPopupInfo((prev: any) => ({ ...prev, verified_count: (prev.verified_count || 0) + 1 }));
             }
         } catch (error) {
             console.error('Failed to verify:', error);
@@ -158,6 +154,18 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
     const hasVoted = popupInfo ? votedEvents.includes(popupInfo.id) : false;
     const isPopular = popupInfo ? popupInfo.verified_count >= 10 : false;
+    const timeStatus = popupInfo ? getTimeStatus(popupInfo.start_time, popupInfo.duration_hours || 2) : null;
+
+    // Helper for category icons
+    const getCategoryIcon = (category: string) => {
+        switch (category) {
+            case 'Tech': return <Cpu className="w-4 h-4" />;
+            case 'Music': return <Music className="w-4 h-4" />;
+            case 'Food': return <Utensils className="w-4 h-4" />;
+            case 'Entertainment': return <Ticket className="w-4 h-4" />;
+            default: return <Tag className="w-4 h-4" />;
+        }
+    };
 
     return (
         <div className={`w-full h-full relative overflow-hidden rounded-2xl md:rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/10 bg-background/20 font-sans transition-all duration-300 ${isSelectingLocation ? 'ring-4 ring-primary ring-inset cursor-crosshair' : ''}`}>
@@ -185,8 +193,44 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                 >
                     <Layer {...clusterLayer} />
                     <Layer {...clusterCountLayer} />
-                    <Layer {...unclusteredPointLayer} />
                 </Source>
+
+                {events.map((event) => {
+                    const isHot = event.verified_count >= 10;
+                    const catColor = categoryColors[event.category] || '#6366f1';
+
+                    return (
+                        <Marker
+                            key={`marker-${event.id}`}
+                            longitude={event.lng}
+                            latitude={event.lat}
+                            anchor="bottom"
+                            onClick={e => {
+                                e.originalEvent.stopPropagation();
+                                setPopupInfo(event);
+                            }}
+                        >
+                            <div className={`relative cursor-pointer group animate-in fade-in zoom-in duration-500`} style={{ zIndex: popupInfo?.id === event.id ? 50 : 1 }}>
+                                {isHot && (
+                                    <div className="absolute -inset-2 bg-orange-500 rounded-full blur animate-pulse opacity-50"></div>
+                                )}
+                                <div className="absolute -inset-1 bg-white rounded-full blur-sm opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                                <div
+                                    className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white border-2 border-white shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 group-hover:scale-110 ${isHot ? 'animate-bounce' : ''}`}
+                                    style={{ backgroundColor: catColor, boxShadow: `0 10px 25px -5px ${catColor}` }}
+                                >
+                                    {getCategoryIcon(event.category)}
+                                    {isHot && (
+                                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-400 to-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full border border-white shadow-sm flex items-center gap-0.5">
+                                            <Flame className="w-2 h-2" /> HOT
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-0.5 bg-black/30 blur-sm rounded-full group-hover:w-5 group-hover:bg-black/40 transition-all duration-300"></div>
+                            </div>
+                        </Marker>
+                    );
+                })}
 
                 <NavigationControl position="bottom-right" />
 
@@ -249,10 +293,27 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
                             <div className="flex items-start justify-between mb-3 md:mb-4 mt-2">
                                 <h3 className="font-black text-lg md:text-2xl leading-tight dark:text-white max-w-[75%] italic line-clamp-2">{popupInfo.title}</h3>
-                                {(popupInfo.verified_count >= 5) && !isPopular && (
-                                    <ShieldCheck className="w-5 h-5 md:w-7 md:h-7 text-green-500 shrink-0 ml-2" />
-                                )}
+                                <div className="flex flex-col items-end gap-1">
+                                    {(popupInfo.verified_count >= 5) && !isPopular && (
+                                        <ShieldCheck className="w-5 h-5 md:w-7 md:h-7 text-green-500 shrink-0 ml-2" />
+                                    )}
+                                </div>
                             </div>
+
+                            {/* Live Timer */}
+                            {timeStatus && timeStatus.active && (
+                                <div className={`flex items-center gap-2 mb-3 px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border ${timeStatus.urgent ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse' : 'bg-primary/10 text-primary border-primary/20'}`}>
+                                    {timeStatus.urgent ? <Zap className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                                    {timeStatus.text}
+                                    <div className="ml-auto flex items-center gap-1.5">
+                                        <span className={`relative flex h-2 w-2`}>
+                                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${timeStatus.urgent ? 'bg-red-400' : 'bg-primary'}`}></span>
+                                            <span className={`relative inline-flex rounded-full h-2 w-2 ${timeStatus.urgent ? 'bg-red-500' : 'bg-primary'}`}></span>
+                                        </span>
+                                        LIVE
+                                    </div>
+                                </div>
+                            )}
 
                             {popupInfo.description && (
                                 <div className="flex gap-2 mb-4 md:mb-5 bg-foreground/5 p-3 md:p-4 rounded-[1rem] md:rounded-[1.5rem] border border-foreground/5">
