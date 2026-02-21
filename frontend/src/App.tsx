@@ -9,13 +9,21 @@ import { Menu, X } from 'lucide-react';
 import type { Event } from './types';
 
 function App() {
-  const [showMap, setShowMap] = useState(false);
+  const [showMap, setShowMap] = useState(() => window.location.hash === '#map');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [events, setEvents] = useState<Event[]>([]);
   const [pendingEventCoords, setPendingEventCoords] = useState<{ lat: number, lng: number } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setShowMap(window.location.hash === '#map');
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -48,6 +56,9 @@ function App() {
 
   useEffect(() => {
     fetchEvents();
+    // Poll every 5 seconds to keep events synched with Supabase in real-time
+    const interval = setInterval(fetchEvents, 5000);
+    return () => clearInterval(interval);
   }, [fetchEvents]);
 
   const handleMapClick = (lat: number, lng: number) => {
@@ -62,7 +73,7 @@ function App() {
     : events.filter(e => e.category === selectedCategory);
 
   if (!showMap) {
-    return <LandingPage onEnter={() => setShowMap(true)} />;
+    return <LandingPage onEnter={() => { window.location.hash = 'map'; }} />;
   }
 
   return (

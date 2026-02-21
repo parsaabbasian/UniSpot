@@ -34,8 +34,8 @@ func CreateEvent(c *gin.Context) {
 		Description: req.Description,
 		Category:    req.Category,
 		Location:    locationStr, // Note: Location is a string in the model, but gorm will use the geography type
-		StartTime:   time.Now(),
-		EndTime:     time.Now().Add(time.Duration(req.Duration) * time.Hour),
+		StartTime:   time.Now().UTC(),
+		EndTime:     time.Now().UTC().Add(time.Duration(req.Duration) * time.Hour),
 	}
 
 	// Use raw SQL for the insertion to handle the ST_GeogFromText conversion
