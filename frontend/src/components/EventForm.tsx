@@ -164,7 +164,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isCategoryOpen && (
                                 <>
                                     <div className="fixed inset-0 z-10" onClick={() => setIsCategoryOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#0a0a0f] border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
                                         {categories.map((cat) => (
                                             <div
                                                 key={cat}
@@ -172,7 +172,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                                     setCategory(cat);
                                                     setIsCategoryOpen(false);
                                                 }}
-                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-colors ${category === cat ? 'bg-primary text-white' : 'text-foreground/60 hover:bg-white/5 hover:text-white'}`}
+                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
                                             >
                                                 {cat}
                                                 {category === cat && <Check className="w-3 h-3" />}
@@ -200,30 +200,30 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isDurationOpen && (
                                 <>
                                     <div className="fixed inset-0 z-10" onClick={() => setIsDurationOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] left-0 w-[140%] -left-[20%] bg-[#0a0a0f] border border-white/10 rounded-[2rem] shadow-2xl p-6 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-[140%] -left-[20%] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
                                         <div className="grid grid-cols-2 gap-6">
-                                            <div className="space-y-3">
-                                                <p className="text-[9px] font-black uppercase tracking-widest text-foreground/30 text-center">Hours</p>
+                                            <div className="space-y-3 text-center">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Hours</p>
                                                 <div className="grid grid-cols-2 gap-2">
                                                     {hourOptions.map((h) => (
                                                         <div
                                                             key={h}
                                                             onClick={() => setDurationHours(h)}
-                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationHours === h ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-foreground/40 hover:bg-white/10'}`}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationHours === h ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
                                                         >
                                                             {h}H
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="space-y-3">
-                                                <p className="text-[9px] font-black uppercase tracking-widest text-foreground/30 text-center">Minutes</p>
+                                            <div className="space-y-3 text-center">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Minutes</p>
                                                 <div className="flex flex-col gap-2">
                                                     {minuteOptions.map((m) => (
                                                         <div
                                                             key={m}
                                                             onClick={() => setDurationMinutes(m)}
-                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-foreground/40 hover:bg-white/10'}`}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
                                                         >
                                                             {m}M
                                                         </div>
@@ -233,9 +233,9 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                         </div>
                                         <button
                                             onClick={() => setIsDurationOpen(false)}
-                                            className="w-full mt-6 py-3 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black uppercase rounded-xl transition-all"
+                                            className="w-full mt-6 py-4 bg-primary text-white text-[10px] font-black uppercase rounded-xl transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95"
                                         >
-                                            Set Time
+                                            Confirm Time
                                         </button>
                                     </div>
                                 </>
