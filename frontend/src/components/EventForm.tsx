@@ -202,26 +202,30 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isDurationOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsDurationOpen(false)} />
-                                    <div className="absolute inset-0 bg-[#0a0a0f] z-[70] flex flex-col p-8 animate-in fade-in zoom-in-95 duration-300">
-                                        <div className="flex items-center justify-between mb-8">
+                                    <div className="absolute inset-0 bg-[#0a0a0f] z-[70] flex flex-col p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500 rounded-[2.5rem] mt-[-2px] ml-[-2px] mr-[-2px] mb-[-2px] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+                                        <div className="flex items-center justify-between mb-8 md:mb-12">
                                             <div>
-                                                <h3 className="text-xl font-black italic uppercase text-white">Select Duration</h3>
-                                                <p className="text-[10px] text-primary font-black uppercase tracking-widest">How long is this happening?</p>
+                                                <h3 className="text-2xl md:text-3xl font-black italic uppercase text-white tracking-widest leading-none mb-1">Set Duration</h3>
+                                                <p className="text-[10px] md:text-xs text-primary font-black uppercase tracking-[0.5em] opacity-80 italic">Broadcast Timeline</p>
                                             </div>
-                                            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center">
-                                                <Clock className="w-6 h-6 text-primary" />
+                                            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl md:rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
+                                                <Clock className="w-7 h-7 md:w-8 md:h-8 text-primary animate-pulse" />
                                             </div>
                                         </div>
 
-                                        <div className="flex-1 flex flex-col justify-center gap-10">
-                                            <div className="space-y-4">
-                                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-center text-foreground/40">Hours</p>
-                                                <div className="grid grid-cols-4 gap-3">
+                                        <div className="flex-1 flex flex-col justify-center gap-10 md:gap-16">
+                                            <div className="space-y-6">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                                                    <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-foreground/40 italic">Hours Selection</p>
+                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                                                </div>
+                                                <div className="grid grid-cols-4 gap-3 md:gap-4">
                                                     {hourOptions.map((h) => (
                                                         <div
                                                             key={h}
                                                             onClick={() => setDurationHours(h)}
-                                                            className={`py-4 rounded-2xl text-center text-sm font-black transition-all ${durationHours === h ? 'bg-primary text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] scale-110' : 'bg-white/5 text-foreground/40 hover:bg-white/10 hover:text-white'}`}
+                                                            className={`py-4 md:py-5 rounded-2xl text-center text-xs md:text-sm font-black tracking-tighter transition-all cursor-pointer ${durationHours === h ? 'bg-primary text-white shadow-[0_0_40px_rgba(99,102,241,0.6)] scale-110 active:scale-95 border border-white/20' : 'bg-white/5 text-foreground/30 border border-white/5 hover:bg-white/10 hover:text-white'}`}
                                                         >
                                                             {h}H
                                                         </div>
@@ -229,14 +233,18 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-4">
-                                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-center text-foreground/40">Minutes</p>
-                                                <div className="grid grid-cols-4 gap-3">
+                                            <div className="space-y-6">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                                                    <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-foreground/40 italic">Minutes Selection</p>
+                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                                                </div>
+                                                <div className="grid grid-cols-4 gap-3 md:gap-4">
                                                     {minuteOptions.map((m) => (
                                                         <div
                                                             key={m}
                                                             onClick={() => setDurationMinutes(m)}
-                                                            className={`py-4 rounded-2xl text-center text-sm font-black transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] scale-110' : 'bg-white/5 text-foreground/40 hover:bg-white/10 hover:text-white'}`}
+                                                            className={`py-4 md:py-5 rounded-2xl text-center text-xs md:text-sm font-black tracking-tighter transition-all cursor-pointer ${durationMinutes === m ? 'bg-primary text-white shadow-[0_0_40px_rgba(99,102,241,0.6)] scale-110 active:scale-95 border border-white/20' : 'bg-white/5 text-foreground/30 border border-white/5 hover:bg-white/10 hover:text-white'}`}
                                                         >
                                                             {m}M
                                                         </div>
@@ -245,14 +253,14 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                             </div>
                                         </div>
 
-                                        <div className="mt-auto pt-8">
+                                        <div className="mt-auto pt-10">
                                             <button
                                                 type="button"
                                                 onClick={() => setIsDurationOpen(false)}
-                                                className="w-full py-5 bg-gradient-to-r from-primary to-accent text-white font-black uppercase italic rounded-2xl transition-all shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                                                className="w-full py-6 md:py-8 bg-gradient-to-r from-primary via-indigo-600 to-accent text-white font-black uppercase italic rounded-3xl transition-all shadow-[0_20px_50px_rgba(99,102,241,0.4)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4 text-sm md:text-base border border-white/20 group"
                                             >
-                                                <Check className="w-5 h-5" />
-                                                Set Event Time
+                                                <Check className="w-6 h-6 group-hover:scale-125 transition-transform" />
+                                                Lock Event Timeline
                                             </button>
                                         </div>
                                     </div>

@@ -6,10 +6,13 @@ import (
 	"os"
 	"strconv"
 
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 	"github.com/parsaabbasian/unispot/backend/internal/database"
 	"github.com/parsaabbasian/unispot/backend/internal/handlers"
+	"github.com/parsaabbasian/unispot/backend/internal/models"
 	"github.com/parsaabbasian/unispot/backend/internal/ws"
 )
 
@@ -22,6 +25,9 @@ func main() {
 
 	// Start Database Listener for real-time deletions
 	go startDBListener()
+
+	// Start Event Expiry Worker
+	go startEventExpiryWorker()
 
 	r := gin.Default()
 
@@ -61,7 +67,8 @@ func main() {
 func startDBListener() {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		dsn = "postgresql://postgres.krkhwckszzjjeycxapaq:APazrRPp6Re7r+Y@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+		log.Printf("DB Listener: DATABASE_URL not set, skipping real-time sync")
+		return
 	}
 
 	conn, err := pgx.Connect(context.Background(), dsn)
@@ -90,5 +97,19 @@ func startDBListener() {
 		ws.GlobalHub.BroadcastEvent("delete_event", map[string]interface{}{
 			"id": id,
 		})
+	}
+}
+
+func startEventExpiryWorker() {
+	ticker := time.NewTicker(1 * time.Minute)
+	log.Printf("Event Expiry Worker started...")
+
+	for range ticker.C {
+		now := time.Now().UTC()
+		// Delete events where end_time < now
+		result := database.DB.Where("end_time < ?", now).Delete(&models.Event{})
+		if result.RowsAffected > 0 {
+			log.Printf("Expired %d events", result.RowsAffected)
+		}
 	}
 }

@@ -17,8 +17,7 @@ func Connect() {
 	dsn := os.Getenv("DATABASE_URL")
 
 	if dsn == "" {
-		// Supabase Session Pooler (IPv4 compatible)
-		dsn = "postgresql://postgres.krkhwckszzjjeycxapaq:APazrRPp6Re7r+Y@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+		log.Fatal("DATABASE_URL environment variable is not set")
 	}
 
 	var err error

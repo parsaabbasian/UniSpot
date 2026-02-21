@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap, XCircle } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -31,7 +31,16 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const [votedEvents, setVotedEvents] = useState<number[]>([]);
     const [routeData, setRouteData] = useState<any>(null);
     const [userLocation, setUserLocation] = useState<{ lng: number, lat: number } | null>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [showLocationTip, setShowLocationTip] = useState(true);
     const mapRef = useRef<any>(null);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         const savedVotes = localStorage.getItem('unispot_votes');
@@ -53,19 +62,27 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const getTimeStatus = (startTimeStr: string, durationHours: number) => {
         const start = new Date(startTimeStr);
         const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
-        const now = new Date();
-        const diffMs = end.getTime() - now.getTime();
+        const diffMs = end.getTime() - currentTime.getTime();
 
         if (diffMs <= 0) return { text: 'Ended', active: false, urgent: false };
 
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMins / 60);
-        const minsRemaining = diffMins % 60;
+        const totalSeconds = Math.floor(diffMs / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
 
-        if (diffHours === 0 && diffMins <= 30) {
-            return { text: `Ends in ${diffMins}m`, active: true, urgent: true };
-        }
-        return { text: `${diffHours}h ${minsRemaining}m left`, active: true, urgent: false };
+        const isUrgent = hours === 0 && minutes <= 30;
+
+        // Pad with zeros
+        const hDisp = hours > 0 ? `${hours}H ` : '';
+        const mDisp = `${minutes.toString().padStart(2, '0')}M `;
+        const sDisp = `${seconds.toString().padStart(2, '0')}S`;
+
+        return {
+            text: `${hDisp}${mDisp}${sDisp} LEFT`,
+            active: true,
+            urgent: isUrgent
+        };
     };
 
     const categoryColors: Record<string, string> = {
@@ -236,6 +253,27 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                 onClick={handleMapClick}
                 ref={mapRef}
             >
+                {/* Location Persistence Tip */}
+                {showLocationTip && !userLocation && (
+                    <div className="absolute top-24 md:top-6 left-6 right-6 md:left-auto md:right-24 z-[100] animate-in slide-in-from-top-4 duration-700">
+                        <div className="glass-morphism bg-primary/20 backdrop-blur-3xl border border-primary/30 p-4 md:p-5 rounded-2xl md:rounded-[2rem] flex items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.3)] group">
+                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/40 group-hover:scale-110 transition-transform">
+                                <LocateFixed className="w-5 h-5 md:w-6 md:h-6 text-white animate-pulse" />
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white mb-1 italic">Location Sync Required</h4>
+                                <p className="text-[9px] md:text-[10px] text-white/60 font-medium leading-tight">Enable GPS for real-time York U updates.</p>
+                            </div>
+                            <button
+                                onClick={() => setShowLocationTip(false)}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white"
+                            >
+                                <XCircle className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 <Source
                     id="events"
                     type="geojson"
@@ -373,15 +411,15 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
                             {/* Live Timer */}
                             {timeStatus && timeStatus.active && (
-                                <div className={`flex items-center gap-2 mb-3 px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border ${timeStatus.urgent ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse' : 'bg-primary/10 text-primary border-primary/20'}`}>
-                                    {timeStatus.urgent ? <Zap className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-                                    {timeStatus.text}
-                                    <div className="ml-auto flex items-center gap-1.5">
-                                        <span className={`relative flex h-2 w-2`}>
+                                <div className={`flex items-center gap-2 mb-3 px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border tabular-nums ${timeStatus.urgent ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse' : 'bg-primary/10 text-primary border-primary/20'}`}>
+                                    {timeStatus.urgent ? <Zap className="w-3.5 h-3.5 flex-shrink-0" /> : <Clock className="w-3.5 h-3.5 flex-shrink-0" />}
+                                    <span className="flex-1">{timeStatus.text}</span>
+                                    <div className="flex items-center gap-1.5 opacity-80">
+                                        <span className="relative flex h-1.5 w-1.5">
                                             <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${timeStatus.urgent ? 'bg-red-400' : 'bg-primary'}`}></span>
-                                            <span className={`relative inline-flex rounded-full h-2 w-2 ${timeStatus.urgent ? 'bg-red-500' : 'bg-primary'}`}></span>
+                                            <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${timeStatus.urgent ? 'bg-red-500' : 'bg-primary'}`}></span>
                                         </span>
-                                        LIVE
+                                        <span className="text-[8px] md:text-[9px]">LIVE</span>
                                     </div>
                                 </div>
                             )}
