@@ -1,0 +1,6 @@
+﻿src/components/LandingPage.tsx(2,23): error TS6133: 'Users' is declared but its value is never read.
+src/components/LandingPage.tsx(2,30): error TS6133: 'Globe' is declared but its value is never read.
+src/components/LandingPage.tsx(2,48): error TS6133: 'Zap' is declared but its value is never read.
+src/components/LandingPage.tsx(2,53): error TS6133: 'Target' is declared but its value is never read.
+src/components/LandingPage.tsx(2,61): error TS6133: 'Rocket' is declared but its value is never read.
+src/components/LandingPage.tsx(2,69): error TS6133: 'Cpu' is declared but its value is never read.

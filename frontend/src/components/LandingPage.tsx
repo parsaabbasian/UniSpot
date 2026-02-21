@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Users, Globe, X, MapPin, Zap, Target, Rocket, Cpu, User, Mail, Shield, ArrowRight, CheckCircle2, Navigation } from 'lucide-react';
+import { ShieldCheck, X, MapPin, User, Mail, Shield, ArrowRight, CheckCircle2, Navigation } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: (userData: { name: string, email: string }) => void;
