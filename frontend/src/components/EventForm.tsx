@@ -202,30 +202,41 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isDurationOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsDurationOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] right-0 w-[210%] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 z-[70] animate-in fade-in slide-in-from-top-4 duration-300">
-                                        <div className="grid grid-cols-2 gap-6">
-                                            <div className="space-y-3 text-center">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Hours</p>
-                                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="absolute inset-0 bg-[#0a0a0f] z-[70] flex flex-col p-8 animate-in fade-in zoom-in-95 duration-300">
+                                        <div className="flex items-center justify-between mb-8">
+                                            <div>
+                                                <h3 className="text-xl font-black italic uppercase text-white">Select Duration</h3>
+                                                <p className="text-[10px] text-primary font-black uppercase tracking-widest">How long is this happening?</p>
+                                            </div>
+                                            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center">
+                                                <Clock className="w-6 h-6 text-primary" />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col justify-center gap-10">
+                                            <div className="space-y-4">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-center text-foreground/40">Hours</p>
+                                                <div className="grid grid-cols-4 gap-3">
                                                     {hourOptions.map((h) => (
                                                         <div
                                                             key={h}
                                                             onClick={() => setDurationHours(h)}
-                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationHours === h ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
+                                                            className={`py-4 rounded-2xl text-center text-sm font-black transition-all ${durationHours === h ? 'bg-primary text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] scale-110' : 'bg-white/5 text-foreground/40 hover:bg-white/10 hover:text-white'}`}
                                                         >
                                                             {h}H
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="space-y-3 text-center">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Minutes</p>
-                                                <div className="flex flex-col gap-2">
+
+                                            <div className="space-y-4">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-center text-foreground/40">Minutes</p>
+                                                <div className="grid grid-cols-4 gap-3">
                                                     {minuteOptions.map((m) => (
                                                         <div
                                                             key={m}
                                                             onClick={() => setDurationMinutes(m)}
-                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
+                                                            className={`py-4 rounded-2xl text-center text-sm font-black transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] scale-110' : 'bg-white/5 text-foreground/40 hover:bg-white/10 hover:text-white'}`}
                                                         >
                                                             {m}M
                                                         </div>
@@ -233,13 +244,17 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                                 </div>
                                             </div>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsDurationOpen(false)}
-                                            className="w-full mt-6 py-4 bg-primary text-white text-[10px] font-black uppercase rounded-xl transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95"
-                                        >
-                                            Confirm Time
-                                        </button>
+
+                                        <div className="mt-auto pt-8">
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsDurationOpen(false)}
+                                                className="w-full py-5 bg-gradient-to-r from-primary to-accent text-white font-black uppercase italic rounded-2xl transition-all shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                                            >
+                                                <Check className="w-5 h-5" />
+                                                Set Event Time
+                                            </button>
+                                        </div>
                                     </div>
                                 </>
                             )}
