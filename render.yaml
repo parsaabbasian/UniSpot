@@ -1,13 +1,33 @@
 services:
+  # Backend API Service
   - type: web
     name: unispot-api
-    env: go
+    runtime: go
     rootDir: backend
-    repo: https://github.com/parsaabbasian/UniSpot
-    plan: free
     buildCommand: go build -o server ./cmd/api/main.go
     startCommand: ./server
+    plan: free
+    autoDeploy: true
     envVars:
       - key: GIN_MODE
         value: release
-      # Render naturally sets PORT. Gin uses the PORT environment variable if configured properly.
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        sync: false # You must set this in the Render Dashboard after importing the blueprint
+      - key: GO_VERSION
+        value: 1.22.0
+
+  # Optional: Frontend Static Site (Only if you want to deploy frontend via Render)
+  # - type: static
+  #   name: unispot-frontend
+  #   runtime: node
+  #   rootDir: frontend
+  #   buildCommand: npm install && npm run build
+  #   staticPublishPath: dist
+  #   envVars:
+  #     - key: VITE_API_URL
+  #       fromService:
+  #         type: web
+  #         name: unispot-api
+  #         property: host
