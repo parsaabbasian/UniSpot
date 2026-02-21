@@ -1,0 +1,22 @@
+# Common
+node_modules/
+.env
+.env.*
+*.log
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Go
+backend/cmd/api/api
+backend/api/api
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+backend/vendor/
