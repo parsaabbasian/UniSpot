@@ -36,8 +36,6 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
     const [isDurationOpen, setIsDurationOpen] = useState(false);
 
     const categories = ['Tech', 'Music', 'Food', 'Entertainment'];
-    const hourOptions = [0, 1, 2, 3, 4, 6, 8, 12];
-    const minuteOptions = [0, 15, 30, 45];
 
     const checkLocationAndSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -166,52 +164,27 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isCategoryOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsCategoryOpen(false)} />
-                                    <div className="absolute inset-0 bg-[#0a0a0f] z-[70] flex flex-col p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500 rounded-[2.5rem] mt-[-2px] ml-[-2px] mr-[-2px] mb-[-2px] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-                                        <div className="flex items-center justify-between mb-8 md:mb-12">
-                                            <div>
-                                                <h3 className="text-2xl md:text-3xl font-black italic uppercase text-white tracking-widest leading-none mb-1">Category</h3>
-                                                <p className="text-[10px] md:text-xs text-primary font-black uppercase tracking-[0.5em] opacity-80 italic">Select Event Type</p>
-                                            </div>
-                                            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl md:rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
-                                                <Tag className="w-7 h-7 md:w-8 md:h-8 text-primary animate-pulse" />
-                                            </div>
-                                        </div>
-
-                                        <div className="flex-1 flex flex-col justify-center gap-4">
-                                            {categories.map((cat) => (
-                                                <button
-                                                    key={cat}
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setCategory(cat);
-                                                        setIsCategoryOpen(false);
-                                                    }}
-                                                    className={`w-full py-5 px-8 rounded-2xl flex items-center justify-between transition-all group ${category === cat
-                                                        ? 'bg-primary text-white shadow-[0_0_40px_rgba(99,102,241,0.4)] scale-105 border border-white/20'
-                                                        : 'bg-white/5 text-foreground/40 border border-white/5 hover:bg-white/10 hover:text-white'}`}
-                                                >
-                                                    <span className="text-base md:text-lg font-black uppercase italic tracking-wider">{cat}</span>
-                                                    {category === cat && <Check className="w-5 h-5 animate-in zoom-in duration-300" />}
-                                                </button>
-                                            ))}
-                                        </div>
-
-                                        <div className="mt-auto pt-10">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsCategoryOpen(false)}
-                                                className="w-full py-6 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white font-black uppercase italic rounded-2xl transition-all border border-white/5"
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-[70] animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {categories.map((cat) => (
+                                            <div
+                                                key={cat}
+                                                onClick={() => {
+                                                    setCategory(cat);
+                                                    setIsCategoryOpen(false);
+                                                }}
+                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
                                             >
-                                                Back to Form
-                                            </button>
-                                        </div>
+                                                {cat}
+                                                {category === cat && <Check className="w-3 h-3" />}
+                                            </div>
+                                        ))}
                                     </div>
                                 </>
                             )}
                         </div>
 
                         <div className="space-y-2 relative">
-                            <label className={`text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 transition-all duration-500 ${isDurationOpen ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+                            <label className={`text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 transition-all duration-500`}>
                                 <Clock className="w-3 h-3" /> Duration
                             </label>
                             <div
@@ -219,7 +192,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                 className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
                             >
                                 <span className="text-sm font-black italic uppercase text-foreground">
-                                    {durationHours}h {durationMinutes}m
+                                    {durationHours}H {durationMinutes}M
                                 </span>
                                 <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isDurationOpen ? 'rotate-180' : ''}`} />
                             </div>
@@ -227,49 +200,32 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isDurationOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsDurationOpen(false)} />
-                                    <div className="absolute inset-0 bg-[#0a0a0f] z-[70] flex flex-col p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500 rounded-[2.5rem] mt-[-2px] ml-[-2px] mr-[-2px] mb-[-2px] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-                                        <div className="flex items-center justify-between mb-8 md:mb-12">
-                                            <div>
-                                                <h3 className="text-2xl md:text-3xl font-black italic uppercase text-white tracking-widest leading-none mb-1">Set Duration</h3>
-                                                <p className="text-[10px] md:text-xs text-primary font-black uppercase tracking-[0.5em] opacity-80 italic">Broadcast Timeline</p>
-                                            </div>
-                                            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl md:rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
-                                                <Clock className="w-7 h-7 md:w-8 md:h-8 text-primary animate-pulse" />
-                                            </div>
-                                        </div>
-
-                                        <div className="flex-1 flex flex-col justify-center gap-10 md:gap-16">
-                                            <div className="space-y-6">
-                                                <div className="flex items-center gap-4 mb-2">
-                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                                                    <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-foreground/40 italic">Hours Selection</p>
-                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                                                </div>
-                                                <div className="grid grid-cols-4 gap-3 md:gap-4">
-                                                    {hourOptions.map((h) => (
+                                    <div className="absolute top-[calc(100%+8px)] right-0 w-[120%] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-4 z-[70] animate-in fade-in slide-in-from-top-2 duration-300">
+                                        <div className="flex gap-4 h-48">
+                                            {/* Hours Column */}
+                                            <div className="flex-1 flex flex-col">
+                                                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-center text-primary mb-2 italic">Hours</p>
+                                                <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1 pr-1 snap-y">
+                                                    {[0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 24].map((h) => (
                                                         <div
                                                             key={h}
                                                             onClick={() => setDurationHours(h)}
-                                                            className={`py-4 md:py-5 rounded-2xl text-center text-xs md:text-sm font-black tracking-tighter transition-all cursor-pointer ${durationHours === h ? 'bg-primary text-white shadow-[0_0_40px_rgba(99,102,241,0.6)] scale-110 active:scale-95 border border-white/20' : 'bg-white/5 text-foreground/30 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all snap-start ${durationHours === h ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-foreground/40 hover:bg-white/10'}`}
                                                         >
                                                             {h}H
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
-
-                                            <div className="space-y-6">
-                                                <div className="flex items-center gap-4 mb-2">
-                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                                                    <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-foreground/40 italic">Minutes Selection</p>
-                                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                                                </div>
-                                                <div className="grid grid-cols-4 gap-3 md:gap-4">
-                                                    {minuteOptions.map((m) => (
+                                            {/* Minutes Column */}
+                                            <div className="flex-1 flex flex-col">
+                                                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-center text-primary mb-2 italic">Minutes</p>
+                                                <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1 pr-1 snap-y">
+                                                    {[0, 5, 10, 15, 20, 30, 45].map((m) => (
                                                         <div
                                                             key={m}
                                                             onClick={() => setDurationMinutes(m)}
-                                                            className={`py-4 md:py-5 rounded-2xl text-center text-xs md:text-sm font-black tracking-tighter transition-all cursor-pointer ${durationMinutes === m ? 'bg-primary text-white shadow-[0_0_40px_rgba(99,102,241,0.6)] scale-110 active:scale-95 border border-white/20' : 'bg-white/5 text-foreground/30 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all snap-start ${durationMinutes === m ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-foreground/40 hover:bg-white/10'}`}
                                                         >
                                                             {m}M
                                                         </div>
@@ -277,17 +233,13 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div className="mt-auto pt-10">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsDurationOpen(false)}
-                                                className="w-full py-6 md:py-8 bg-gradient-to-r from-primary via-indigo-600 to-accent text-white font-black uppercase italic rounded-3xl transition-all shadow-[0_20px_50px_rgba(99,102,241,0.4)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4 text-sm md:text-base border border-white/20 group"
-                                            >
-                                                <Check className="w-6 h-6 group-hover:scale-125 transition-transform" />
-                                                Lock Event Timeline
-                                            </button>
-                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsDurationOpen(false)}
+                                            className="w-full mt-4 py-3 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white text-[10px] font-black uppercase rounded-xl transition-all border border-white/5"
+                                        >
+                                            Confirm
+                                        </button>
                                     </div>
                                 </>
                             )}
