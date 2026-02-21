@@ -148,100 +148,101 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2 relative">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
-                                    <Tag className="w-3 h-3" /> Category
-                                </label>
-                                <div
-                                    onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                                    className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
-                                >
-                                    <span className="text-sm font-black italic uppercase text-foreground">{category}</span>
-                                    <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} />
-                                </div>
-
-                                {isCategoryOpen && (
-                                    <>
-                                        <div className="fixed inset-0 z-10" onClick={() => setIsCategoryOpen(false)} />
-                                        <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
-                                            {categories.map((cat) => (
-                                                <div
-                                                    key={cat}
-                                                    onClick={() => {
-                                                        setCategory(cat);
-                                                        setIsCategoryOpen(false);
-                                                    }}
-                                                    className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
-                                                >
-                                                    {cat}
-                                                    {category === cat && <Check className="w-3 h-3" />}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </>
-                                )}
+                    <div className="grid grid-cols-2 gap-4 relative">
+                        <div className={`space-y-2 relative transition-all duration-500 ${isDurationOpen ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
+                                <Tag className="w-3 h-3" /> Category
+                            </label>
+                            <div
+                                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                                className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
+                            >
+                                <span className="text-sm font-black italic uppercase text-foreground">{category}</span>
+                                <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} />
                             </div>
 
-                            <div className="space-y-2 relative">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
-                                    <Clock className="w-3 h-3" /> Duration
-                                </label>
-                                <div
-                                    onClick={() => setIsDurationOpen(!isDurationOpen)}
-                                    className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
-                                >
-                                    <span className="text-sm font-black italic uppercase text-foreground">
-                                        {durationHours}h {durationMinutes}m
-                                    </span>
-                                    <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isDurationOpen ? 'rotate-180' : ''}`} />
-                                </div>
+                            {isCategoryOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-[60]" onClick={() => setIsCategoryOpen(false)} />
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-[70] animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {categories.map((cat) => (
+                                            <div
+                                                key={cat}
+                                                onClick={() => {
+                                                    setCategory(cat);
+                                                    setIsCategoryOpen(false);
+                                                }}
+                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
+                                            >
+                                                {cat}
+                                                {category === cat && <Check className="w-3 h-3" />}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
 
-                                {isDurationOpen && (
-                                    <>
-                                        <div className="fixed inset-0 z-10" onClick={() => setIsDurationOpen(false)} />
-                                        <div className="absolute top-[calc(100%+8px)] left-0 w-[140%] -left-[20%] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <div className="space-y-3 text-center">
-                                                    <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Hours</p>
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        {hourOptions.map((h) => (
-                                                            <div
-                                                                key={h}
-                                                                onClick={() => setDurationHours(h)}
-                                                                className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationHours === h ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
-                                                            >
-                                                                {h}H
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-3 text-center">
-                                                    <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Minutes</p>
-                                                    <div className="flex flex-col gap-2">
-                                                        {minuteOptions.map((m) => (
-                                                            <div
-                                                                key={m}
-                                                                onClick={() => setDurationMinutes(m)}
-                                                                className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
-                                                            >
-                                                                {m}M
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                        <div className="space-y-2 relative">
+                            <label className={`text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 transition-all duration-500 ${isDurationOpen ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+                                <Clock className="w-3 h-3" /> Duration
+                            </label>
+                            <div
+                                onClick={() => setIsDurationOpen(!isDurationOpen)}
+                                className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
+                            >
+                                <span className="text-sm font-black italic uppercase text-foreground">
+                                    {durationHours}h {durationMinutes}m
+                                </span>
+                                <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isDurationOpen ? 'rotate-180' : ''}`} />
+                            </div>
+
+                            {isDurationOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-[60]" onClick={() => setIsDurationOpen(false)} />
+                                    <div className="absolute top-[calc(100%+8px)] right-0 w-[210%] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 z-[70] animate-in fade-in slide-in-from-top-4 duration-300">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="space-y-3 text-center">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Hours</p>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {hourOptions.map((h) => (
+                                                        <div
+                                                            key={h}
+                                                            onClick={() => setDurationHours(h)}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationHours === h ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
+                                                        >
+                                                            {h}H
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
-                                            <button
-                                                onClick={() => setIsDurationOpen(false)}
-                                                className="w-full mt-6 py-4 bg-primary text-white text-[10px] font-black uppercase rounded-xl transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95"
-                                            >
-                                                Confirm Time
-                                            </button>
+                                            <div className="space-y-3 text-center">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary italic">Minutes</p>
+                                                <div className="flex flex-col gap-2">
+                                                    {minuteOptions.map((m) => (
+                                                        <div
+                                                            key={m}
+                                                            onClick={() => setDurationMinutes(m)}
+                                                            className={`py-3 rounded-xl text-center text-[10px] font-black cursor-pointer transition-all ${durationMinutes === m ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105' : 'bg-white/5 text-foreground/50 hover:bg-white/10 hover:text-white'}`}
+                                                        >
+                                                            {m}M
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </>
-                                )}
-                            </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsDurationOpen(false)}
+                                            className="w-full mt-6 py-4 bg-primary text-white text-[10px] font-black uppercase rounded-xl transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95"
+                                        >
+                                            Confirm Time
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 
