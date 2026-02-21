@@ -232,8 +232,11 @@ function App() {
 
   const filteredEvents = events.filter(e => {
     const matchesCategory = selectedCategory === 'all' || e.category === selectedCategory;
-    const matchesSearch = e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      e.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchLower = searchQuery.toLowerCase();
+    const matchesSearch = e.title.toLowerCase().includes(searchLower) ||
+      e.description.toLowerCase().includes(searchLower) ||
+      e.category.toLowerCase().includes(searchLower) ||
+      (e.creator_name && e.creator_name.toLowerCase().includes(searchLower));
     return matchesCategory && matchesSearch;
   });
 

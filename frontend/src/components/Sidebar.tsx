@@ -161,27 +161,20 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Recent Activity Mini-Feed */}
                 <div className="space-y-4 pb-4">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 px-2">Pulse Check</p>
                     <div className="space-y-3">
-                        {recentActivity.length === 0 ? (
-                            <div className="px-4 py-4 rounded-2xl bg-foreground/[0.02] border border-dashed border-foreground/10 text-center">
-                                <p className="text-[9px] font-bold text-foreground/20 uppercase tracking-widest">Awaiting live signals...</p>
-                            </div>
-                        ) : (
-                            recentActivity.slice(0, 3).map((act, i) => (
-                                <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-foreground/[0.02] border border-foreground/5 animate-in slide-in-from-left-2 duration-500">
-                                    <div className={`p-1.5 rounded-lg ${act.type === 'new' ? 'bg-primary/20 text-primary' : 'bg-green-500/20 text-green-500'}`}>
-                                        {act.type === 'new' ? <PlusCircle className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-[9px] font-black uppercase tracking-tighter text-foreground/80 truncate leading-tight">{act.title}</p>
-                                        <p className="text-[8px] font-bold uppercase text-foreground/30 tracking-tight">
-                                            {act.type === 'new' ? 'Signal Dropped' : `Vouch from ${act.userName || 'Student'}`}
-                                        </p>
-                                    </div>
+                        {recentActivity.length > 0 && recentActivity.slice(0, 3).map((act, i) => (
+                            <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-foreground/[0.02] border border-foreground/5 animate-in slide-in-from-left-2 duration-500">
+                                <div className={`p-1.5 rounded-lg ${act.type === 'new' ? 'bg-primary/20 text-primary' : 'bg-green-500/20 text-green-500'}`}>
+                                    {act.type === 'new' ? <PlusCircle className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />}
                                 </div>
-                            ))
-                        )}
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[9px] font-black uppercase tracking-tighter text-foreground/80 truncate leading-tight">{act.title}</p>
+                                    <p className="text-[8px] font-bold uppercase text-foreground/30 tracking-tight">
+                                        {act.type === 'new' ? 'Signal Dropped' : `Vouch from ${act.userName || 'Student'}`}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
