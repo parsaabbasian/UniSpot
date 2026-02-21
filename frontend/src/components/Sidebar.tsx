@@ -8,6 +8,7 @@ interface SidebarProps {
     onToggleTheme: () => void;
     isSelectingLocation: boolean;
     onToggleSelectLocation: () => void;
+    activeUserCount: number;
 }
 
 const categories = [
@@ -24,7 +25,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     isDarkMode,
     onToggleTheme,
     isSelectingLocation,
-    onToggleSelectLocation
+    onToggleSelectLocation,
+    activeUserCount
 }) => {
     return (
         <div className="w-full h-full glass-morphism p-6 md:p-8 flex flex-col gap-6 md:gap-8 rounded-2xl md:rounded-3xl transition-all duration-700 overflow-y-auto relative border border-white/10 shadow-2xl">
@@ -44,7 +46,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                         </span>
-                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-foreground/50">York U Live Feed</p>
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-foreground/50">
+                            York U Live Feed
+                            <span className="ml-[1ch] text-primary">({activeUserCount})</span>
+                        </p>
                     </div>
                 </div>
             </div>

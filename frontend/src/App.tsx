@@ -16,6 +16,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeUserCount, setActiveUserCount] = useState(1);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -73,6 +74,8 @@ function App() {
           setEvents(prev => prev.map(e =>
             e.id === message.data.id ? { ...e, verified_count: message.data.verified_count } : e
           ));
+        } else if (message.action === 'user_count') {
+          setActiveUserCount(message.data.count);
         }
       };
 
@@ -137,6 +140,7 @@ function App() {
             onToggleSelectLocation();
             setIsSidebarOpen(false);
           }}
+          activeUserCount={activeUserCount}
         />
       </div>
 

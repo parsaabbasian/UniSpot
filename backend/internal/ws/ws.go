@@ -41,6 +41,7 @@ func (h *Hub) Run() {
 			h.mu.Lock()
 			h.clients[client] = true
 			h.mu.Unlock()
+			h.broadcastUserCount()
 		case client := <-h.unregister:
 			h.mu.Lock()
 			if _, ok := h.clients[client]; ok {
@@ -48,6 +49,7 @@ func (h *Hub) Run() {
 				client.Close()
 			}
 			h.mu.Unlock()
+			h.broadcastUserCount()
 		case message := <-h.broadcast:
 			h.mu.Lock()
 			for client := range h.clients {
@@ -61,6 +63,16 @@ func (h *Hub) Run() {
 			h.mu.Unlock()
 		}
 	}
+}
+
+func (h *Hub) broadcastUserCount() {
+	h.mu.Lock()
+	count := len(h.clients)
+	h.mu.Unlock()
+
+	h.BroadcastEvent("user_count", map[string]interface{}{
+		"count": count,
+	})
 }
 
 func (h *Hub) BroadcastEvent(action string, data interface{}) {
