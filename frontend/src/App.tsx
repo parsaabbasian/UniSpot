@@ -179,7 +179,10 @@ function App() {
             lat={pendingEventCoords.lat}
             lng={pendingEventCoords.lng}
             onClose={() => setPendingEventCoords(null)}
-            onCreated={fetchEvents}
+            onCreated={() => {
+              fetchEvents();
+              setSelectedCategory('all');
+            }}
           />
         )}
       </main>

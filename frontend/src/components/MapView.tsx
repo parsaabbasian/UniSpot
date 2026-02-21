@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -31,8 +31,54 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const [votedEvents, setVotedEvents] = useState<number[]>([]);
     const [routeData, setRouteData] = useState<any>(null);
     const [userLocation, setUserLocation] = useState<{ lng: number, lat: number } | null>(null);
+    const [walkingInfo, setWalkingInfo] = useState<{ distance: number, duration: number } | null>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const mapRef = useRef<any>(null);
+
+    // Watch user location for live walking distances
+    useEffect(() => {
+        if (!navigator.geolocation) return;
+
+        const watchId = navigator.geolocation.watchPosition(
+            (pos) => {
+                setUserLocation({
+                    lng: pos.coords.longitude,
+                    lat: pos.coords.latitude
+                });
+            },
+            (err) => console.warn('Location watch error:', err),
+            { enableHighAccuracy: true, maximumAge: 10000 }
+        );
+
+        return () => navigator.geolocation.clearWatch(watchId);
+    }, []);
+
+    // Fetch walking info when popup opens or user location changes
+    useEffect(() => {
+        if (!popupInfo || !userLocation) {
+            setWalkingInfo(null);
+            return;
+        }
+
+        const getWalkingInfo = async () => {
+            try {
+                const response = await fetch(
+                    `https://api.mapbox.com/directions/v5/mapbox/walking/${userLocation.lng},${userLocation.lat};${popupInfo.lng},${popupInfo.lat}?access_token=${MAPBOX_TOKEN}`
+                );
+                const data = await response.json();
+                if (data.routes && data.routes[0]) {
+                    setWalkingInfo({
+                        distance: data.routes[0].distance,
+                        duration: data.routes[0].duration
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to fetch walking info:', error);
+            }
+        };
+
+        getWalkingInfo();
+    }, [popupInfo, userLocation]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -126,6 +172,12 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     // We removed unclusteredPointLayer because we will render rich HTML Markers instead.
 
     const handleMapClick = (event: any) => {
+        // If we are in selecting mode, prioritize that over EVERYTHING
+        if (isSelectingLocation) {
+            onMapClick(event.lngLat.lat, event.lngLat.lng);
+            return;
+        }
+
         const feature = event.features?.[0];
         if (feature && feature.layer.id === 'clusters') {
             const clusterId = feature.properties.cluster_id;
@@ -144,10 +196,6 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
             }
         } else if (feature && feature.layer.id === 'unclustered-point') {
             setPopupInfo(feature.properties);
-        } else {
-            if (isSelectingLocation) {
-                onMapClick(event.lngLat.lat, event.lngLat.lng);
-            }
         }
     };
 
@@ -303,6 +351,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                             latitude={event.lat}
                             anchor="bottom"
                             onClick={e => {
+                                if (isSelectingLocation) return;
                                 e.originalEvent.stopPropagation();
                                 setPopupInfo(event);
                             }}
@@ -367,6 +416,33 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                     </button>
                 </div>
 
+                {/* Route Info Overlay */}
+                {routeData && walkingInfo && (
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 w-[90%] max-w-[320px] glass-morphism p-5 rounded-[2rem] border border-primary/30 shadow-[0_20px_50px_rgba(79,70,229,0.3)] animate-in slide-in-from-bottom-5 duration-700">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-primary/20 rounded-xl">
+                                    <Navigation className="w-5 h-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Heading To Event</p>
+                                    <p className="text-sm font-black italic uppercase tracking-tight text-foreground">{Math.round(walkingInfo.duration / 60)} Min Walk</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setRouteData(null)}
+                                className="p-2 hover:bg-white/5 rounded-full transition-colors text-foreground/40 hover:text-foreground"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                        <div className="w-full h-1 bg-foreground/10 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary animate-pulse" style={{ width: '100%' }}></div>
+                        </div>
+                        <p className="text-[9px] font-bold text-foreground/40 mt-3 text-center uppercase tracking-[0.2em]">{Math.round(walkingInfo.distance)} Meters Remaining</p>
+                    </div>
+                )}
+
                 {events.length === 0 && !isSelectingLocation && (
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center bg-background/60 backdrop-blur-3xl p-8 md:p-10 rounded-[2rem] border border-white/10 shadow-2xl w-[85%] max-w-[340px] animate-in zoom-in-90 duration-1000">
                         <img src="/logo.svg" alt="UniSpot Empty" className="w-14 h-14 md:w-20 md:h-20 mx-auto mb-6 animate-bounce drop-shadow-[0_0_20px_rgba(255,45,85,0.4)]" />
@@ -403,20 +479,31 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 </div>
                             </div>
 
-                            {/* Live Timer */}
-                            {timeStatus && timeStatus.active && (
-                                <div className={`flex items-center gap-2 mb-3 px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border tabular-nums ${timeStatus.urgent ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse' : 'bg-primary/10 text-primary border-primary/20'}`}>
-                                    {timeStatus.urgent ? <Zap className="w-3.5 h-3.5 flex-shrink-0" /> : <Clock className="w-3.5 h-3.5 flex-shrink-0" />}
-                                    <span className="flex-1">{timeStatus.text}</span>
-                                    <div className="flex items-center gap-1.5 opacity-80">
-                                        <span className="relative flex h-1.5 w-1.5">
-                                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${timeStatus.urgent ? 'bg-red-400' : 'bg-primary'}`}></span>
-                                            <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${timeStatus.urgent ? 'bg-red-500' : 'bg-primary'}`}></span>
-                                        </span>
-                                        <span className="text-[8px] md:text-[9px]">LIVE</span>
+                            {/* Live Timer & Walking Time */}
+                            <div className="flex flex-col gap-2 mb-3">
+                                {timeStatus && timeStatus.active && (
+                                    <div className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border tabular-nums ${timeStatus.urgent ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse' : 'bg-primary/10 text-primary border-primary/20'}`}>
+                                        {timeStatus.urgent ? <Zap className="w-3.5 h-3.5 flex-shrink-0" /> : <Clock className="w-3.5 h-3.5 flex-shrink-0" />}
+                                        <span className="flex-1">{timeStatus.text}</span>
+                                        <div className="flex items-center gap-1.5 opacity-80">
+                                            <span className="relative flex h-1.5 w-1.5">
+                                                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${timeStatus.urgent ? 'bg-red-400' : 'bg-primary'}`}></span>
+                                                <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${timeStatus.urgent ? 'bg-red-500' : 'bg-primary'}`}></span>
+                                            </span>
+                                            <span className="text-[8px] md:text-[9px]">LIVE</span>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
+
+                                {walkingInfo && (
+                                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/10 text-secondary border border-secondary/20 text-[10px] md:text-xs font-black uppercase tracking-widest">
+                                        <Navigation className="w-3.5 h-3.5" />
+                                        <span>{Math.round(walkingInfo.duration / 60)} MIN WALK</span>
+                                        <span className="mx-1 opacity-30">•</span>
+                                        <span>{walkingInfo.distance > 1000 ? `${(walkingInfo.distance / 1000).toFixed(1)}KM` : `${Math.round(walkingInfo.distance)}M`}</span>
+                                    </div>
+                                )}
+                            </div>
 
                             {popupInfo.description && (
                                 <div className="flex gap-2 mb-4 md:mb-5 bg-foreground/5 p-3 md:p-4 rounded-[1rem] md:rounded-[1.5rem] border border-foreground/5">
