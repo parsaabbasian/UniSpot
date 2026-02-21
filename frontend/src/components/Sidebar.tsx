@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Utensils, Cpu, Ticket, Moon, Sun, Compass, ShieldCheck, PlusCircle, XCircle } from 'lucide-react';
+import { Music, Utensils, Cpu, Ticket, Moon, Sun, Compass, PlusCircle, XCircle } from 'lucide-react';
 
 interface SidebarProps {
     selectedCategory: string;
@@ -116,13 +116,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {/* Bottom Actions */}
             <div className="flex flex-col gap-6 md:gap-8 relative z-10 mt-auto pt-6 border-t border-foreground/5">
-                <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-3 text-primary group cursor-help">
-                        <ShieldCheck className="w-6 h-6 md:w-7 md:h-7 opacity-70 group-hover:opacity-100 transition-opacity" />
-                        <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-60">Verified Mode</span>
-                    </div>
-                </div>
-
                 <div className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-primary via-primary-dark to-accent text-white shadow-xl shadow-primary/20 overflow-hidden group relative">
                     <div className="absolute -right-4 -bottom-4 w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000"></div>
                     <h4 className="font-bold text-xs md:text-sm uppercase tracking-tight mb-1">Stay Safe, Lions.</h4>
