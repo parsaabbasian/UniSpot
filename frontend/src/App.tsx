@@ -124,7 +124,7 @@ function App() {
       {/* Sidebar - Desktop: fixed width, Mobile: absolute overlay */}
       <div className={`
         fixed inset-y-0 left-0 z-[66] md:relative md:inset-auto md:z-auto transition-all duration-500 ease-in-out
-        ${isSidebarOpen ? 'translate-x-0 w-[85%] sm:w-80 p-4' : '-translate-x-full md:translate-x-0 md:w-48 lg:w-56 p-0'}
+        ${isSidebarOpen ? 'translate-x-0 w-[85%] sm:w-80 p-4' : '-translate-x-full md:translate-x-0 md:w-64 lg:w-80 p-0'}
         bg-background/95 md:bg-transparent backdrop-blur-2xl md:backdrop-blur-none
       `}>
         <Sidebar
