@@ -277,16 +277,17 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
     // Helper for category icons
     const getCategoryIcon = (category: string) => {
+        const iconClass = "w-6 h-6";
         switch (category) {
-            case 'Food': return <Utensils className="w-4 h-4" />;
-            case 'Study': return <BookOpen className="w-4 h-4" />;
-            case 'Social': return <Users className="w-4 h-4" />;
-            case 'Tech': return <Cpu className="w-4 h-4" />;
-            case 'Music': return <Music className="w-4 h-4" />;
-            case 'Sports': return <Dumbbell className="w-4 h-4" />;
-            case 'Safety': return <ShieldAlert className="w-4 h-4" />;
-            case 'Sale': return <ShoppingBag className="w-4 h-4" />;
-            default: return <Tag className="w-4 h-4" />;
+            case 'Food': return <Utensils className={iconClass} />;
+            case 'Study': return <BookOpen className={iconClass} />;
+            case 'Social': return <Users className={iconClass} />;
+            case 'Tech': return <Cpu className={iconClass} />;
+            case 'Music': return <Music className={iconClass} />;
+            case 'Sports': return <Dumbbell className={iconClass} />;
+            case 'Safety': return <ShieldAlert className={iconClass} />;
+            case 'Sale': return <ShoppingBag className={iconClass} />;
+            default: return <Tag className={iconClass} />;
         }
     };
 
@@ -355,22 +356,18 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                             }}
                         >
                             <div className={`relative cursor-pointer group animate-in fade-in zoom-in duration-500`} style={{ zIndex: popupInfo?.id === event.id ? 50 : 1 }}>
-                                {isHot && (
-                                    <div className="absolute -inset-2 bg-primary rounded-full blur animate-pulse opacity-40"></div>
-                                )}
-                                <div className="absolute -inset-1 bg-white rounded-full blur-sm opacity-50 group-hover:opacity-100 transition-opacity"></div>
                                 <div
-                                    className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white border-2 border-white shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 group-hover:scale-110 ${isHot ? 'animate-bounce' : ''}`}
-                                    style={{ backgroundColor: catColor, boxShadow: `0 10px 25px -5px ${catColor}` }}
+                                    className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-105 border ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'}`}
+                                    style={{ color: catColor }}
                                 >
                                     {getCategoryIcon(event.category)}
                                     {isHot && (
-                                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent text-white text-[8px] font-black px-1.5 py-0.5 rounded-full border border-white shadow-sm flex items-center gap-0.5">
+                                        <div className="absolute -top-1.5 -right-1.5 bg-primary text-white text-[7px] font-black px-1.5 py-0.5 rounded-full border border-white/10 shadow-sm flex items-center gap-0.5">
                                             <Flame className="w-2 h-2" /> HOT
                                         </div>
                                     )}
                                 </div>
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-0.5 bg-black/30 blur-sm rounded-full group-hover:w-5 group-hover:bg-black/40 transition-all duration-300"></div>
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-black/10 blur-[2px] rounded-full group-hover:w-6 transition-all duration-300"></div>
                             </div>
                         </Marker>
                     );
