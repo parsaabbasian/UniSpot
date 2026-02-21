@@ -542,7 +542,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewD
 
                             <div className="flex flex-col mb-3 md:mb-4 mt-2">
                                 <div className="flex items-start justify-between">
-                                    <h3 className="font-black text-lg md:text-2xl leading-tight dark:text-white max-w-[75%] italic line-clamp-2 uppercase tracking-tighter">{popupInfo.title}</h3>
+                                    <h3 className="font-black text-lg md:text-2xl leading-tight text-foreground max-w-[75%] italic line-clamp-2 uppercase tracking-tighter">{popupInfo.title}</h3>
                                     <div className="flex flex-col items-end gap-1">
                                         {(popupInfo.verified_count >= 5) && !isPopular && (
                                             <ShieldCheck className="w-5 h-5 md:w-7 md:h-7 text-green-500 shrink-0 ml-2" />
