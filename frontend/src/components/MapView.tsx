@@ -377,10 +377,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                         </div>
                                     )}
                                 </div>
-                                <div className={`mt-1 px-1.5 py-0.5 rounded-md text-[8px] font-black transition-all duration-300 border ${isDarkMode ? 'bg-black/40 border-white/10 text-white/60 group-hover:text-white' : 'bg-white/60 border-black/5 text-black/60 group-hover:text-black'}`}>
-                                    {formatTime(event.start_time)}
-                                </div>
-                                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-4 h-1 bg-black/10 blur-[2px] rounded-full group-hover:w-6 transition-all duration-300"></div>
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-black/10 blur-[2px] rounded-full group-hover:w-6 transition-all duration-300"></div>
                             </div>
                         </Marker>
                     );
@@ -478,13 +475,18 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
                             <div className="absolute top-0 left-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
 
-                            <div className="flex items-start justify-between mb-3 md:mb-4 mt-2">
-                                <h3 className="font-black text-lg md:text-2xl leading-tight dark:text-white max-w-[75%] italic line-clamp-2">{popupInfo.title}</h3>
-                                <div className="flex flex-col items-end gap-1">
-                                    {(popupInfo.verified_count >= 5) && !isPopular && (
-                                        <ShieldCheck className="w-5 h-5 md:w-7 md:h-7 text-green-500 shrink-0 ml-2" />
-                                    )}
+                            <div className="flex flex-col mb-3 md:mb-4 mt-2">
+                                <div className="flex items-start justify-between">
+                                    <h3 className="font-black text-lg md:text-2xl leading-tight dark:text-white max-w-[75%] italic line-clamp-2 uppercase tracking-tighter">{popupInfo.title}</h3>
+                                    <div className="flex flex-col items-end gap-1">
+                                        {(popupInfo.verified_count >= 5) && !isPopular && (
+                                            <ShieldCheck className="w-5 h-5 md:w-7 md:h-7 text-green-500 shrink-0 ml-2" />
+                                        )}
+                                    </div>
                                 </div>
+                                <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-foreground/40 mt-1">
+                                    Happening at {formatTime(popupInfo.start_time)} — {formatTime(popupInfo.end_time)}
+                                </p>
                             </div>
 
                             {/* Live Timer & Walking Time */}
