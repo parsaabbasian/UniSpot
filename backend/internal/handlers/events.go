@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 	"github.com/parsaabbasian/unispot/backend/internal/database"
 	"github.com/parsaabbasian/unispot/backend/internal/models"
 )
@@ -22,17 +23,23 @@ func GetEvents(c *gin.Context) {
 
 	var rawEvents []struct {
 		models.Event
-		Loc string `gorm:"column:location_text"`
+		Loc       string         `gorm:"column:location_text"`
+		Verifiers pq.StringArray `gorm:"column:verifier_names"`
 	}
 
 	// Geospatial query using ST_DWithin and time filtering
 	// We use ST_AsText to get the location in a readable format for manual parsing if necessary
 	query := `
-		SELECT id, title, description, category, ST_AsText(location) as location_text, start_time, end_time, verified_count, creator_name
-		FROM events
-		WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)
-		  AND start_time <= now()
-		  AND end_time >= now()
+		SELECT 
+			e.id, e.title, e.description, e.category, ST_AsText(e.location) as location_text, 
+			e.start_time, e.end_time, e.verified_count, e.creator_name,
+			COALESCE(array_agg(v.user_name) FILTER (WHERE v.user_name IS NOT NULL), '{}') as verifier_names
+		FROM events e
+		LEFT JOIN verifications v ON e.id = v.event_id
+		WHERE ST_DWithin(e.location, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)
+		  AND e.start_time <= now()
+		  AND e.end_time >= now()
+		GROUP BY e.id, location_text
 	`
 
 	if err := database.DB.Raw(query, lng, lat, radius).Scan(&rawEvents).Error; err != nil {
@@ -44,6 +51,7 @@ func GetEvents(c *gin.Context) {
 	for i, re := range rawEvents {
 		events[i] = re.Event
 		events[i].Location = re.Loc
+		events[i].Verifiers = []string(re.Verifiers)
 
 		// Parse POINT(lng lat)
 		loc := strings.TrimPrefix(re.Loc, "POINT(")

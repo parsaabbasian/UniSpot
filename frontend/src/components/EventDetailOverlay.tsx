@@ -174,16 +174,25 @@ const EventDetailOverlay: React.FC<EventDetailOverlayProps> = ({ event, onClose,
                         <div className="space-y-4">
                             <div className="flex items-center gap-3">
                                 <div className="flex -space-x-3">
-                                    {[1, 2, 3, 4].map(i => (
-                                        <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-foreground/10 flex items-center justify-center text-[10px] font-black">
-                                            {String.fromCharCode(64 + i)}
+                                    {(event.verifiers || []).slice(0, 5).map((name, i) => (
+                                        <div key={i} title={name} className="w-8 h-8 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[10px] font-black text-primary">
+                                            {name.charAt(0).toUpperCase()}
                                         </div>
                                     ))}
-                                    <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-[10px] font-black text-white">
-                                        +{event.verified_count}
-                                    </div>
+                                    {event.verified_count > 5 && (
+                                        <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-[10px] font-black text-white">
+                                            +{event.verified_count - 5}
+                                        </div>
+                                    )}
+                                    {event.verified_count === 0 && (
+                                        <div className="w-8 h-8 rounded-full border-2 border-dashed border-foreground/10 flex items-center justify-center text-[10px] font-black text-foreground/20">
+                                            ?
+                                        </div>
+                                    )}
                                 </div>
-                                <p className="text-xs font-bold text-foreground/60 uppercase tracking-tight">Verified by the community</p>
+                                <p className="text-xs font-bold text-foreground/60 uppercase tracking-tight">
+                                    {event.verified_count === 0 ? 'Be the first to vouch' : `Verified by ${event.verified_count} students`}
+                                </p>
                             </div>
 
                             <button

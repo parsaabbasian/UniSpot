@@ -12,6 +12,8 @@ interface SidebarProps {
     searchQuery: string;
     onSearchChange: (query: string) => void;
     recentActivity: any[];
+    currentUser: { name: string, email: string } | null;
+    onLogout: () => void;
 }
 
 const categories = [
@@ -36,7 +38,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     activeUserCount,
     searchQuery,
     onSearchChange,
-    recentActivity
+    recentActivity,
+    currentUser,
+    onLogout
 }) => {
     return (
         <div className="w-full h-full glass-morphism p-4 md:p-6 flex flex-col gap-6 md:gap-8 rounded-2xl md:rounded-3xl transition-all duration-700 relative border border-white/10 shadow-2xl overflow-hidden">
@@ -59,14 +63,27 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </button>
                 </div>
                 <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                        </span>
-                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-foreground/50">
-                            York U Live Feed
-                        </p>
+                    <div className="flex items-center gap-3">
+                        <div className="relative group/profile cursor-pointer" onClick={onLogout}>
+                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-primary/20 group-hover/profile:bg-red-500 transition-colors">
+                                {currentUser?.name?.charAt(0).toUpperCase() || 'U'}
+                            </div>
+                            <div className="absolute left-full ml-3 opacity-0 group-hover/profile:opacity-100 transition-opacity bg-foreground text-background text-[8px] font-black px-2 py-1 rounded whitespace-nowrap pointer-events-none">
+                                LOGOUT {currentUser?.name?.split(' ')[0].toUpperCase()}
+                            </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <p className="text-[10px] font-black uppercase tracking-tight text-foreground/80 leading-none mb-1">{currentUser?.name || 'Authorized Student'}</p>
+                            <div className="flex items-center gap-2">
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                                </span>
+                                <p className="text-[8px] font-bold uppercase tracking-widest text-foreground/40">
+                                    York U Verified
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/5 border border-primary/10">
                         <div className="w-1 h-1 rounded-full bg-primary animate-pulse"></div>

@@ -91,7 +91,13 @@ function App() {
         } else if (message.action === 'verify_event') {
           setEvents(prev => {
             const updated = prev.map(e =>
-              e.id === message.data.id ? { ...e, verified_count: message.data.verified_count } : e
+              e.id === message.data.id
+                ? {
+                  ...e,
+                  verified_count: message.data.verified_count,
+                  verifiers: [...(e.verifiers || []), message.data.user_name]
+                }
+                : e
             );
             const event = prev.find(e => e.id === message.data.id);
             if (event && message.data.verified_count > event.verified_count) {
@@ -195,12 +201,20 @@ function App() {
 
       // Update local state immediately
       setEvents(prev => prev.map(e =>
-        e.id === id ? { ...e, verified_count: e.verified_count + 1 } : e
+        e.id === id ? {
+          ...e,
+          verified_count: e.verified_count + 1,
+          verifiers: [...(e.verifiers || []), currentUser?.name || 'Student']
+        } : e
       ));
 
       // Update selected detail event if open
       if (selectedDetailEvent?.id === id) {
-        setSelectedDetailEvent(prev => prev ? { ...prev, verified_count: prev.verified_count + 1 } : null);
+        setSelectedDetailEvent(prev => prev ? {
+          ...prev,
+          verified_count: prev.verified_count + 1,
+          verifiers: [...(prev.verifiers || []), currentUser?.name || 'Student']
+        } : null);
       }
 
       // Record vote
@@ -280,6 +294,12 @@ function App() {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             recentActivity={recentActivity}
+            currentUser={currentUser}
+            onLogout={() => {
+              setCurrentUser(null);
+              localStorage.removeItem('unispot_user');
+              window.location.hash = '';
+            }}
           />
         </div>
       </div>

@@ -15,6 +15,7 @@ type Event struct {
 	VerifiedCount int       `gorm:"default:0" json:"verified_count"`
 	CreatorName   string    `json:"creator_name"`
 	CreatorEmail  string    `json:"creator_email"`
+	Verifiers     []string  `gorm:"-" json:"verifiers"`
 	Latitude      float64   `gorm:"-" json:"lat"`
 	Longitude     float64   `gorm:"-" json:"lng"`
 }

@@ -10,4 +10,5 @@ export interface Event {
     start_time: string;
     end_time: string;
     creator_name?: string;
+    verifiers?: string[];
 }
