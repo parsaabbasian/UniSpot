@@ -153,13 +153,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                 {/* Hero Section */}
                 <section className="min-h-screen flex flex-col items-center justify-center pt-32 px-6 text-center">
                     <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 border ${isDarkMode ? 'bg-white/5 border-white/10 text-primary shadow-[0_0_20px_rgba(79,70,229,0.1)]' : 'bg-primary/5 border-primary/20 text-primary shadow-sm'}`}>
-                        <Globe className="w-4 h-4 animate-spin-slow" /> York University's Pulse
+                        <Globe className="w-4 h-4 animate-spin-slow" /> LIVE CAMPUS FEED
                     </div>
 
                     <div className="relative group max-w-6xl">
                         <div className={`absolute inset-0 blur-[120px] transition-all duration-1000 ${isDarkMode ? 'bg-primary/20 group-hover:bg-primary/30' : 'bg-primary/10 group-hover:bg-primary/15'}`}></div>
                         <h1 className={`text-[12vw] md:text-[8vw] font-black tracking-tighter mb-10 leading-[0.85] italic uppercase select-none relative z-10 antialiased ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                            UNITE THE<br />
+                            COMMAND THE<br />
                             <span className="text-primary italic relative inline-block">
                                 CAMPUS
                                 <span className={`absolute -bottom-2 md:-bottom-4 left-0 w-full h-1.5 md:h-2 rounded-full blur-sm ${isDarkMode ? 'bg-primary/40' : 'bg-primary/30'}`}></span>
@@ -170,7 +170,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     </div>
 
                     <p className={`max-w-xl text-sm md:text-lg font-black uppercase tracking-[0.2em] mb-16 px-6 transition-colors duration-1000 ${isDarkMode ? 'text-white/40' : 'text-black/30'}`}>
-                        The live pulse of York University. <br className="hidden md:block" /> Discover, verify, and drop updates in real-time.
+                        The definitive real-time resource for York University. <br className="hidden md:block" /> Discover, verify, and broadcast updates instantly.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-8 w-full sm:w-auto px-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
@@ -180,7 +180,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         >
                             <div className="absolute inset-x-0 bottom-0 h-0 bg-white/20 group-hover:h-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
                             <span className="relative flex items-center justify-center gap-5 uppercase">
-                                ENTER ENGINE <Cpu className="w-6 h-6 md:w-8 md:h-8" />
+                                INITIALIZE SYSTEM <Cpu className="w-6 h-6 md:w-8 md:h-8" />
                             </span>
                         </button>
                     </div>
@@ -193,7 +193,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                                 </div>
                             ))}
                         </div>
-                        Join 2,000+ Students
+                        2,400+ ACTIVE USERS
                     </div>
                 </section>
 
@@ -202,9 +202,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     <div className="max-w-4xl mx-auto">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             {[
-                                { icon: Target, title: 'SCAN', desc: 'Real-time GPS mapping.', step: '01' },
-                                { icon: ShieldCheck, title: 'VOUCH', desc: 'Community verification.', step: '02' },
-                                { icon: Zap, title: 'BLAST', desc: 'Deploy instant pins.', step: '03' }
+                                { icon: Target, title: 'SCAN', desc: 'Live geospatial tracking.', step: '01' },
+                                { icon: ShieldCheck, title: 'PROOF', desc: 'Crowdsourced consensus.', step: '02' },
+                                { icon: Zap, title: 'SIGNAL', desc: 'Instant data deployment.', step: '03' }
                             ].map((s, i) => (
                                 <div key={i} className="flex flex-col items-center group">
                                     <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center mb-8 transition-all duration-500 shadow-xl ${isDarkMode ? 'bg-white/5 text-primary border border-white/10 group-hover:bg-primary group-hover:text-white' : 'bg-black/5 text-primary border border-black/5 group-hover:bg-primary group-hover:text-white'}`}>
