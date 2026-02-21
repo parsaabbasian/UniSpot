@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap, XCircle } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -32,7 +32,6 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const [routeData, setRouteData] = useState<any>(null);
     const [userLocation, setUserLocation] = useState<{ lng: number, lat: number } | null>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [showLocationTip, setShowLocationTip] = useState(true);
     const mapRef = useRef<any>(null);
 
     useEffect(() => {
@@ -253,26 +252,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                 onClick={handleMapClick}
                 ref={mapRef}
             >
-                {/* Location Persistence Tip */}
-                {showLocationTip && !userLocation && (
-                    <div className="absolute top-24 md:top-6 left-6 right-6 md:left-auto md:right-24 z-[100] animate-in slide-in-from-top-4 duration-700">
-                        <div className="glass-morphism bg-primary/20 backdrop-blur-3xl border border-primary/30 p-4 md:p-5 rounded-2xl md:rounded-[2rem] flex items-center gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.3)] group">
-                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/40 group-hover:scale-110 transition-transform">
-                                <LocateFixed className="w-5 h-5 md:w-6 md:h-6 text-white animate-pulse" />
-                            </div>
-                            <div className="flex-1">
-                                <h4 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white mb-1 italic">Location Sync Required</h4>
-                                <p className="text-[9px] md:text-[10px] text-white/60 font-medium leading-tight">Enable GPS for real-time York U updates.</p>
-                            </div>
-                            <button
-                                onClick={() => setShowLocationTip(false)}
-                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white"
-                            >
-                                <XCircle className="w-4 h-4" />
-                            </button>
-                        </div>
-                    </div>
-                )}
+
 
                 <Source
                     id="events"

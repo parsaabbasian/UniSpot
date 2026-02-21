@@ -9,6 +9,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
+    const handleLaunch = () => {
+        // Request location to prompt permission dialog early
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(() => {
+                onEnter();
+            }, () => {
+                // If denied or error, still enter but map won't have user location
+                onEnter();
+            });
+        } else {
+            onEnter();
+        }
+    };
+
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
@@ -60,7 +74,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                     </div>
 
                     <button
-                        onClick={onEnter}
+                        onClick={handleLaunch}
                         className="group px-6 md:px-8 py-2.5 md:py-3 bg-white text-black rounded-full text-[10px] md:text-xs font-black uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 shadow-[0_10px_30px_rgba(255,255,255,0.1)] hover:shadow-primary/20"
                     >
                         <span className="flex items-center gap-2">
@@ -98,7 +112,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
 
                     <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto px-6 sm:px-0">
                         <button
-                            onClick={onEnter}
+                            onClick={handleLaunch}
                             className="group relative px-10 md:px-16 py-5 md:py-7 bg-primary text-white rounded-[1.5rem] md:rounded-[2rem] text-base md:text-xl font-black italic tracking-tighter overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(79,70,229,0.3)]"
                         >
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
@@ -174,7 +188,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                         <Star className="w-12 h-12 md:w-16 md:h-16 text-white mx-auto mb-8 md:mb-10 animate-spin-slow" />
                         <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter mb-10 md:mb-12 uppercase leading-[0.9]">Ready for the <br />real York experience?</h2>
                         <button
-                            onClick={onEnter}
+                            onClick={handleLaunch}
                             className="w-full sm:w-auto px-12 md:px-20 py-6 md:py-8 bg-white text-black rounded-full text-lg md:text-2xl font-black italic uppercase hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.2)]"
                         >
                             Enter Platform
