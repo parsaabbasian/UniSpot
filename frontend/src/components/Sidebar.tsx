@@ -33,9 +33,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     activeUserCount
 }) => {
     return (
-        <div className="w-full h-full glass-morphism p-6 md:p-8 flex flex-col gap-6 md:gap-8 rounded-2xl md:rounded-3xl transition-all duration-700 overflow-y-auto relative border border-white/10 shadow-2xl">
-            {/* Branding */}
-            <div className="relative z-10 mb-2">
+        <div className="w-full h-full glass-morphism p-4 md:p-6 flex flex-col gap-6 md:gap-8 rounded-2xl md:rounded-3xl transition-all duration-700 relative border border-white/10 shadow-2xl overflow-hidden">
+            {/* Branding - Static */}
+            <div className="relative z-10 shrink-0">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3 md:gap-4">
                         <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:rotate-6 transition-transform">
@@ -69,32 +69,34 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             </div>
 
-            {/* Post Event Primary Action */}
-            <button
-                onClick={onToggleSelectLocation}
-                className={`w-full flex items-center justify-center gap-3 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-xl relative overflow-hidden group ${isSelectingLocation
-                    ? 'bg-red-500 text-white shadow-red-500/30 hover:scale-[1.02]'
-                    : 'bg-primary text-white shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-95'
-                    }`}
-            >
-                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                {isSelectingLocation ? (
-                    <>
-                        <XCircle className="w-5 h-5 md:w-6 md:h-6 z-10" />
-                        <span className="relative z-10 text-sm md:text-base">Cancel Placement</span>
-                    </>
-                ) : (
-                    <>
-                        <PlusCircle className="w-5 h-5 md:w-6 md:h-6 z-10" />
-                        <span className="relative z-10 text-sm md:text-base">Drop a Mark</span>
-                    </>
-                )}
-            </button>
+            {/* Post Event Primary Action - Static */}
+            <div className="px-1 shrink-0">
+                <button
+                    onClick={onToggleSelectLocation}
+                    className={`w-full flex items-center justify-center gap-3 py-4 md:py-5 rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-xl relative overflow-hidden group active:scale-[0.97] ${isSelectingLocation
+                        ? 'bg-red-500 text-white shadow-red-500/30'
+                        : 'bg-primary text-white shadow-primary/30 hover:shadow-primary/50'
+                        }`}
+                >
+                    <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    {isSelectingLocation ? (
+                        <>
+                            <XCircle className="w-5 h-5 md:w-6 md:h-6 z-10" />
+                            <span className="relative z-10 text-sm md:text-base">Cancel Placement</span>
+                        </>
+                    ) : (
+                        <>
+                            <PlusCircle className="w-5 h-5 md:w-6 md:h-6 z-10" />
+                            <span className="relative z-10 text-sm md:text-base">Drop a Mark</span>
+                        </>
+                    )}
+                </button>
+            </div>
 
-            {/* Navigation */}
-            <div className="flex flex-col gap-3 md:gap-4 relative z-10 flex-1">
-                <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-foreground/40 px-1">Filter Reality</p>
-                <div className="space-y-1.5 md:space-y-2">
+            {/* Navigation - Scrollable Area */}
+            <div className="flex flex-col gap-4 relative z-10 flex-1 overflow-hidden">
+                <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-foreground/40 px-2 shrink-0">Filter Reality</p>
+                <div className="space-y-2 overflow-y-auto px-1 pr-2 scrollbar-thin">
                     {categories.map((cat) => {
                         const Icon = cat.icon;
                         const active = selectedCategory === cat.id;
@@ -102,25 +104,27 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <button
                                 key={cat.id}
                                 onClick={() => onCategoryChange(cat.id)}
-                                className={`w-full flex items-center gap-4 px-4 md:px-5 py-3.5 md:py-4 rounded-xl transition-all duration-500 cubic-bezier(0.23, 1, 0.32, 1) group relative overflow-hidden ${active
-                                    ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-xl shadow-primary/20'
-                                    : 'text-foreground/40 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5'
+                                className={`w-full flex items-center gap-4 px-4 md:px-5 py-4 rounded-2xl transition-all duration-700 group relative overflow-hidden active:scale-[0.98] ${active
+                                    ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-xl shadow-primary/20 scale-[1.02] z-20'
+                                    : 'text-foreground/40 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5 opacity-80 hover:opacity-100'
                                     }`}
                             >
-                                <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 group-hover:scale-110 ${active ? 'text-white' : 'text-primary'}`} />
-                                <span className="font-bold tracking-tight text-sm uppercase">{cat.name}</span>
+                                <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-all duration-500 group-hover:rotate-6 ${active ? 'text-white scale-110' : 'text-primary'}`} />
+                                <span className={`font-bold tracking-tight text-sm uppercase ${active ? 'italic' : ''}`}>{cat.name}</span>
                                 {active && (
-                                    <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
+                                    <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,1)] animate-pulse"></div>
                                 )}
                             </button>
                         );
                     })}
+                    {/* Visual Spacing at bottom of scroll */}
+                    <div className="h-4 shrink-0"></div>
                 </div>
             </div>
 
-            {/* Bottom Actions */}
-            <div className="flex flex-col gap-6 md:gap-8 relative z-10 mt-auto pt-6 border-t border-foreground/5">
-                <div className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-primary via-primary-dark to-accent text-white shadow-xl shadow-primary/20 overflow-hidden group relative">
+            {/* Bottom Status - Static */}
+            <div className="flex flex-col gap-6 relative z-10 mt-auto pt-6 border-t border-foreground/5 shrink-0">
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary via-primary-dark to-accent text-white shadow-xl shadow-primary/20 overflow-hidden group relative">
                     <div className="absolute -right-4 -bottom-4 w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000"></div>
                     <h4 className="font-bold text-xs md:text-sm uppercase tracking-tight mb-1">Stay Safe, Lions.</h4>
                     <p className="text-[10px] text-white/70 leading-relaxed font-medium">
