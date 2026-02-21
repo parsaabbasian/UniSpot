@@ -336,6 +336,12 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                         zoom: 16,
                                         pitch: 45
                                     });
+                                }, (err) => {
+                                    console.error('Map Geo Error:', err);
+                                }, {
+                                    enableHighAccuracy: true,
+                                    timeout: 8000,
+                                    maximumAge: 0
                                 });
                             }
                         }}

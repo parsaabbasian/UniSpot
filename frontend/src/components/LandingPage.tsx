@@ -13,10 +13,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
 
     const handleLaunch = () => {
         if (navigator.geolocation) {
+            // Explicitly set options for iOS compatibility
             navigator.geolocation.getCurrentPosition(() => {
                 onEnter();
-            }, () => {
-                onEnter();
+            }, (err) => {
+                console.warn('Location Error:', err);
+                onEnter(); // Still enter even if location fails
+            }, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
             });
         } else {
             onEnter();

@@ -70,11 +70,16 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                     await handleSubmit();
                 }
             },
-            () => {
-                setLocationError("Please enable location access to verify you are at York U.");
+            (err) => {
+                console.error('Geo Error:', err);
+                setLocationError("Please enable location access in Safari/iOS Settings to verify you are at York U.");
                 setIsVerifying(false);
             },
-            { enableHighAccuracy: true }
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
         );
     };
 
