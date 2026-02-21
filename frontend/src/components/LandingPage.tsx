@@ -38,8 +38,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
         <div className="w-full bg-[#030303] text-white selection:bg-primary/30 font-sans relative overflow-x-hidden scroll-smooth">
             {/* Dynamic Ambient Background */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[70%] bg-primary/20 blur-[180px] rounded-full animate-pulse opacity-50"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-secondary/10 blur-[180px] rounded-full animate-pulse opacity-30"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[70%] bg-primary/10 blur-[180px] rounded-full animate-pulse opacity-40"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-primary/5 blur-[120px] rounded-full animate-pulse opacity-20"></div>
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 contrast-125 mix-blend-overlay"></div>
             </div>
 
@@ -80,7 +80,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                     </div>
 
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-primary/20 blur-[100px] group-hover:bg-primary/30 transition-all duration-1000"></div>
+                        <div className="absolute inset-0 bg-primary/15 blur-[100px] group-hover:bg-primary/25 transition-all duration-1000"></div>
                         <h1 className="text-[10vw] md:text-[6.5vw] font-black tracking-tight mb-8 md:mb-10 leading-[0.9] italic uppercase select-none relative z-10">
                             CAMPUS <br />
                             <span className="text-primary italic relative">
@@ -128,10 +128,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                                 <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic relative z-10">Real-time alerts on food, events, and campus safety—at your fingertips.</p>
                             </div>
 
-                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-secondary/40 hover:bg-white/[0.04] transition-all duration-500 group relative overflow-hidden">
-                                <div className="absolute -right-4 -top-4 w-32 h-32 bg-secondary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-secondary/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform relative z-10">
-                                    <ShieldCheck className="w-8 h-8 md:w-10 md:h-10 text-secondary" />
+                            <div className="p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-white/[0.04] transition-all duration-500 group relative overflow-hidden">
+                                <div className="absolute -right-4 -top-4 w-32 h-32 bg-primary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl md:rounded-3xl flex items-center justify-center mb-8 md:mb-10 group-hover:scale-110 group-hover:rotate-6 transition-transform relative z-10">
+                                    <ShieldCheck className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                                 </div>
                                 <h3 className="font-black text-2xl md:text-3xl mb-4 md:mb-6 italic uppercase leading-none relative z-10">GPS <br />Verified.</h3>
                                 <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed italic relative z-10">GPS-locked posts ensure only real events make it to the community pack.</p>

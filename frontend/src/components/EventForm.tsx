@@ -104,7 +104,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                 </button>
 
                 <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.5)]">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-[0_0_30px_rgba(227,24,55,0.4)]">
                         <ShieldCheck className="w-8 h-8 text-white animate-pulse" />
                     </div>
                     <div>
@@ -184,7 +184,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
 
                     <div className="flex items-center gap-4 p-5 rounded-2xl bg-black/20 dark:bg-white/5 border border-white/10 shadow-inner group overflow-hidden relative">
                         <div className="absolute right-0 top-0 w-32 h-32 bg-primary/10 blur-2xl group-hover:bg-primary/20 transition-colors"></div>
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(79,70,229,0.5)]">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(227,24,55,0.4)]">
                             <MapPin className="w-5 h-5 text-white animate-bounce" />
                         </div>
                         <div className="text-xs relative z-10">

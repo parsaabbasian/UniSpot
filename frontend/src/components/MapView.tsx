@@ -66,10 +66,10 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     };
 
     const categoryColors: Record<string, string> = {
-        'Tech': '#4f46e5',
-        'Music': '#ec4899',
-        'Food': '#f59e0b',
-        'Entertainment': '#10b981'
+        'Tech': '#FF2D55',      // Cyber Ruby
+        'Music': '#5856D6',     // Electric Indigo
+        'Food': '#FFCC00',      // Gold
+        'Entertainment': '#00FFC2' // Mint
     };
 
     const clusterLayer: any = {
@@ -78,7 +78,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         source: 'events',
         filter: ['has', 'point_count'],
         paint: {
-            'circle-color': ['step', ['get', 'point_count'], '#4f46e5', 5, '#4338ca', 15, '#3730a3'],
+            'circle-color': ['step', ['get', 'point_count'], '#E31837', 5, '#C41230', 15, '#990D26'],
             'circle-radius': ['step', ['get', 'point_count'], 20, 5, 30, 15, 40],
             'circle-stroke-width': 2,
             'circle-stroke-color': 'rgba(255,255,255,0.3)'
@@ -168,7 +168,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     };
 
     return (
-        <div className={`w-full h-full relative overflow-hidden rounded-2xl md:rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/10 bg-background/20 font-sans transition-all duration-300 ${isSelectingLocation ? 'ring-4 ring-primary ring-inset cursor-crosshair' : ''}`}>
+        <div className={`w-full h-full relative overflow-hidden rounded-2xl md:rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-white/10 bg-background/20 font-sans transition-all duration-700 ease-in-out ${isSelectingLocation ? 'ring-8 ring-primary/20 ring-inset cursor-crosshair' : ''}`}>
             <Map
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
@@ -250,14 +250,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 });
                             }
                         }}
-                        className="w-12 h-12 glass-morphism rounded-full flex items-center justify-center text-foreground shadow-2xl border border-white/20 hover:scale-105 active:scale-95 transition-all bg-background/80 backdrop-blur-md"
+                        className="w-12 h-12 glass-morphism rounded-full flex items-center justify-center text-foreground shadow-xl border border-white/20 hover:scale-105 active:scale-95 transition-all bg-background/80 backdrop-blur-md"
                         title="Locate Me"
                     >
                         <LocateFixed className="w-5 h-5" />
                     </button>
                     <button
                         onClick={() => setMapStyleOverlay(prev => prev === 'streets' ? 'satellite' : 'streets')}
-                        className={`w-12 h-12 glass-morphism rounded-full flex items-center justify-center shadow-2xl border border-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md ${mapStyleOverlay === 'satellite' ? 'bg-primary text-white border-primary/50' : 'bg-background/80 text-foreground'}`}
+                        className={`w-12 h-12 glass-morphism rounded-full flex items-center justify-center shadow-xl border border-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md ${mapStyleOverlay === 'satellite' ? 'bg-primary text-white border-primary/50 shadow-primary/30' : 'bg-background/80 text-foreground'}`}
                         title="Toggle Satellite View"
                     >
                         <Layers className="w-5 h-5" />
@@ -265,10 +265,10 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                 </div>
 
                 {events.length === 0 && !isSelectingLocation && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center bg-background/80 backdrop-blur-xl p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-2xl w-[80%] max-w-[320px]">
-                        <img src="/logo.svg" alt="UniSpot Empty" className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 animate-bounce" />
-                        <h3 className="text-xl md:text-2xl font-black mb-3 italic uppercase tracking-tighter bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nothing here yet!</h3>
-                        <p className="text-foreground/40 text-[10px] md:text-xs font-black uppercase tracking-[0.2em]">Click <span className="text-primary italic">"Drop a Mark"</span> in the sidebar to ignite the map.</p>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center bg-background/60 backdrop-blur-3xl p-8 md:p-10 rounded-[2rem] border border-white/10 shadow-2xl w-[85%] max-w-[340px] animate-in zoom-in-90 duration-1000">
+                        <img src="/logo.svg" alt="UniSpot Empty" className="w-14 h-14 md:w-20 md:h-20 mx-auto mb-6 animate-bounce drop-shadow-[0_0_20px_rgba(255,45,85,0.4)]" />
+                        <h3 className="text-2xl md:text-3xl font-black mb-4 italic uppercase tracking-tighter bg-gradient-to-r from-primary via-primary-dark to-secondary bg-clip-text text-transparent">Nothing here yet!</h3>
+                        <p className="text-foreground/50 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] leading-relaxed">Click <span className="text-primary italic">"Drop a Mark"</span> in the sidebar to ignite the map.</p>
                     </div>
                 )}
 
@@ -284,8 +284,8 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                     >
                         <div className="p-4 md:p-6 min-w-[260px] max-w-[300px] glass-morphism rounded-[1.5rem] md:rounded-[2.5rem] border border-white/20 overflow-hidden relative shadow-2xl">
                             {isPopular && (
-                                <div className="absolute top-3 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full text-[8px] md:text-[10px] font-black text-white shadow-lg animate-pulse">
-                                    <Flame className="w-2.5 h-2.5 md:w-3 md:h-3" /> HOT SPOT
+                                <div className="absolute top-3 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary to-primary-dark rounded-full text-[8px] md:text-[10px] font-black text-white shadow-lg animate-pulse">
+                                    <Flame className="w-2.5 h-3 md:w-3.5 md:h-4" /> HOT SPOT
                                 </div>
                             )}
 
@@ -330,7 +330,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/10 dark:bg-white/10 rounded-full text-[9px] md:text-[11px] font-black text-foreground/70 dark:text-white/70 uppercase border border-foreground/5 dark:border-white/5 shadow-sm">
                                     <Clock className="w-3 h-3" /> {popupInfo.duration_hours || 2}H
                                 </span>
-                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[11px] font-black uppercase shadow-lg ${isPopular ? 'bg-orange-500/20 text-orange-500 border border-orange-500/20 shadow-orange-500/10' : 'bg-green-500/20 text-green-500 border border-green-500/20 shadow-green-500/10'
+                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[11px] font-black uppercase shadow-lg ${isPopular ? 'bg-primary/20 text-primary border border-primary/20 shadow-primary/10' : 'bg-green-500/20 text-green-500 border border-green-500/20 shadow-green-500/10'
                                     }`}>
                                     {isPopular ? <TrendingUp className="w-3 h-3" /> : <Check className="w-3 h-3" />}
                                     {popupInfo.verified_count || 0} VERIFICATIONS

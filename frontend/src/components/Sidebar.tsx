@@ -82,12 +82,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <button
                                 key={cat.id}
                                 onClick={() => onCategoryChange(cat.id)}
-                                className={`w-full flex items-center gap-4 px-4 md:px-5 py-3.5 md:py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${active
-                                    ? 'bg-primary/90 text-white shadow-lg shadow-primary/30'
-                                    : 'text-foreground/50 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5'
+                                className={`w-full flex items-center gap-4 px-4 md:px-5 py-3.5 md:py-4 rounded-xl transition-all duration-500 cubic-bezier(0.23, 1, 0.32, 1) group relative overflow-hidden ${active
+                                    ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-xl shadow-primary/20'
+                                    : 'text-foreground/40 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5'
                                     }`}
                             >
-                                <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 group-hover:scale-110 ${active ? 'text-white' : 'text-primary'}`} />
+                                <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 group-hover:scale-110 ${active ? 'text-white' : 'text-primary'}`} />
                                 <span className="font-bold tracking-tight text-sm uppercase">{cat.name}</span>
                                 {active && (
                                     <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
@@ -101,7 +101,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Bottom Actions */}
             <div className="flex flex-col gap-6 md:gap-8 relative z-10 mt-auto pt-6 border-t border-foreground/5">
                 <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-3 text-secondary group cursor-help">
+                    <div className="flex items-center gap-3 text-primary group cursor-help">
                         <ShieldCheck className="w-6 h-6 md:w-7 md:h-7 opacity-70 group-hover:opacity-100 transition-opacity" />
                         <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-60">Verified Mode</span>
                     </div>
