@@ -32,13 +32,21 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="w-full h-full glass-morphism p-6 md:p-8 flex flex-col gap-6 md:gap-8 rounded-2xl md:rounded-3xl transition-all duration-700 overflow-y-auto relative border border-white/10 shadow-2xl">
             {/* Branding */}
             <div className="relative z-10 mb-2">
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:rotate-6 transition-transform">
-                        <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(79,70,229,0.5)]" />
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3 md:gap-4">
+                        <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:rotate-6 transition-transform">
+                            <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                        </div>
+                        <h1 className="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent uppercase">
+                            UNISPOT
+                        </h1>
                     </div>
-                    <h1 className="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent uppercase">
-                        UNISPOT
-                    </h1>
+                    <button
+                        onClick={onToggleTheme}
+                        className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-foreground/5 dark:bg-white/5 flex items-center justify-center text-foreground hover:text-primary transition-all duration-500 border border-white/5 hover:border-primary/20 shadow-sm"
+                    >
+                        {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
                 </div>
                 <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-2">
@@ -48,8 +56,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                         </span>
                         <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-foreground/50">
                             York U Live Feed
-                            <span className="ml-[1ch] text-primary">({activeUserCount})</span>
                         </p>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/5 border border-primary/10">
+                        <div className="w-1 h-1 rounded-full bg-primary animate-pulse"></div>
+                        <span className="text-[9px] font-black text-primary uppercase">{activeUserCount} Active</span>
                     </div>
                 </div>
             </div>
@@ -110,12 +121,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <ShieldCheck className="w-6 h-6 md:w-7 md:h-7 opacity-70 group-hover:opacity-100 transition-opacity" />
                         <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-60">Verified Mode</span>
                     </div>
-                    <button
-                        onClick={onToggleTheme}
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-[1.25rem] bg-foreground/5 dark:bg-white/5 flex items-center justify-center text-foreground hover:text-primary transition-all duration-500 border border-transparent hover:border-primary/30 shadow-sm"
-                    >
-                        {isDarkMode ? <Sun className="w-4 h-4 md:w-5 md:h-5" /> : <Moon className="w-4 h-4 md:w-5 md:h-5" />}
-                    </button>
                 </div>
 
                 <div className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-primary via-primary-dark to-accent text-white shadow-xl shadow-primary/20 overflow-hidden group relative">

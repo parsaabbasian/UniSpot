@@ -35,12 +35,15 @@ func NewHub() *Hub {
 }
 
 func (h *Hub) Run() {
+	log.Printf("WebSocket Hub starting...")
 	for {
 		select {
 		case client := <-h.register:
 			h.mu.Lock()
 			h.clients[client] = true
+			count := len(h.clients)
 			h.mu.Unlock()
+			log.Printf("New client connected. Total active: %d", count)
 			h.broadcastUserCount()
 		case client := <-h.unregister:
 			h.mu.Lock()
@@ -48,19 +51,28 @@ func (h *Hub) Run() {
 				delete(h.clients, client)
 				client.Close()
 			}
+			count := len(h.clients)
 			h.mu.Unlock()
+			log.Printf("Client disconnected. Total active: %d", count)
 			h.broadcastUserCount()
 		case message := <-h.broadcast:
 			h.mu.Lock()
+			clients := make([]*websocket.Conn, 0, len(h.clients))
 			for client := range h.clients {
-				err := client.WriteMessage(websocket.TextMessage, message)
-				if err != nil {
-					log.Printf("error: %v", err)
-					client.Close()
-					delete(h.clients, client)
-				}
+				clients = append(clients, client)
 			}
 			h.mu.Unlock()
+
+			for _, client := range clients {
+				err := client.WriteMessage(websocket.TextMessage, message)
+				if err != nil {
+					log.Printf("error broadcasting to client: %v", err)
+					client.Close()
+					h.mu.Lock()
+					delete(h.clients, client)
+					h.mu.Unlock()
+				}
+			}
 		}
 	}
 }
@@ -81,7 +93,11 @@ func (h *Hub) BroadcastEvent(action string, data interface{}) {
 		"data":   data,
 	}
 	payload, _ := json.Marshal(message)
-	h.broadcast <- payload
+	// Use a goroutine to prevent deadlock if BroadcastEvent is called
+	// from within the Hub's own Run loop
+	go func() {
+		h.broadcast <- payload
+	}()
 }
 
 var GlobalHub = NewHub()

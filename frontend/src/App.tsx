@@ -16,7 +16,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeUserCount, setActiveUserCount] = useState(1);
+  const [activeUserCount, setActiveUserCount] = useState(0);
 
   useEffect(() => {
     const handleHashChange = () => {
