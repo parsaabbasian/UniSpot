@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ArrowRight, Users, Layout, Globe, X, MapPin, Zap, Target } from 'lucide-react';
+import { ShieldCheck, Users, Globe, X, MapPin, Zap, Target, Rocket, Cpu } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: () => void;
@@ -141,7 +141,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             className={`hidden sm:flex group relative px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl overflow-hidden ${isDarkMode ? 'bg-white text-black hover:shadow-primary/20' : 'bg-primary text-white hover:shadow-primary/40'}`}
                         >
                             <span className="flex items-center gap-2 relative z-10 transition-colors group-hover:translate-x-1">
-                                Launch <ArrowRight className="w-4 h-4" />
+                                Launch <Rocket className="w-4 h-4" />
                             </span>
                         </button>
                     </div>
@@ -180,7 +180,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         >
                             <div className="absolute inset-x-0 bottom-0 h-0 bg-white/20 group-hover:h-full transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
                             <span className="relative flex items-center justify-center gap-5 uppercase">
-                                ENTER ENGINE <Layout className="w-6 h-6 md:w-8 md:h-8" />
+                                ENTER ENGINE <Cpu className="w-6 h-6 md:w-8 md:h-8" />
                             </span>
                         </button>
                     </div>
