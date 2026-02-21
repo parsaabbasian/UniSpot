@@ -1,77 +1,150 @@
 # 📍 UniSpot | Real-Time Campus Intelligence
 
-![UniSpot Banner](https://img.shields.io/badge/Status-Live-success?style=for-the-badge&logo=render&logoColor=white) 
-![Tech Stack](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
-![Tech Stack](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Tech Stack](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Tech Stack](https://img.shields.io/badge/Mapbox-000000?style=for-the-badge&logo=mapbox&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge&logo=render&logoColor=white)
+![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Mapbox](https://img.shields.io/badge/Mapbox-000000?style=for-the-badge&logo=mapbox&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
-**UniSpot** is a high-performance, real-time event discovery platform specifically designed for York U students. It enables a "Live Map" experience where users can discover and post events that are happening around campus *right now*.
+**UniSpot** is a high-performance, real-time event discovery platform designed for York University students. It delivers a live campus intelligence experience — see what's happening around you *right now*, verify it's real, and share it instantly.
+
+> 🔴 **Live at:** [yorkunispot.vercel.app](https://yorkunispot.vercel.app)
+
+---
 
 ## ✨ Core Features
 
-- **🚀 Real-Time Event Sync:** Instant updates across all devices via WebSockets.
-- **🛡️ GPS Verification:** Users must be physically within York U boundaries to post events, ensuring 100% authenticity.
-- **⏳ Dynamic Countdown:** Live, second-by-second countdown timers for every event.
-- **🗺️ Immersive Map:** Custom Mapbox integration with clustering and satellite views.
-- **🛠️ Tech-First UI:** Premium glassmorphism design with a dark-mode first aesthetic.
+### 🗺️ Live Map
+- **Mapbox GL** powered interactive map with 3D tilt, clustering, and satellite toggle.
+- Events appear as **category-colored** markers with icons.
+- **Live pulsing blue dot** shows your real GPS position (Google Maps-style).
+- Collapsible sidebar — the map **fully expands** to fill screen when hidden.
+
+### ⚡ Real-Time Everything (WebSocket + Postgres NOTIFY)
+| Event | How it propagates |
+|-------|-------------------|
+| New event posted | API → WebSocket → all browsers |
+| Event verified | API → WebSocket → verified count updates live |
+| Event expired/deleted | Postgres `AFTER DELETE` trigger → `pg_notify` → WebSocket → removed from map |
+| **Any Supabase field change** | Postgres `AFTER UPDATE` trigger → `pg_notify` → WebSocket → **patches live on map** |
+
+> Editing an event category, title, or time directly in Supabase will update every connected browser within ~1 second — no refresh needed.
+
+### 🔔 Live Notification Toasts
+Three types of color-coded alerts appear in the top-right corner:
+- 🔵 **New Event Found** — when a marker is added
+- 🟢 **Event Verified** — when someone confirms an event
+- 🔴 **Event Removed** — when an event expires or is deleted
+
+### 🛡️ IP-Based Verification
+- One verification per IP per event to prevent vote manipulation.
+- Backend checks for duplicate IPs using a `Verifications` table with a composite unique constraint.
+
+### 🕐 Toronto (EST/EDT) Time Accuracy
+- All `start_time` / `end_time` values are stored as `timestamptz` (UTC) in Supabase.
+- Frontend parses them with a robust ISO 8601 normalizer (`parseEventDate`) that handles Supabase's space-formatted timestamps consistently across all browsers.
+- Times are displayed in **local Toronto time** in 12-hour AM/PM format (e.g., `10:29 AM`).
+
+### 🎨 Premium UI
+- **Glassmorphism** cards and popups.
+- **Dark mode** first with smooth light/dark toggle.
+- Micro-animations: marker hover lifts, pulse rings on live events, scan-line hero, countdown timers.
+- **Sidebar collapse** — fades and collapses to `w-0`; map auto-resizes via `mapRef.resize()` after the CSS transition.
 
 ---
 
 ## 🛠️ Technical Architecture
 
-### **Frontend**
-- **Framework:** React + Vite
-- **Styling:** Tailwind CSS (Modern Glassmorphism)
-- **Maps:** Mapbox GL JS + React Map GL
-- **Icons:** Lucide React
+### Frontend (`/frontend`)
+| Layer | Technology |
+|-------|------------|
+| Framework | React 18 + Vite |
+| Styling | Tailwind CSS v4 (glassmorphism, dark mode) |
+| Maps | Mapbox GL JS + react-map-gl |
+| Icons | Lucide React |
+| HTTP | Axios |
+| Real-time | Native `WebSocket` API with auto-reconnect |
 
-### **Backend**
-- **Language:** Go (Golang)
-- **Web Framework:** Gin Gonic
-- **Database:** PostgreSQL with **PostGIS** for geospatial queries.
-- **Real-Time:** Gorilla WebSockets + PG Notify
+### Backend (`/backend`)
+| Layer | Technology |
+|-------|------------|
+| Language | Go (Golang) |
+| Web Framework | Gin Gonic |
+| ORM | GORM |
+| Database | PostgreSQL + **PostGIS** (Supabase) |
+| Real-Time | Gorilla WebSockets + `pgx` LISTEN/NOTIFY |
+| Geospatial | `ST_DWithin`, `ST_GeogFromText` |
+
+### Real-Time Architecture
+```
+Supabase DB
+  ├─ INSERT event   → API handler → ws.BroadcastEvent("new_event")
+  ├─ UPDATE event   → pg_notify("event_updated", row_to_json(NEW))
+  │                    └─ Go Listener → ws.BroadcastEvent("update_event")
+  ├─ DELETE event   → pg_notify("event_deleted", OLD.id)
+  │                    └─ Go Listener → ws.BroadcastEvent("delete_event")
+  └─ Verify event   → API handler → ws.BroadcastEvent("verify_event")
+
+WebSocket Hub (Go)
+  └─ Broadcasts to all connected frontend clients
+
+React Frontend
+  └─ onmessage handler → patches events[] state in-place → re-renders map
+```
 
 ---
 
 ## 📦 Setup & Installation
 
-### 1. Prerequisites
-- [Go](https://go.dev/) 1.25+
+### Prerequisites
+- [Go](https://go.dev/) 1.21+
 - [Node.js](https://nodejs.org/) 18+
-- [PostgreSQL](https://www.postgresql.org/) with PostGIS extension.
+- PostgreSQL with PostGIS (or a [Supabase](https://supabase.com) project)
+- A [Mapbox](https://mapbox.com) public token
 
-### 2. Backend Setup
+### Backend
 ```bash
 cd backend
-# Create a .env file based on .env.example
+cp .env.example .env          # fill in DATABASE_URL
 go mod tidy
 go run cmd/api/main.go
 ```
 
-### 3. Frontend Setup
+### Frontend
 ```bash
 cd frontend
+cp .env.example .env          # fill in VITE_API_URL and VITE_MAPBOX_TOKEN
 npm install
 npm run dev
 ```
 
+> On first backend start, GORM auto-migrates tables and the Postgres triggers for `event_deleted` and `event_updated` are automatically registered.
+
 ---
 
-## 🌐 Deployment Logic
+## 🌐 Environment Variables
 
-### **Environment Variables**
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Full PostgreSQL connection string (Supabase/Render). |
-| `VITE_API_URL` | Backend API URL. |
-| `VITE_MAPBOX_TOKEN` | Public token for Mapbox. |
+| Variable | Location | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Backend `.env` | Full Supabase/Postgres connection string |
+| `PORT` | Backend `.env` | Server port (default: `8081`) |
+| `VITE_API_URL` | Frontend `.env` | Backend base URL |
+| `VITE_MAPBOX_TOKEN` | Frontend `.env` | Mapbox public token |
+
+---
+
+## 🚀 Deployment
+
+| Service | Platform |
+|---------|----------|
+| Frontend | [Vercel](https://vercel.com) |
+| Backend | [Render](https://render.com) |
+| Database | [Supabase](https://supabase.com) |
 
 ---
 
 ## 🎖️ Credits
-Developed with a focus on **Visual Excellence** and **Campus Community**.
+Built with a focus on **Visual Excellence**, **Campus Safety**, and **Developer Craft** by [@parsaabbasian](https://github.com/parsaabbasian).
 
----
-
-*Verified for York University Students.*
+*Verified for York University Students. 🦁*
