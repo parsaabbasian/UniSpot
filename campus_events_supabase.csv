@@ -1,0 +1,9 @@
+id,title,description,category,location,start_time,end_time,verified_count
+1,York U Hackathon,Main Student Centre - Hub,Tech,POINT(-79.5019 43.7735),2026-02-21T07:50:00Z,2026-02-21T12:50:00Z,0
+2,Free Pizza @ Lassonde,Bergeron Centre Lobby - First come first serve!,Food,POINT(-79.5048 43.7766),2026-02-21T07:50:00Z,2026-02-21T09:50:00Z,0
+3,Finals Prep: Discrete Math,Scott Library 2nd Floor - Bring coffee.,Study,POINT(-79.5025 43.7725),2026-02-21T07:50:00Z,2026-02-21T11:50:00Z,0
+4,Intramural Soccer,Alumni Field - Need 2 more players!,Sports,POINT(-79.5075 43.7755),2026-02-21T07:50:00Z,2026-02-21T10:50:00Z,0
+5,Winter Coat Sale,Central Square - Up to 70% off!,Sale,POINT(-79.5030 43.7738),2026-02-21T07:50:00Z,2026-02-21T13:50:00Z,0
+6,Tait McKenzie Gym Blast,Full body workout - Open to all levels.,Sports,POINT(-79.5065 43.7715),2026-02-21T07:50:00Z,2026-02-21T08:50:00Z,0
+7,Evening Safety Patrol,Walking from Vari Hall to Quad.,Safety,POINT(-79.5035 43.7742),2026-02-21T07:50:00Z,2026-02-21T09:50:00Z,0
+8,Used Textbook Swap,Student Centre - Mostly CS/Eng books.,Sale,POINT(-79.5015 43.7732),2026-02-21T07:50:00Z,2026-02-21T15:50:00Z,0

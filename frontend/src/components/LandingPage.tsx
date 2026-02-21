@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ArrowRight, Users, Star, Layout, Globe, Smartphone, Coffee, X, MapPin } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Users, Star, Layout, Globe, X, MapPin, Menu, Zap, Target } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: () => void;
@@ -12,6 +12,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
     const [lastScrollY, setLastScrollY] = useState(0);
 
     const [showLocationGuide, setShowLocationGuide] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLaunch = () => {
         if (navigator.geolocation) {
@@ -125,13 +126,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         <span className="text-xl md:text-2xl font-black tracking-tighter italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent uppercase">UNISPOT</span>
                     </div>
 
-                    <div className="hidden lg:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.25em] transition-colors">
-                        <a href="#features" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Features</a>
+                    <div className="hidden md:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.25em] transition-colors">
+                        <a href="#how-it-works" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Logic</a>
                         <a href="#community" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Community</a>
                         <a href="#access" className={`${isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'} transition-all`}>Connect</a>
                     </div>
 
-                    <div className="flex items-center gap-4 md:gap-6">
+                    <div className="flex items-center gap-3 md:gap-6">
                         {/* Theme Toggle Button */}
                         <button
                             onClick={onToggleTheme}
@@ -146,19 +147,41 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
 
                         <button
                             onClick={handleLaunch}
-                            className={`group relative px-6 md:px-8 py-3 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl overflow-hidden ${isDarkMode ? 'bg-white text-black hover:shadow-primary/20' : 'bg-primary text-white hover:shadow-primary/40'}`}
+                            className={`hidden sm:flex group relative px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl overflow-hidden ${isDarkMode ? 'bg-white text-black hover:shadow-primary/20' : 'bg-primary text-white hover:shadow-primary/40'}`}
                         >
                             <span className="flex items-center gap-2 relative z-10 transition-colors group-hover:translate-x-1">
                                 Launch <ArrowRight className="w-4 h-4" />
                             </span>
                         </button>
+
+                        {/* Mobile Menu Toggle */}
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className={`lg:hidden p-3 rounded-2xl transition-all border ${isDarkMode ? 'bg-white/5 border-white/10 text-white' : 'bg-black/5 border-black/10 text-black'}`}
+                        >
+                            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
                     </div>
                 </nav>
+
+                {/* Mobile Menu Overlay */}
+                {isMenuOpen && (
+                    <div className={`fixed inset-0 z-[90] lg:hidden animate-in fade-in duration-300 ${isDarkMode ? 'bg-[#030303]/95' : 'bg-[#fafafa]/95'} backdrop-blur-xl flex flex-col items-center justify-center gap-8 p-10`}>
+                        <a href="#how-it-works" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic uppercase tracking-tighter hover:text-primary transition-colors">How it works</a>
+                        <a href="#community" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic uppercase tracking-tighter hover:text-primary transition-colors">Community</a>
+                        <a href="#access" onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic uppercase tracking-tighter hover:text-primary transition-colors">Connect</a>
+                        <button
+                            onClick={() => { setIsMenuOpen(false); handleLaunch(); }}
+                            className="mt-8 px-12 py-6 bg-primary text-white rounded-full text-xl font-black italic uppercase tracking-widest shadow-2xl"
+                        >
+                            Get Started
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Main Content Sections */}
             <main className="relative z-10">
-
                 {/* Hero Section */}
                 <section className="min-h-screen flex flex-col items-center justify-center pt-32 px-6 text-center">
                     <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 border ${isDarkMode ? 'bg-white/5 border-white/10 text-primary shadow-[0_0_20px_rgba(79,70,229,0.1)]' : 'bg-primary/5 border-primary/20 text-primary shadow-sm'}`}>
@@ -178,8 +201,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent shadow-[0_0_20px_rgba(79,70,229,0.4)] animate-scan z-20 pointer-events-none opacity-20"></div>
                     </div>
 
-                    <p className={`max-w-3xl text-sm md:text-xl font-medium leading-relaxed mb-16 px-6 transition-colors duration-1000 ${isDarkMode ? 'text-white/40' : 'text-[#444] opacity-80'}`}>
-                        The definitive community-powered ecosystem for York Lions. <br className="hidden md:block" /> Every update, event, and alert verified in real-time by the pack.
+                    <p className={`max-w-xl text-sm md:text-lg font-black uppercase tracking-[0.2em] mb-16 px-6 transition-colors duration-1000 ${isDarkMode ? 'text-white/40' : 'text-black/30'}`}>
+                        The live pulse of York University. <br className="hidden md:block" /> Discover, verify, and drop updates in real-time.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-8 w-full sm:w-auto px-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
@@ -204,41 +227,37 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         </div>
                         Join 2,000+ Students
                     </div>
-                </section>
+                </section >
 
-                {/* Feature Highlights */}
-                <section id="features" className={`py-40 md:py-60 relative overflow-hidden px-6 ${isDarkMode ? 'bg-white/[0.01]' : 'bg-black/[0.01]'}`}>
-                    <div className={`absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent`}></div>
+                {/* How it Works */}
+                < section id="how-it-works" className={`py-40 md:py-60 relative overflow-hidden px-6`}>
                     <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
-                            <div className="max-w-2xl">
-                                <h2 className="text-[10vw] md:text-6xl font-black italic tracking-tighter uppercase mb-8 leading-[0.9]">ENGINEERED FOR <br />THE PACK.</h2>
-                                <p className={`text-base md:text-xl font-medium ${isDarkMode ? 'text-white/40' : 'text-black/50'}`}>Modern tools built specifically for the York University ecosystem.</p>
-                            </div>
-                            <div className="w-20 md:w-24 h-2 bg-primary rounded-full"></div>
+                        <div className="text-center mb-24">
+                            <h2 className="text-[12vw] md:text-8xl font-black italic tracking-tighter uppercase mb-8 leading-[0.8] antialiased">HOW IT WORKS</h2>
+                            <p className={`text-base md:text-xl font-bold uppercase tracking-[0.2em] ${isDarkMode ? 'text-primary' : 'text-primary'}`}>The simple campus logic.</p>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[
-                                { icon: Smartphone, title: 'REAL-TIME\nALERTS', desc: 'Instant push notifications for food drops, security alerts, and social gatherings.', color: 'primary' },
-                                { icon: ShieldCheck, title: 'GPS\nVERIFIED', desc: 'Built-in geographic fencing ensures every post is authentic and coming from campus.', color: 'secondary' },
-                                { icon: Coffee, title: 'CAMPUS\nPERKS', desc: 'Unlock hidden deals, free food locations, and the quietest study spots instantly.', color: 'accent' }
-                            ].map((f, i) => (
-                                <div key={i} className={`p-10 md:p-14 rounded-[3rem] border transition-all duration-700 group relative overflow-hidden backdrop-blur-xl ${isDarkMode ? 'bg-white/[0.02] border-white/5 hover:border-primary/40 hover:bg-white/[0.05]' : 'bg-white border-black/5 hover:border-primary/30 hover:shadow-2xl shadow-sm'}`}>
-                                    <div className={`absolute -right-8 -top-8 w-40 h-40 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-[80px] bg-primary/20`}></div>
-                                    <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center mb-10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-primary/10 text-primary' : 'bg-primary text-white'}`}>
-                                        <f.icon className="w-10 h-10" />
+                                { icon: Target, title: 'DISCOVER', desc: 'See live markers on the map.', step: '01' },
+                                { icon: ShieldCheck, title: 'VERIFY', desc: 'Confirm markers in real-time.', step: '02' },
+                                { icon: Zap, title: 'DROP', desc: 'Pin your own live updates.', step: '03' }
+                            ].map((s, i) => (
+                                <div key={i} className={`p-10 md:p-14 rounded-[3.5rem] border transition-all duration-500 group relative overflow-hidden flex flex-col items-center text-center ${isDarkMode ? 'bg-white/[0.02] border-white/5 hover:border-primary/40' : 'bg-white border-black/5 hover:border-primary/30 shadow-sm'}`}>
+                                    <div className="absolute top-8 right-10 text-6xl md:text-8xl font-black italic opacity-5 transition-opacity group-hover:opacity-10">{s.step}</div>
+                                    <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-10 transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-primary/10 text-primary' : 'bg-primary text-white'}`}>
+                                        <s.icon className="w-12 h-12" />
                                     </div>
-                                    <h3 className="font-black text-3xl md:text-4xl mb-6 italic uppercase leading-[0.85] whitespace-pre-line">{f.title}</h3>
-                                    <p className={`text-base md:text-lg font-medium leading-relaxed transition-colors duration-500 italic ${isDarkMode ? 'text-white/40 group-hover:text-white/60' : 'text-black/50 group-hover:text-black/80'}`}>{f.desc}</p>
+                                    <h3 className="font-black text-4xl mb-6 italic uppercase tracking-tighter">{s.title}</h3>
+                                    <p className={`text-sm md:text-base font-bold uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{s.desc}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </section>
+                </section >
 
                 {/* Community Section */}
-                <section id="community" className="py-40 md:py-60 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+                < section id="community" className="py-40 md:py-60 flex flex-col items-center justify-center px-6 relative overflow-hidden" >
                     <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] rounded-full blur-[140px] -skew-y-12 transition-all duration-1000 ${isDarkMode ? 'bg-primary/5' : 'bg-primary/[0.03]'}`}></div>
                     <div className={`w-32 h-32 md:w-48 md:h-48 rounded-[3rem] bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-16 shadow-[0_0_80px_rgba(79,70,229,0.3)] rotate-3 animate-pulse`}>
                         <Users className="w-16 h-16 md:w-24 md:h-24 text-white" />
@@ -252,10 +271,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             </div>
                         ))}
                     </div>
-                </section>
+                </section >
 
                 {/* Final CTA */}
-                <section id="access" className="py-32 md:py-48 px-6 relative overflow-hidden">
+                < section id="access" className="py-32 md:py-48 px-6 relative overflow-hidden" >
                     <div className={`max-w-6xl mx-auto p-12 md:p-32 rounded-[4rem] border relative overflow-hidden group shadow-2xl transition-all duration-1000 ${isDarkMode ? 'bg-gradient-to-br from-[#111] to-black border-white/5' : 'bg-white border-black/5 shadow-primary/20'}`}>
                         <div className={`absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] transition-all duration-1000 ${isDarkMode ? 'bg-primary/10 -translate-y-1/2 translate-x-1/2' : 'bg-primary/5 -translate-y-1/2 translate-x-1/2'}`}></div>
 
@@ -290,8 +309,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             </div>
                         </div>
                     </footer>
-                </section>
-            </main>
+                </section >
+            </main >
 
             <style>{`
                 @keyframes float {
@@ -310,7 +329,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     100% { transform: translateY(500%) opacity(0); }
                 }
             `}</style>
-        </div>
+        </div >
     );
 };
 
