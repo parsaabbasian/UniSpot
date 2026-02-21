@@ -192,6 +192,7 @@ function App() {
           onVerify={fetchEvents}
           isDarkMode={isDarkMode}
           isSelectingLocation={isSelectingLocation}
+          sidebarCollapsed={isSidebarCollapsed}
         />
 
         {isSelectingLocation && (

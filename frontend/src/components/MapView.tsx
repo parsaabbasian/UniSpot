@@ -14,9 +14,10 @@ interface MapViewProps {
     onVerify: (id: number) => void;
     isDarkMode: boolean;
     isSelectingLocation: boolean;
+    sidebarCollapsed?: boolean;
 }
 
-const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkMode, isSelectingLocation }) => {
+const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkMode, isSelectingLocation, sidebarCollapsed }) => {
     const [viewState, setViewState] = useState({
         longitude: -79.5019,
         latitude: 43.7735,
@@ -117,6 +118,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
             setVotedEvents(JSON.parse(savedVotes));
         }
     }, []);
+
+    // Resize map canvas after sidebar CSS transition completes (500ms)
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            mapRef.current?.resize();
+        }, 520);
+        return () => clearTimeout(timeout);
+    }, [sidebarCollapsed]);
 
     const geojson: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
