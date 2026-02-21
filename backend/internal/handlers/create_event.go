@@ -57,6 +57,11 @@ func CreateEvent(c *gin.Context) {
 	// Create PostGIS Point string
 	locationStr := fmt.Sprintf("POINT(%f %f)", req.Longitude, req.Latitude)
 
+	isApproved := true
+	if req.CreatorEmail == "scraper_bot@unispot.ca" {
+		isApproved = false
+	}
+
 	event := models.Event{
 		Title:       req.Title,
 		Description: req.Description,
@@ -64,17 +69,18 @@ func CreateEvent(c *gin.Context) {
 		Location:    locationStr, // Note: Location is a string in the model, but gorm will use the geography type
 		StartTime:   time.Now().UTC().Add(-1 * time.Minute),
 		EndTime:     time.Now().UTC().Add(time.Duration(req.Duration * float64(time.Hour))),
+		IsApproved:  isApproved,
 	}
 
 	// Use raw SQL for the insertion to handle the ST_GeogFromText conversion
 	query := `
-		INSERT INTO events (title, description, category, location, start_time, end_time, creator_name, creator_email)
-		VALUES (?, ?, ?, ST_GeogFromText(?), ?, ?, ?, ?)
+		INSERT INTO events (title, description, category, location, start_time, end_time, creator_name, creator_email, is_approved)
+		VALUES (?, ?, ?, ST_GeogFromText(?), ?, ?, ?, ?, ?)
 		RETURNING id
 	`
 
 	var id uint
-	if err := database.DB.Raw(query, req.Title, req.Description, req.Category, locationStr, event.StartTime, event.EndTime, req.CreatorName, req.CreatorEmail).Scan(&id).Error; err != nil {
+	if err := database.DB.Raw(query, req.Title, req.Description, req.Category, locationStr, event.StartTime, event.EndTime, req.CreatorName, req.CreatorEmail, isApproved).Scan(&id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

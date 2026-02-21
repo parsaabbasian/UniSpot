@@ -32,13 +32,14 @@ func GetEvents(c *gin.Context) {
 	query := `
 		SELECT 
 			e.id, e.title, e.description, e.category, ST_AsText(e.location) as location_text, 
-			e.start_time, e.end_time, e.verified_count, e.creator_name,
+			e.start_time, e.end_time, e.verified_count, e.creator_name, e.is_approved,
 			COALESCE(array_agg(v.user_name) FILTER (WHERE v.user_name IS NOT NULL), '{}') as verifier_names
 		FROM events e
 		LEFT JOIN verifications v ON e.id = v.event_id
 		WHERE ST_DWithin(e.location, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)
 		  AND e.start_time <= now()
 		  AND e.end_time >= now()
+		  AND e.is_approved = true
 		GROUP BY e.id, location_text
 	`
 

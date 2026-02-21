@@ -13,6 +13,7 @@ type Event struct {
 	StartTime     time.Time `gorm:"not null" json:"start_time"`
 	EndTime       time.Time `gorm:"not null" json:"end_time"`
 	VerifiedCount int       `gorm:"default:0" json:"verified_count"`
+	IsApproved    bool      `gorm:"default:false" json:"is_approved"` // Admin approval via Supabase
 	CreatorName   string    `json:"creator_name"`
 	CreatorEmail  string    `json:"creator_email"`
 	Verifiers     []string  `gorm:"-" json:"verifiers"`

@@ -77,8 +77,20 @@ async function scrapeEvents() {
             const item = postWrapper.data;
             if (item.stickied) continue;
 
+            // Ensure post is relatively recent (last 24-48h)
+            const postTime = item.created_utc * 1000;
+            const now = Date.now();
+            if (now - postTime > 24 * 60 * 60 * 1000) {
+                console.log(`[Skip] Too old: ${item.title}`);
+                continue;
+            }
+
             let cleanDesc = item.selftext.replace(/\s+/g, ' ').substring(0, 300).trim();
             if (cleanDesc.length === 0) cleanDesc = "Student chatter from Reddit.";
+
+            // Add a clear indicator that this event was extracted
+            const postLink = `https://reddit.com${item.permalink}`;
+            const scrapedTag = `\n\n📌 *Automated entry extracted from Reddit: ${postLink}*`;
 
             const rawText = item.title + " " + cleanDesc;
             let lat = DEFAULT_COORDS.lat + (Math.random() - 0.5) * 0.005;
@@ -105,13 +117,13 @@ async function scrapeEvents() {
 
             const eventPayload = {
                 title: item.title.substring(0, 50),
-                description: cleanDesc,
+                description: cleanDesc + scrapedTag,
                 category: category,
                 lat: lat,
                 lng: lng,
                 duration_hours: 24, // keep it up for a day
-                creator_name: item.author,
-                creator_email: "reddit@my.yorku.ca"
+                creator_name: item.author + " (Scraped)",
+                creator_email: "scraper_bot@unispot.ca" // Dedicated tag for scraped data
             };
 
             try {
