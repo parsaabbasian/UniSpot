@@ -128,6 +128,16 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         };
     };
 
+    // Format time helper (HH:MM)
+    const formatTime = (timeStr: string) => {
+        try {
+            const date = new Date(timeStr);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        } catch (e) {
+            return '';
+        }
+    };
+
     const categoryColors: Record<string, string> = {
         'Food': '#F59E0B',      // Amber
         'Study': '#10B981',     // Emerald
@@ -355,7 +365,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 setPopupInfo(event);
                             }}
                         >
-                            <div className={`relative cursor-pointer group animate-in fade-in zoom-in duration-500`} style={{ zIndex: popupInfo?.id === event.id ? 50 : 1 }}>
+                            <div className={`relative flex flex-col items-center cursor-pointer group animate-in fade-in zoom-in duration-500`} style={{ zIndex: popupInfo?.id === event.id ? 50 : 1 }}>
                                 <div
                                     className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-105 border ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'}`}
                                     style={{ color: catColor }}
@@ -367,7 +377,10 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                         </div>
                                     )}
                                 </div>
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-black/10 blur-[2px] rounded-full group-hover:w-6 transition-all duration-300"></div>
+                                <div className={`mt-1 px-1.5 py-0.5 rounded-md text-[8px] font-black transition-all duration-300 border ${isDarkMode ? 'bg-black/40 border-white/10 text-white/60 group-hover:text-white' : 'bg-white/60 border-black/5 text-black/60 group-hover:text-black'}`}>
+                                    {formatTime(event.start_time)}
+                                </div>
+                                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-4 h-1 bg-black/10 blur-[2px] rounded-full group-hover:w-6 transition-all duration-300"></div>
                             </div>
                         </Marker>
                     );
