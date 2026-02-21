@@ -28,7 +28,7 @@ func GetEvents(c *gin.Context) {
 	// Geospatial query using ST_DWithin and time filtering
 	// We use ST_AsText to get the location in a readable format for manual parsing if necessary
 	query := `
-		SELECT id, title, description, category, ST_AsText(location) as location_text, start_time, end_time, verified_count
+		SELECT id, title, description, category, ST_AsText(location) as location_text, start_time, end_time, verified_count, creator_name
 		FROM events
 		WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)
 		  AND start_time <= now()

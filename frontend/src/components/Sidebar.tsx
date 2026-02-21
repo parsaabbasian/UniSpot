@@ -158,7 +158,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[9px] font-black uppercase tracking-tighter text-foreground/80 truncate leading-tight">{act.title}</p>
-                                        <p className="text-[8px] font-bold uppercase text-foreground/30 tracking-tight">{act.type === 'new' ? 'Signal Dropped' : 'Vouch Received'}</p>
+                                        <p className="text-[8px] font-bold uppercase text-foreground/30 tracking-tight">
+                                            {act.type === 'new' ? 'Signal Dropped' : `Vouch from ${act.userName || 'Student'}`}
+                                        </p>
                                     </div>
                                 </div>
                             ))

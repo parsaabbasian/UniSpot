@@ -16,13 +16,17 @@ function App() {
   const [events, setEvents] = useState<Event[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [selectedDetailEvent, setSelectedDetailEvent] = useState<Event | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ name: string, email: string } | null>(() => {
+    const saved = localStorage.getItem('unispot_user');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [pendingEventCoords, setPendingEventCoords] = useState<{ lat: number, lng: number } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeUserCount, setActiveUserCount] = useState(0);
-  const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete', title: string, category: string } | null>(null);
+  const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete', title: string, category: string, userName?: string } | null>(null);
   const reconnectAttempts = useRef(0);
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -91,8 +95,18 @@ function App() {
             );
             const event = prev.find(e => e.id === message.data.id);
             if (event && message.data.verified_count > event.verified_count) {
-              setNotification({ type: 'verify', title: event.title, category: event.category });
-              setRecentActivity(prev => [{ type: 'verify', title: event.title, id: event.id }, ...prev].slice(0, 10));
+              setNotification({
+                type: 'verify',
+                title: event.title,
+                category: event.category,
+                userName: message.data.user_name
+              });
+              setRecentActivity(prev => [{
+                type: 'verify',
+                title: event.title,
+                id: event.id,
+                userName: message.data.user_name
+              }, ...prev].slice(0, 10));
               setTimeout(() => setNotification(null), 3000);
             }
             return updated;
@@ -174,7 +188,10 @@ function App() {
   const handleVerifyEvent = async (id: number) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
-      await axios.post(`${apiUrl}/api/events/${id}/verify`);
+      await axios.post(`${apiUrl}/api/events/${id}/verify`, {
+        user_name: currentUser?.name,
+        user_email: currentUser?.email
+      });
 
       // Update local state immediately
       setEvents(prev => prev.map(e =>
@@ -206,10 +223,14 @@ function App() {
     return matchesCategory && matchesSearch;
   });
 
-  if (!showMap) {
+  if (!showMap || !currentUser) {
     return (
       <LandingPage
-        onEnter={() => { window.location.hash = 'map'; }}
+        onEnter={(userData) => {
+          setCurrentUser(userData);
+          localStorage.setItem('unispot_user', JSON.stringify(userData));
+          window.location.hash = 'map';
+        }}
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode(!isDarkMode)}
       />
@@ -304,6 +325,7 @@ function App() {
               fetchEvents();
               setSelectedCategory('all');
             }}
+            currentUser={currentUser}
           />
         )}
         {notification && (
@@ -326,6 +348,9 @@ function App() {
                     notification.type === 'verify' ? 'Event Verified' : 'Event Removed'}
                 </p>
                 <h4 className="text-sm font-black text-foreground italic line-clamp-1 uppercase tracking-tighter">{notification.title}</h4>
+                {notification.userName && (
+                  <p className="text-[8px] font-black text-primary uppercase tracking-widest mt-0.5">Verified by {notification.userName}</p>
+                )}
                 <p className="text-[9px] text-foreground/40 font-bold uppercase mt-0.5 tracking-wider">{notification.category}</p>
               </div>
             </div>

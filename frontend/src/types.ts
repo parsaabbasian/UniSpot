@@ -9,4 +9,5 @@ export interface Event {
     duration_hours?: number;
     start_time: string;
     end_time: string;
+    creator_name?: string;
 }

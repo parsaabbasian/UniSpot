@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Users, Globe, X, MapPin, Zap, Target, Rocket, Cpu } from 'lucide-react';
+import { ShieldCheck, Users, Globe, X, MapPin, Zap, Target, Rocket, Cpu, User, Mail, Shield } from 'lucide-react';
 
 interface LandingPageProps {
-    onEnter: () => void;
+    onEnter: (userData: { name: string, email: string }) => void;
     isDarkMode: boolean;
     onToggleTheme: () => void;
 }
@@ -11,17 +11,35 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [showLocationGuide, setShowLocationGuide] = useState(false);
+    const [showAuthForm, setShowAuthForm] = useState(false);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
+
+    const validateEmail = (email: string) => {
+        return email.toLowerCase().endsWith('@my.yorku.ca');
+    };
 
     const handleLaunch = () => {
+        if (!name || !email) {
+            setShowAuthForm(true);
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setError('Please use a valid @my.yorku.ca email');
+            return;
+        }
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(() => {
-                onEnter();
+                onEnter({ name, email });
             }, (err) => {
                 console.warn('Location Error:', err);
                 if (err.code === 1) { // PERMISSION_DENIED
                     setShowLocationGuide(true);
                 } else {
-                    onEnter();
+                    onEnter({ name, email });
                 }
             }, {
                 enableHighAccuracy: true,
@@ -29,7 +47,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                 maximumAge: 0
             });
         } else {
-            onEnter();
+            onEnter({ name, email });
         }
     };
 
@@ -65,7 +83,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                     <div className="max-w-md w-full glass-morphism p-10 rounded-[3rem] border border-white/20 shadow-[0_0_100px_rgba(79,70,229,0.2)] text-center relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
                         <button
-                            onClick={() => { setShowLocationGuide(false); onEnter(); }}
+                            onClick={() => { setShowLocationGuide(false); handleLaunch(); }}
                             className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white"
                         >
                             <X className="w-5 h-5" />
@@ -98,6 +116,62 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             className="w-full bg-primary hover:bg-primary-dark text-white font-black py-6 rounded-[2rem] transition-all shadow-xl shadow-primary/40 active:scale-95 text-xs uppercase tracking-widest"
                         >
                             Refreshed Settings? Try Again
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* User Auth Overlay */}
+            {showAuthForm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-xl p-6 animate-in fade-in duration-500">
+                    <div className="max-w-md w-full glass-morphism p-10 rounded-[3rem] border border-white/20 shadow-[0_0_100px_rgba(79,70,229,0.2)] text-center relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+                        <button
+                            onClick={() => setShowAuthForm(false)}
+                            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-8">
+                            <Shield className="w-8 h-8 text-primary" />
+                        </div>
+
+                        <h2 className="text-2xl font-black italic uppercase tracking-tighter mb-2 text-white">Identity Access</h2>
+                        <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">Lions Verification Required</p>
+
+                        <div className="space-y-4 mb-10">
+                            <div className="relative group">
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+                                <input
+                                    type="text"
+                                    placeholder="Full Name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-12 pr-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white/10 transition-all placeholder:text-white/20 text-white"
+                                />
+                            </div>
+                            <div className="relative group">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+                                <input
+                                    type="email"
+                                    placeholder="yourid@my.yorku.ca"
+                                    value={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        setError('');
+                                    }}
+                                    className={`w-full bg-white/5 border rounded-2xl py-5 pl-12 pr-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white/10 transition-all placeholder:text-white/20 text-white ${error ? 'border-red-500/50' : 'border-white/10'}`}
+                                />
+                            </div>
+                            {error && <p className="text-red-500 text-[9px] font-black uppercase tracking-widest">{error}</p>}
+                        </div>
+
+                        <button
+                            onClick={handleLaunch}
+                            className="w-full bg-primary hover:bg-primary-dark text-white font-black py-6 rounded-[2rem] transition-all shadow-xl shadow-primary/40 active:scale-95 text-xs uppercase tracking-widest"
+                        >
+                            Authorize & Launch
                         </button>
                     </div>
                 </div>

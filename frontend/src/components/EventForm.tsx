@@ -6,6 +6,7 @@ interface EventFormProps {
     lng: number;
     onClose: () => void;
     onCreated: () => void;
+    currentUser: { name: string, email: string } | null;
 }
 
 const YORK_U_COORDS = { lat: 43.7735, lng: -79.5019 };
@@ -23,7 +24,7 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
     return R * c; // Distance in km
 };
 
-const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) => {
+const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated, currentUser }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('Tech');
@@ -103,6 +104,8 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                     lat,
                     lng,
                     duration_hours: durationHours + (durationMinutes / 60),
+                    creator_name: currentUser?.name || 'Anonymous',
+                    creator_email: currentUser?.email || '',
                 }),
             });
             if (response.ok) {

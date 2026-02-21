@@ -116,6 +116,9 @@ const EventDetailOverlay: React.FC<EventDetailOverlayProps> = ({ event, onClose,
                         <h1 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter text-foreground leading-[0.9] mb-4">
                             {event.title}
                         </h1>
+                        {event.creator_name && (
+                            <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2">SOURCED BY {event.creator_name}</p>
+                        )}
                     </div>
 
                     {/* Time & Location Grid */}

@@ -9,9 +9,20 @@ import (
 	"github.com/parsaabbasian/unispot/backend/internal/ws"
 )
 
+type VerifyEventRequest struct {
+	UserName  string `json:"user_name"`
+	UserEmail string `json:"user_email"`
+}
+
 func VerifyEvent(c *gin.Context) {
 	id := c.Param("id")
 	ipAddress := c.ClientIP()
+
+	var req VerifyEventRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		// Fallback for older clients or simpler requests
+		req.UserName = "Student"
+	}
 
 	var event models.Event
 	if err := database.DB.First(&event, id).Error; err != nil {
@@ -31,6 +42,8 @@ func VerifyEvent(c *gin.Context) {
 	verification := models.Verification{
 		EventID:   event.ID,
 		IPAddress: ipAddress,
+		UserName:  req.UserName,
+		UserEmail: req.UserEmail,
 	}
 
 	if err := database.DB.Create(&verification).Error; err != nil {
@@ -52,6 +65,7 @@ func VerifyEvent(c *gin.Context) {
 	ws.GlobalHub.BroadcastEvent("verify_event", gin.H{
 		"id":             event.ID,
 		"verified_count": newCount,
+		"user_name":      req.UserName,
 	})
 
 	c.JSON(http.StatusOK, gin.H{
