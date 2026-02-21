@@ -466,14 +466,12 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                         className="z-50"
                         offset={15}
                     >
-                        <div className="p-4 md:p-6 min-w-[260px] max-w-[300px] glass-morphism rounded-[1.5rem] md:rounded-[2.5rem] border border-white/20 overflow-hidden relative shadow-2xl">
+                        <div className="p-5 md:p-8 min-w-[280px] max-w-[320px] glass-morphism rounded-[2rem] md:rounded-[3rem] border border-white/20 overflow-hidden relative shadow-2xl">
                             {isPopular && (
-                                <div className="absolute top-3 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary to-accent rounded-full text-[8px] md:text-[10px] font-black text-white shadow-lg animate-pulse">
-                                    <Flame className="w-2.5 h-3 md:w-3.5 md:h-4" /> HOT SPOT
+                                <div className="absolute top-4 right-6 flex items-center gap-1.5 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-[7px] md:text-[9px] font-black text-primary uppercase tracking-widest shadow-sm">
+                                    <Flame className="w-2.5 h-3 md:w-3.5 md:h-4" /> TRENDING
                                 </div>
                             )}
-
-                            <div className="absolute top-0 left-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
 
                             <div className="flex flex-col mb-3 md:mb-4 mt-2">
                                 <div className="flex items-start justify-between">
@@ -523,17 +521,16 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 </div>
                             )}
 
-                            <div className="flex flex-wrap items-center gap-2 mb-5 md:mb-6">
-                                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[11px] font-black text-white uppercase shadow-lg shadow-black/20" style={{ backgroundColor: categoryColors[popupInfo.category] || '#6366f1' }}>
+                            <div className="flex flex-wrap items-center gap-2 mb-6 md:mb-8">
+                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase border shadow-sm ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`} style={{ borderColor: `${categoryColors[popupInfo.category]}40`, color: categoryColors[popupInfo.category] }}>
                                     <Tag className="w-3 h-3" /> {popupInfo.category}
                                 </span>
-                                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/10 dark:bg-white/10 rounded-full text-[9px] md:text-[11px] font-black text-foreground/70 dark:text-white/70 uppercase border border-foreground/5 dark:border-white/5 shadow-sm">
+                                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/5 rounded-full text-[9px] md:text-[10px] font-black text-foreground/50 uppercase border border-foreground/5">
                                     <Clock className="w-3 h-3" /> {popupInfo.duration_hours || 2}H
                                 </span>
-                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[11px] font-black uppercase shadow-lg ${isPopular ? 'bg-primary/20 text-primary border border-primary/20 shadow-primary/10' : 'bg-green-500/20 text-green-500 border border-green-500/20 shadow-green-500/10'
-                                    }`}>
+                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase border ${isPopular ? 'bg-primary/5 text-primary border-primary/20' : 'bg-green-500/5 text-green-500 border-green-500/20'}`}>
                                     {isPopular ? <TrendingUp className="w-3 h-3" /> : <Check className="w-3 h-3" />}
-                                    {popupInfo.verified_count || 0} VERIFICATIONS
+                                    {popupInfo.verified_count || 0} PROOFS
                                 </span>
                             </div>
 
@@ -541,15 +538,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 <button
                                     onClick={(e) => handleVerifyClick(e, popupInfo.id)}
                                     disabled={hasVoted}
-                                    className={`flex-1 flex items-center justify-center gap-1.5 py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-sm transition-all shadow-xl active:scale-[0.98] ${hasVoted
-                                        ? 'bg-green-500/10 text-green-500 cursor-not-allowed shadow-none border border-green-500/10'
-                                        : (isPopular ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/30' : 'bg-primary text-white hover:bg-primary-dark shadow-primary/30')
+                                    className={`flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl font-black text-[10px] md:text-xs transition-all shadow-xl active:scale-[0.98] uppercase tracking-widest ${hasVoted
+                                        ? 'bg-green-500/10 text-green-500 cursor-not-allowed border border-green-500/10 shadow-none'
+                                        : (isPopular ? 'bg-primary text-white shadow-primary/30 hover:bg-primary-dark' : 'bg-foreground text-background dark:bg-white dark:text-black hover:opacity-90')
                                         }`}
                                 >
-                                    <div className="relative overflow-hidden w-full h-full flex items-center justify-center gap-1.5">
-                                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                                        {hasVoted ? <Check className="w-3.5 h-3.5 md:w-4 md:h-4 z-10 relative" /> : <Plus className="w-3.5 h-3.5 md:w-4 md:h-4 z-10 relative" />}
-                                        <span className="z-10 relative">{hasVoted ? 'Verified' : 'Verify'}</span>
+                                    <div className="flex items-center justify-center gap-2">
+                                        {hasVoted ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                                        <span>{hasVoted ? 'VERIFIED' : 'VERIFY'}</span>
                                     </div>
                                 </button>
                                 <button
