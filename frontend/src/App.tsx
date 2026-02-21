@@ -46,6 +46,12 @@ function App() {
     }
   }, [isDarkMode]);
 
+  useEffect(() => {
+    if (searchQuery && isSelectingLocation) {
+      setIsSelectingLocation(false);
+    }
+  }, [searchQuery, isSelectingLocation]);
+
   const fetchEvents = useCallback(async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
@@ -324,6 +330,7 @@ function App() {
           isDarkMode={isDarkMode}
           isSelectingLocation={isSelectingLocation}
           sidebarCollapsed={isSidebarCollapsed}
+          searchQuery={searchQuery}
         />
 
         {isSelectingLocation && (

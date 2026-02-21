@@ -16,9 +16,10 @@ interface MapViewProps {
     isDarkMode: boolean;
     isSelectingLocation: boolean;
     sidebarCollapsed?: boolean;
+    searchQuery?: string;
 }
 
-const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewDetails, isDarkMode, isSelectingLocation, sidebarCollapsed }) => {
+const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewDetails, isDarkMode, isSelectingLocation, sidebarCollapsed, searchQuery }) => {
     const [viewState, setViewState] = useState({
         longitude: -79.5019,
         latitude: 43.7735,
@@ -518,8 +519,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewD
                 {events.length === 0 && !isSelectingLocation && (
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center bg-background/60 backdrop-blur-3xl p-8 md:p-10 rounded-[2rem] border border-white/10 shadow-2xl w-[85%] max-w-[340px] animate-in zoom-in-90 duration-1000">
                         <img src="/logo.svg" alt="UniSpot Empty" className="w-14 h-14 md:w-20 md:h-20 mx-auto mb-6 animate-bounce drop-shadow-[0_0_20px_rgba(255,45,85,0.4)]" />
-                        <h3 className="text-2xl md:text-3xl font-black mb-4 italic uppercase tracking-tighter bg-gradient-to-r from-primary via-primary-dark to-secondary bg-clip-text text-transparent">Nothing here yet!</h3>
-                        <p className="text-foreground/50 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] leading-relaxed">Click <span className="text-primary italic">"Drop a Mark"</span> in the sidebar to ignite the map.</p>
+                        <h3 className="text-2xl md:text-3xl font-black mb-4 italic uppercase tracking-tighter bg-gradient-to-r from-primary via-primary-dark to-secondary bg-clip-text text-transparent">
+                            {searchQuery ? 'Signal Not Found' : 'Nothing here yet!'}
+                        </h3>
+                        <p className="text-foreground/50 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] leading-relaxed">
+                            {searchQuery
+                                ? "Try refining your query to locate active student scouts."
+                                : <>Click <span className="text-primary italic">"Drop a Mark"</span> in the sidebar to ignite the map.</>}
+                        </p>
                     </div>
                 )}
 
