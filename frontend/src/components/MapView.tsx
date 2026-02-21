@@ -33,7 +33,31 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const [userLocation, setUserLocation] = useState<{ lng: number, lat: number } | null>(null);
     const [walkingInfo, setWalkingInfo] = useState<{ distance: number, duration: number } | null>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [liveEventId, setLiveEventId] = useState<number | null>(null);
     const mapRef = useRef<any>(null);
+
+    // Watch for events changes to trigger live pulse
+    const prevEventsRef = useRef<Event[]>([]);
+    useEffect(() => {
+        const prevEvents = prevEventsRef.current;
+        if (prevEvents.length > 0 && events.length > prevEvents.length) {
+            // New event added
+            const newEvent = events[0]; // Assuming it's prepended
+            setLiveEventId(newEvent.id);
+            setTimeout(() => setLiveEventId(null), 10000);
+        } else if (prevEvents.length > 0) {
+            // Check for verification updates
+            const updated = events.find(e => {
+                const prev = prevEvents.find(pe => pe.id === e.id);
+                return prev && e.verified_count > prev.verified_count;
+            });
+            if (updated) {
+                setLiveEventId(updated.id);
+                setTimeout(() => setLiveEventId(null), 5000);
+            }
+        }
+        prevEventsRef.current = events;
+    }, [events]);
 
     // Watch user location for live walking distances
     useEffect(() => {
@@ -380,9 +404,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                             }}
                         >
                             <div className={`relative flex flex-col items-center cursor-pointer group animate-in fade-in zoom-in duration-500`} style={{ zIndex: popupInfo?.id === event.id ? 50 : 1 }}>
+                                {liveEventId === event.id && (
+                                    <div className="absolute inset-0 rounded-full bg-primary/40 animate-ping -z-10 scale-150"></div>
+                                )}
                                 <div
-                                    className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-105 border ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'}`}
-                                    style={{ color: catColor }}
+                                    className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-105 border ${liveEventId === event.id ? 'bg-primary border-primary animate-pulse shadow-[0_0_20px_rgba(99,102,241,0.8)]' :
+                                            isDarkMode ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'
+                                        }`}
+                                    style={{ color: liveEventId === event.id ? 'white' : catColor }}
                                 >
                                     {getCategoryIcon(event.category)}
                                     {isHot && (

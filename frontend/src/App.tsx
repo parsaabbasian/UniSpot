@@ -4,7 +4,7 @@ import MapView from './components/MapView';
 import EventForm from './components/EventForm';
 import LandingPage from './components/LandingPage';
 import axios from 'axios';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Plus, Check } from 'lucide-react';
 
 import type { Event } from './types';
 
@@ -17,7 +17,7 @@ function App() {
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeUserCount, setActiveUserCount] = useState(0);
-  const [notification, setNotification] = useState<{ title: string, category: string } | null>(null);
+  const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete', title: string, category: string } | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -74,16 +74,31 @@ function App() {
             if (prev.find(e => e.id === message.data.id)) return prev;
             return [message.data, ...prev];
           });
-          setNotification({ title: message.data.title, category: message.data.category });
+          setNotification({ type: 'new', title: message.data.title, category: message.data.category });
           setTimeout(() => setNotification(null), 5000);
         } else if (message.action === 'verify_event') {
-          setEvents(prev => prev.map(e =>
-            e.id === message.data.id ? { ...e, verified_count: message.data.verified_count } : e
-          ));
+          setEvents(prev => {
+            const updated = prev.map(e =>
+              e.id === message.data.id ? { ...e, verified_count: message.data.verified_count } : e
+            );
+            const event = prev.find(e => e.id === message.data.id);
+            if (event && message.data.verified_count > event.verified_count) {
+              setNotification({ type: 'verify', title: event.title, category: event.category });
+              setTimeout(() => setNotification(null), 3000);
+            }
+            return updated;
+          });
         } else if (message.action === 'user_count') {
           setActiveUserCount(message.data.count);
         } else if (message.action === 'delete_event') {
-          setEvents(prev => prev.filter(e => e.id !== message.data.id));
+          setEvents(prev => {
+            const eventToRemove = prev.find(e => e.id === message.data.id);
+            if (eventToRemove) {
+              setNotification({ type: 'delete', title: eventToRemove.title, category: eventToRemove.category });
+              setTimeout(() => setNotification(null), 3000);
+            }
+            return prev.filter(e => e.id !== message.data.id);
+          });
         }
       };
 
@@ -192,11 +207,28 @@ function App() {
           />
         )}
         {notification && (
-          <div className="fixed top-24 md:top-10 right-5 z-[100] bg-white/10 backdrop-blur-3xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Live Update</p>
-            <h4 className="text-sm font-black text-white italic">{notification.title}</h4>
-            <p className="text-[9px] text-white/50 font-bold uppercase mt-1">Added to {notification.category}</p>
+          <div className="fixed top-24 md:top-10 right-5 z-[100] bg-background/80 backdrop-blur-3xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 overflow-hidden min-w-[240px]">
+            <div className={`absolute top-0 left-0 w-1.5 h-full ${notification.type === 'new' ? 'bg-primary' :
+                notification.type === 'verify' ? 'bg-green-500' : 'bg-red-500'
+              }`}></div>
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-xl scale-90 ${notification.type === 'new' ? 'bg-primary/20 text-primary' :
+                  notification.type === 'verify' ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'
+                }`}>
+                {notification.type === 'new' ? <Plus className="w-4 h-4" /> :
+                  notification.type === 'verify' ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+              </div>
+              <div>
+                <p className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${notification.type === 'new' ? 'text-primary' :
+                    notification.type === 'verify' ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                  {notification.type === 'new' ? 'New Event Found' :
+                    notification.type === 'verify' ? 'Event Verified' : 'Event Removed'}
+                </p>
+                <h4 className="text-sm font-black text-foreground italic line-clamp-1 uppercase tracking-tighter">{notification.title}</h4>
+                <p className="text-[9px] text-foreground/40 font-bold uppercase mt-0.5 tracking-wider">{notification.category}</p>
+              </div>
+            </div>
           </div>
         )}
       </main>
