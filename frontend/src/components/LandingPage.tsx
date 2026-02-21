@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ArrowRight, MapPin, Users, Star, Layout, Globe, Smartphone, Coffee } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Users, Star, Layout, Globe, Smartphone, Coffee } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: () => void;
@@ -47,8 +47,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             <div className={`fixed top-6 left-0 w-full flex justify-center z-[100] px-6 transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-32 opacity-0 pointer-events-none'}`}>
                 <nav className="w-full max-w-5xl px-6 md:px-8 py-4 flex justify-between items-center backdrop-blur-2xl bg-white/[0.03] border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-500 hover:border-primary/30 group">
                     <div className="flex items-center gap-3 md:gap-4 cursor-pointer">
-                        <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                            <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                        <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 overflow-hidden">
+                            <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain" />
                         </div>
                         <span className="text-xl md:text-2xl font-black tracking-tighter italic bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent uppercase">UNISPOT</span>
                     </div>
@@ -183,8 +183,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
 
                     <footer className="mt-32 md:mt-48 pb-12 flex flex-col items-center gap-6 opacity-30">
                         <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-lg flex items-center justify-center">
-                                <MapPin className="w-4 h-4 md:w-5 md:h-5 text-black" />
+                            <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center overflow-hidden">
+                                <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain" />
                             </div>
                             <span className="text-base md:text-lg font-black italic tracking-tighter">UNISPOT V1.0</span>
                         </div>

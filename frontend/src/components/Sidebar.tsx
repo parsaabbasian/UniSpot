@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Utensils, Cpu, Ticket, Moon, Sun, MapPin, Compass, ShieldCheck, PlusCircle, XCircle } from 'lucide-react';
+import { Music, Utensils, Cpu, Ticket, Moon, Sun, Compass, ShieldCheck, PlusCircle, XCircle } from 'lucide-react';
 
 interface SidebarProps {
     selectedCategory: string;
@@ -31,8 +31,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Branding */}
             <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-3">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-2xl flex items-center justify-center shadow-[0_0_25px_rgba(79,70,229,0.4)] group-hover:rotate-6 transition-transform">
-                        <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-[0_0_25px_rgba(79,70,229,0.4)] group-hover:rotate-6 transition-transform overflow-hidden">
+                        <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain" />
                     </div>
                     <h1 className="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent italic uppercase">
                         UNISPOT

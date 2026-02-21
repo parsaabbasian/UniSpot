@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup } from 'react-map-gl/mapbox';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, MapPin, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -184,7 +184,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
                 {events.length === 0 && !isSelectingLocation && (
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center bg-background/80 backdrop-blur-xl p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-2xl w-[80%] max-w-[320px]">
-                        <MapPin className="w-10 md:w-12 h-10 md:h-12 text-primary mx-auto mb-4 animate-bounce" />
+                        <img src="/logo.svg" alt="UniSpot Empty" className="w-12 h-12 md:w-14 md:h-14 mx-auto mb-4 animate-bounce" />
                         <h3 className="text-lg md:text-xl font-black mb-2 italic">Nothing here yet!</h3>
                         <p className="text-foreground/40 text-[10px] md:text-sm font-medium uppercase tracking-tighter">Click "Post Event" in the sidebar to share what's happening!</p>
                     </div>
