@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import MapView from './components/MapView';
 import EventForm from './components/EventForm';
 import LandingPage from './components/LandingPage';
+import EventDetailOverlay from './components/EventDetailOverlay';
 import axios from 'axios';
 import { Menu, X, Plus, Check } from 'lucide-react';
 
@@ -11,7 +12,10 @@ import type { Event } from './types';
 function App() {
   const [showMap, setShowMap] = useState(() => window.location.hash === '#map');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [selectedDetailEvent, setSelectedDetailEvent] = useState<Event | null>(null);
   const [pendingEventCoords, setPendingEventCoords] = useState<{ lat: number, lng: number } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
@@ -78,6 +82,7 @@ function App() {
             return [message.data, ...prev];
           });
           setNotification({ type: 'new', title: message.data.title, category: message.data.category });
+          setRecentActivity(prev => [{ type: 'new', title: message.data.title, id: message.data.id }, ...prev].slice(0, 10));
           setTimeout(() => setNotification(null), 5000);
         } else if (message.action === 'verify_event') {
           setEvents(prev => {
@@ -87,6 +92,7 @@ function App() {
             const event = prev.find(e => e.id === message.data.id);
             if (event && message.data.verified_count > event.verified_count) {
               setNotification({ type: 'verify', title: event.title, category: event.category });
+              setRecentActivity(prev => [{ type: 'verify', title: event.title, id: event.id }, ...prev].slice(0, 10));
               setTimeout(() => setNotification(null), 3000);
             }
             return updated;
@@ -165,9 +171,40 @@ function App() {
     }
   };
 
-  const filteredEvents = selectedCategory === 'all'
-    ? events
-    : events.filter(e => e.category === selectedCategory);
+  const handleVerifyEvent = async (id: number) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+      await axios.post(`${apiUrl}/api/events/${id}/verify`);
+
+      // Update local state immediately
+      setEvents(prev => prev.map(e =>
+        e.id === id ? { ...e, verified_count: e.verified_count + 1 } : e
+      ));
+
+      // Update selected detail event if open
+      if (selectedDetailEvent?.id === id) {
+        setSelectedDetailEvent(prev => prev ? { ...prev, verified_count: prev.verified_count + 1 } : null);
+      }
+
+      // Record vote
+      const savedVotes = JSON.parse(localStorage.getItem('unispot_votes') || '[]');
+      if (!savedVotes.includes(id)) {
+        const newVotes = [...savedVotes, id];
+        localStorage.setItem('unispot_votes', JSON.stringify(newVotes));
+      }
+
+      fetchEvents();
+    } catch (error) {
+      console.error('Failed to verify:', error);
+    }
+  };
+
+  const filteredEvents = events.filter(e => {
+    const matchesCategory = selectedCategory === 'all' || e.category === selectedCategory;
+    const matchesSearch = e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      e.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   if (!showMap) {
     return (
@@ -219,6 +256,9 @@ function App() {
               setIsSidebarOpen(false);
             }}
             activeUserCount={activeUserCount}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            recentActivity={recentActivity}
           />
         </div>
       </div>
@@ -236,6 +276,7 @@ function App() {
           events={filteredEvents}
           onMapClick={handleMapClick}
           onVerify={fetchEvents}
+          onViewDetails={(event) => setSelectedDetailEvent(event)}
           isDarkMode={isDarkMode}
           isSelectingLocation={isSelectingLocation}
           sidebarCollapsed={isSidebarCollapsed}
@@ -289,6 +330,15 @@ function App() {
               </div>
             </div>
           </div>
+        )}
+
+        {selectedDetailEvent && (
+          <EventDetailOverlay
+            event={selectedDetailEvent}
+            onClose={() => setSelectedDetailEvent(null)}
+            onVerify={handleVerifyEvent}
+            hasVoted={JSON.parse(localStorage.getItem('unispot_votes') || '[]').includes(selectedDetailEvent.id)}
+          />
         )}
       </main>
     </div>

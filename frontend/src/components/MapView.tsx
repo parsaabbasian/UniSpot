@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X, ExternalLink } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -12,12 +12,13 @@ interface MapViewProps {
     events: Event[];
     onMapClick: (lat: number, lng: number) => void;
     onVerify: (id: number) => void;
+    onViewDetails: (event: Event) => void;
     isDarkMode: boolean;
     isSelectingLocation: boolean;
     sidebarCollapsed?: boolean;
 }
 
-const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkMode, isSelectingLocation, sidebarCollapsed }) => {
+const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewDetails, isDarkMode, isSelectingLocation, sidebarCollapsed }) => {
     const [viewState, setViewState] = useState({
         longitude: -79.5019,
         latitude: 43.7735,
@@ -599,6 +600,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                     {popupInfo.verified_count || 0} PROOFS
                                 </span>
                             </div>
+
+                            <button
+                                onClick={() => onViewDetails(popupInfo)}
+                                className="w-full mb-3 flex items-center justify-center gap-2 py-3 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 rounded-xl text-foreground transition-all font-black text-[10px] uppercase tracking-[0.2em] active:scale-[0.98]"
+                            >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                View More Details
+                            </button>
 
                             <div className="flex gap-2">
                                 <button

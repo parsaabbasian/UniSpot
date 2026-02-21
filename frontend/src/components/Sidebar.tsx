@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Utensils, Cpu, Moon, Sun, Compass, PlusCircle, XCircle, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag } from 'lucide-react';
+import { Music, Utensils, Cpu, Moon, Sun, Compass, PlusCircle, XCircle, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, ShieldCheck, Search } from 'lucide-react';
 
 interface SidebarProps {
     selectedCategory: string;
@@ -9,6 +9,9 @@ interface SidebarProps {
     isSelectingLocation: boolean;
     onToggleSelectLocation: () => void;
     activeUserCount: number;
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
+    recentActivity: any[];
 }
 
 const categories = [
@@ -30,7 +33,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     onToggleTheme,
     isSelectingLocation,
     onToggleSelectLocation,
-    activeUserCount
+    activeUserCount,
+    searchQuery,
+    onSearchChange,
+    recentActivity
 }) => {
     return (
         <div className="w-full h-full glass-morphism p-4 md:p-6 flex flex-col gap-6 md:gap-8 rounded-2xl md:rounded-3xl transition-all duration-700 relative border border-white/10 shadow-2xl overflow-hidden">
@@ -69,6 +75,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             </div>
 
+            {/* Search Bar */}
+            <div className="px-1 shrink-0 relative">
+                <div className="relative group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 group-focus-within:text-primary transition-colors" />
+                    <input
+                        type="text"
+                        placeholder="Search Reality..."
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        className="w-full bg-foreground/5 border border-foreground/10 rounded-2xl py-4 pl-12 pr-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-background/50 transition-all placeholder:text-foreground/20"
+                    />
+                </div>
+            </div>
+
             {/* Post Event Primary Action - Static */}
             <div className="px-1 shrink-0">
                 <button
@@ -93,37 +113,62 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </button>
             </div>
 
-            {/* Navigation - Scrollable Area */}
-            <div className="flex flex-col gap-4 relative z-10 flex-1 overflow-hidden">
-                <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-foreground/40 px-2 shrink-0">Filter Reality</p>
-                <div className="space-y-2 overflow-y-auto px-1 pr-2 scrollbar-thin">
-                    {categories.map((cat) => {
-                        const Icon = cat.icon;
-                        const active = selectedCategory === cat.id;
-                        return (
-                            <button
-                                key={cat.id}
-                                onClick={() => onCategoryChange(cat.id)}
-                                className={`w-full flex items-center gap-4 px-4 md:px-5 py-4 rounded-2xl transition-all duration-700 group relative overflow-hidden active:scale-[0.98] ${active
-                                    ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-xl shadow-primary/20 scale-[1.02] z-20'
-                                    : 'text-foreground/40 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5 opacity-80 hover:opacity-100'
-                                    }`}
-                            >
-                                <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-all duration-500 group-hover:rotate-6 ${active ? 'text-white scale-110' : 'text-primary'}`} />
-                                <span className={`font-bold tracking-tight text-sm uppercase ${active ? 'italic' : ''}`}>{cat.name}</span>
-                                {active && (
-                                    <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,1)] animate-pulse"></div>
-                                )}
-                            </button>
-                        );
-                    })}
-                    {/* Visual Spacing at bottom of scroll */}
-                    <div className="h-4 shrink-0"></div>
+            {/* Scrollable Content Area */}
+            <div className="flex-1 overflow-y-auto space-y-8 pr-2 custom-scrollbar">
+                {/* Navigation */}
+                <div className="flex flex-col gap-4 relative z-10 overflow-hidden">
+                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-foreground/40 px-2 shrink-0">Filter Reality</p>
+                    <div className="space-y-2">
+                        {categories.map((cat) => {
+                            const Icon = cat.icon;
+                            const active = selectedCategory === cat.id;
+                            return (
+                                <button
+                                    key={cat.id}
+                                    onClick={() => onCategoryChange(cat.id)}
+                                    className={`w-full flex items-center gap-4 px-4 md:px-5 py-4 rounded-2xl transition-all duration-700 group relative overflow-hidden active:scale-[0.98] ${active
+                                        ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-xl shadow-primary/20 scale-[1.02] z-20'
+                                        : 'text-foreground/40 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5 opacity-80 hover:opacity-100'
+                                        }`}
+                                >
+                                    <Icon className={`w-4 h-4 md:w-5 md:h-5 transition-all duration-500 group-hover:rotate-6 ${active ? 'text-white scale-110' : 'text-primary'}`} />
+                                    <span className={`font-bold tracking-tight text-sm uppercase ${active ? 'italic' : ''}`}>{cat.name}</span>
+                                    {active && (
+                                        <div className="absolute right-4 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,1)] animate-pulse"></div>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Recent Activity Mini-Feed */}
+                <div className="space-y-4 pb-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30 px-2">Pulse Check</p>
+                    <div className="space-y-3">
+                        {recentActivity.length === 0 ? (
+                            <div className="px-4 py-4 rounded-2xl bg-foreground/[0.02] border border-dashed border-foreground/10 text-center">
+                                <p className="text-[9px] font-bold text-foreground/20 uppercase tracking-widest">Awaiting live signals...</p>
+                            </div>
+                        ) : (
+                            recentActivity.slice(0, 3).map((act, i) => (
+                                <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-foreground/[0.02] border border-foreground/5 animate-in slide-in-from-left-2 duration-500">
+                                    <div className={`p-1.5 rounded-lg ${act.type === 'new' ? 'bg-primary/20 text-primary' : 'bg-green-500/20 text-green-500'}`}>
+                                        {act.type === 'new' ? <PlusCircle className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-[9px] font-black uppercase tracking-tighter text-foreground/80 truncate leading-tight">{act.title}</p>
+                                        <p className="text-[8px] font-bold uppercase text-foreground/30 tracking-tight">{act.type === 'new' ? 'Signal Dropped' : 'Vouch Received'}</p>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
 
             {/* Bottom Status - Static */}
-            <div className="flex flex-col gap-6 relative z-10 mt-auto pt-6 border-t border-foreground/5 shrink-0">
+            <div className="relative z-10 pt-6 border-t border-foreground/5 shrink-0">
                 <div className="p-6 rounded-2xl bg-gradient-to-br from-primary via-primary-dark to-accent text-white shadow-xl shadow-primary/20 overflow-hidden group relative">
                     <div className="absolute -right-4 -bottom-4 w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000"></div>
                     <h4 className="font-bold text-xs md:text-sm uppercase tracking-tight mb-1">Stay Safe, Lions.</h4>
