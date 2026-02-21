@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ShieldCheck, ArrowRight, MapPin, Users, Star, Layout, Globe, Smartphone, Coffee } from 'lucide-react';
 
 interface LandingPageProps {
@@ -6,6 +6,24 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                setIsVisible(false);
+            } else {
+                setIsVisible(true);
+            }
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [lastScrollY]);
+
     useEffect(() => {
         // Reset body style for scrolling
         document.body.style.overflow = 'auto';
@@ -26,7 +44,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             </div>
 
             {/* Modern Floating Navbar */}
-            <div className="fixed top-6 left-0 w-full flex justify-center z-[100] px-6">
+            <div className={`fixed top-6 left-0 w-full flex justify-center z-[100] px-6 transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-32 opacity-0 pointer-events-none'}`}>
                 <nav className="w-full max-w-5xl px-6 md:px-8 py-4 flex justify-between items-center backdrop-blur-2xl bg-white/[0.03] border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-500 hover:border-primary/30 group">
                     <div className="flex items-center gap-3 md:gap-4 cursor-pointer">
                         <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
