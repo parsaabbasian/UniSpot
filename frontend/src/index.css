@@ -3,6 +3,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -35,6 +37,7 @@ body {
   margin: 0;
   font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 .glass-morphism {
@@ -53,7 +56,8 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -61,12 +65,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(127, 127, 127, 0.2);
-  border-radius: 10px;
+  background: rgba(127, 127, 127, 0.3);
+  border-radius: 12px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(127, 127, 127, 0.4);
+  background: rgba(127, 127, 127, 0.5);
+}
+
+/* Smooth scrolling for inner containers */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127, 127, 127, 0.3) transparent;
 }
 
 /* Mapbox Popup Styling */
