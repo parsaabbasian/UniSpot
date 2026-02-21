@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X, ExternalLink, Share2 } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -17,9 +17,10 @@ interface MapViewProps {
     isSelectingLocation: boolean;
     sidebarCollapsed?: boolean;
     searchQuery?: string;
+    flyToEvent?: Event | null;
 }
 
-const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewDetails, isDarkMode, isSelectingLocation, sidebarCollapsed, searchQuery }) => {
+const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewDetails, isDarkMode, isSelectingLocation, sidebarCollapsed, searchQuery, flyToEvent }) => {
     const [viewState, setViewState] = useState({
         longitude: -79.5019,
         latitude: 43.7735,
@@ -128,6 +129,18 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewD
         }, 520);
         return () => clearTimeout(timeout);
     }, [sidebarCollapsed]);
+
+    useEffect(() => {
+        if (flyToEvent) {
+            setViewState(prev => ({
+                ...prev,
+                longitude: flyToEvent.lng,
+                latitude: flyToEvent.lat,
+                zoom: 17,
+                transitionDuration: 2000
+            }));
+        }
+    }, [flyToEvent]);
 
     const geojson: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
@@ -335,6 +348,16 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewD
     const timeStatus = popupInfo ? getTimeStatus(popupInfo.end_time) : null;
 
     // Helper for category icons
+    const handleShareFromPopup = (e: React.MouseEvent, event: Event) => {
+        e.stopPropagation();
+        const url = `${window.location.origin}${window.location.pathname}#map?event=${event.id}`;
+        navigator.clipboard.writeText(`Check out this event on UniSpot: ${event.title} - ${url}`);
+        // Visual feedback handled by showing a temporary toast or button state isn't trivial here without local state, 
+        // but for now we'll just alert or assume success since we did it in the Detail view.
+        // Let's add a small local state just for share feedback in MapView if needed, 
+        // but standard practice is often just copying to clipboard.
+    };
+
     const getCategoryIcon = (category: string) => {
         const iconClass = "w-6 h-6";
         switch (category) {
@@ -615,6 +638,13 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewD
                                 >
                                     <Navigation className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:rotate-12" />
                                     <span className="text-[10px] md:text-xs font-black uppercase">Go</span>
+                                </button>
+                                <button
+                                    onClick={(e) => handleShareFromPopup(e, popupInfo)}
+                                    className="px-4 md:px-5 py-3 md:py-4 bg-foreground/5 hover:bg-foreground/10 text-foreground/60 rounded-xl md:rounded-2xl transition-all border border-foreground/10 active:scale-[0.98] flex items-center"
+                                    title="Share Event"
+                                >
+                                    <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
                             </div>
                         </div>

@@ -19,7 +19,7 @@ const EventDetailOverlay: React.FC<EventDetailOverlayProps> = ({ event, onClose,
     };
 
     const handleShare = () => {
-        const url = window.location.origin + window.location.pathname + '#map'; // Simple share for now
+        const url = `${window.location.origin}${window.location.pathname}#map?event=${event.id}`;
         navigator.clipboard.writeText(`Check out this event on UniSpot: ${event.title} - ${url}`);
         setShareCopied(true);
         setTimeout(() => setShareCopied(false), 2000);

@@ -10,7 +10,21 @@ import { Menu, X, Plus, Check } from 'lucide-react';
 import type { Event } from './types';
 
 function App() {
-  const [showMap, setShowMap] = useState(() => window.location.hash === '#map');
+  const parseHash = () => {
+    const hash = window.location.hash;
+    const isMap = hash.startsWith('#map');
+    let eventId = null;
+
+    if (hash.includes('?event=')) {
+      const parts = hash.split('?event=');
+      eventId = parseInt(parts[1], 10);
+    }
+
+    return { isMap, eventId };
+  };
+
+  const [showMap, setShowMap] = useState(() => parseHash().isMap);
+  const [deepLinkedEventId, setDeepLinkedEventId] = useState<number | null>(() => parseHash().eventId);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
@@ -44,7 +58,11 @@ function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      setShowMap(window.location.hash === '#map');
+      const { isMap, eventId } = parseHash();
+      setShowMap(isMap);
+      if (eventId !== null) {
+        setDeepLinkedEventId(eventId);
+      }
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
@@ -75,6 +93,15 @@ function App() {
         }
       });
       setEvents(response.data);
+
+      // Handle initial deep linking after events are fetched
+      if (deepLinkedEventId) {
+        const event = (response.data as Event[]).find(e => e.id === deepLinkedEventId);
+        if (event) {
+          setSelectedDetailEvent(event);
+          setDeepLinkedEventId(null); // Clear it so it doesn't reopen unexpectedly
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch events:', error);
       // Fallback mock data
@@ -263,6 +290,17 @@ function App() {
     }
   };
 
+  // Watch for deep-linked event even if it arrives via WebSocket or late fetch
+  useEffect(() => {
+    if (deepLinkedEventId && events.length > 0) {
+      const event = events.find(e => e.id === deepLinkedEventId);
+      if (event) {
+        setSelectedDetailEvent(event);
+        setDeepLinkedEventId(null);
+      }
+    }
+  }, [deepLinkedEventId, events]);
+
   const filteredEvents = events.filter(e => {
     const matchesCategory = selectedCategory === 'all' || e.category === selectedCategory;
     const searchLower = searchQuery.toLowerCase();
@@ -358,6 +396,7 @@ function App() {
           isSelectingLocation={isSelectingLocation}
           sidebarCollapsed={isSidebarCollapsed}
           searchQuery={searchQuery}
+          flyToEvent={selectedDetailEvent}
         />
 
         {isSelectingLocation && (
