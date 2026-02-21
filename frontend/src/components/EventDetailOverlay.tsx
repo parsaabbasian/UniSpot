@@ -18,11 +18,26 @@ const EventDetailOverlay: React.FC<EventDetailOverlayProps> = ({ event, onClose,
         setTimeout(onClose, 500);
     };
 
-    const handleShare = () => {
+    const handleShare = async () => {
         const url = `${window.location.origin}${window.location.pathname}#map?event=${event.id}`;
-        navigator.clipboard.writeText(`Check out this event on UniSpot: ${event.title} - ${url}`);
-        setShareCopied(true);
-        setTimeout(() => setShareCopied(false), 2000);
+        const shareData = {
+            title: 'UniSpot | York U Events',
+            text: `Check out this event on UniSpot: ${event.title}`,
+            url: url,
+        };
+
+        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+            try {
+                await navigator.share(shareData);
+            } catch (error) {
+                console.error('Error sharing:', error);
+            }
+        } else {
+            // Fallback to clipboard
+            navigator.clipboard.writeText(`${shareData.text} - ${url}`);
+            setShareCopied(true);
+            setTimeout(() => setShareCopied(false), 2000);
+        }
     };
 
     const formatFullDate = (timeStr: string) => {
