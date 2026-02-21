@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -85,10 +85,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     };
 
     const categoryColors: Record<string, string> = {
+        'Food': '#F59E0B',      // Amber
+        'Study': '#10B981',     // Emerald
+        'Social': '#EC4899',    // Pink
         'Tech': '#6366F1',      // Indigo
         'Music': '#8B5CF6',     // Violet
-        'Food': '#F59E0B',      // Amber
-        'Entertainment': '#10B981' // Emerald
+        'Sports': '#EF4444',    // Red
+        'Safety': '#F43F5E',    // Rose
+        'Sale': '#F97316'       // Orange
     };
 
     const clusterLayer: any = {
@@ -228,10 +232,14 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     // Helper for category icons
     const getCategoryIcon = (category: string) => {
         switch (category) {
+            case 'Food': return <Utensils className="w-4 h-4" />;
+            case 'Study': return <BookOpen className="w-4 h-4" />;
+            case 'Social': return <Users className="w-4 h-4" />;
             case 'Tech': return <Cpu className="w-4 h-4" />;
             case 'Music': return <Music className="w-4 h-4" />;
-            case 'Food': return <Utensils className="w-4 h-4" />;
-            case 'Entertainment': return <Ticket className="w-4 h-4" />;
+            case 'Sports': return <Dumbbell className="w-4 h-4" />;
+            case 'Safety': return <ShieldAlert className="w-4 h-4" />;
+            case 'Sale': return <ShoppingBag className="w-4 h-4" />;
             default: return <Tag className="w-4 h-4" />;
         }
     };

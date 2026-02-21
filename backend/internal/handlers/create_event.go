@@ -17,7 +17,7 @@ type CreateEventRequest struct {
 	Category    string  `json:"category" binding:"required"`
 	Latitude    float64 `json:"lat" binding:"required"`
 	Longitude   float64 `json:"lng" binding:"required"`
-	Duration    int     `json:"duration_hours" binding:"required"` // hours from now
+	Duration    float64 `json:"duration_hours" binding:"required"` // hours from now
 }
 
 func CreateEvent(c *gin.Context) {
@@ -35,8 +35,8 @@ func CreateEvent(c *gin.Context) {
 		Description: req.Description,
 		Category:    req.Category,
 		Location:    locationStr, // Note: Location is a string in the model, but gorm will use the geography type
-		StartTime:   time.Now().UTC(),
-		EndTime:     time.Now().UTC().Add(time.Duration(req.Duration) * time.Hour),
+		StartTime:   time.Now().UTC().Add(-1 * time.Minute),
+		EndTime:     time.Now().UTC().Add(time.Duration(req.Duration * float64(time.Hour))),
 	}
 
 	// Use raw SQL for the insertion to handle the ST_GeogFromText conversion
