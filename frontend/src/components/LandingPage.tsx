@@ -253,15 +253,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         </button>
                     </div>
 
-                    {/* Active Users Social Proof */}
-                    <div className={`mt-20 flex flex-col sm:flex-row items-center gap-4 text-sm font-medium ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                        <div className="flex -space-x-3">
-                            {['https://i.pravatar.cc/100?img=1', 'https://i.pravatar.cc/100?img=2', 'https://i.pravatar.cc/100?img=3', 'https://i.pravatar.cc/100?img=4'].map((img, i) => (
-                                <img key={i} src={img} alt="User avatar" className={`w-10 h-10 rounded-full border-2 object-cover ${isDarkMode ? 'border-[#030303]' : 'border-[#fafafa]'}`} />
-                            ))}
-                        </div>
-                        <span>Join <strong>2,400+ students</strong> exploring right now</span>
-                    </div>
                 </section>
 
                 {/* Features Highlights */}
