@@ -164,7 +164,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             {isCategoryOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsCategoryOpen(false)} />
-                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-[70] animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <div className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[140%] min-w-[200px] bg-[#12121a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.8)] py-3 overflow-hidden z-[70] animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-300">
                                         {categories.map((cat) => (
                                             <div
                                                 key={cat}
@@ -172,10 +172,10 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                                     setCategory(cat);
                                                     setIsCategoryOpen(false);
                                                 }}
-                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
+                                                className={`px-8 py-4 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/70 hover:bg-white/5 hover:text-white'}`}
                                             >
                                                 {cat}
-                                                {category === cat && <Check className="w-3 h-3" />}
+                                                {category === cat && <Check className="w-4 h-4" />}
                                             </div>
                                         ))}
                                     </div>

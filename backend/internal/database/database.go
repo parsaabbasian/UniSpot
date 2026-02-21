@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/parsaabbasian/unispot/backend/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -13,6 +14,9 @@ import (
 var DB *gorm.DB
 
 func Connect() {
+	// Load .env file if it exists (local development)
+	_ = godotenv.Load()
+
 	// Use DB_URL if provided (common on platforms like Render/Supabase)
 	dsn := os.Getenv("DATABASE_URL")
 

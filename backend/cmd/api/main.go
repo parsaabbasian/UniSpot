@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
+	"github.com/joho/godotenv"
 	"github.com/parsaabbasian/unispot/backend/internal/database"
 	"github.com/parsaabbasian/unispot/backend/internal/handlers"
 	"github.com/parsaabbasian/unispot/backend/internal/models"
@@ -65,6 +66,7 @@ func main() {
 }
 
 func startDBListener() {
+	_ = godotenv.Load()
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
 		log.Printf("DB Listener: DATABASE_URL not set, skipping real-time sync")
