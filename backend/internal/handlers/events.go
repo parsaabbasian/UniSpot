@@ -31,8 +31,8 @@ func GetEvents(c *gin.Context) {
 		SELECT id, title, description, category, ST_AsText(location) as location_text, start_time, end_time, verified_count
 		FROM events
 		WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)
-		  AND start_time <= NOW()
-		  AND end_time >= NOW()
+		  AND start_time <= (now() AT TIME ZONE 'utc')
+		  AND end_time >= (now() AT TIME ZONE 'utc')
 	`
 
 	if err := database.DB.Raw(query, lng, lat, radius).Scan(&rawEvents).Error; err != nil {

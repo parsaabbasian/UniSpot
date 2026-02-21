@@ -62,9 +62,9 @@ func Connect() {
 		seedSQL := `
 			INSERT INTO events (title, description, category, location, start_time, end_time) 
 			VALUES 
-			('York U Hackathon', 'Main Student Centre', 'Tech', ST_GeogFromText('POINT(-79.5019 43.7735)'), NOW(), NOW() + INTERVAL '5 hours'),
-			('Coffee Chat @ Vari Hall', 'Free coffee for students', 'Food', ST_GeogFromText('POINT(-79.5035 43.7740)'), NOW(), NOW() + INTERVAL '3 hours'),
-			('Library Jazz Session', 'Scott Library 2nd floor', 'Music', ST_GeogFromText('POINT(-79.5025 43.7725)'), NOW(), NOW() + INTERVAL '4 hours');
+			('York U Hackathon', 'Main Student Centre', 'Tech', ST_GeogFromText('POINT(-79.5019 43.7735)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '5 hours'),
+			('Coffee Chat @ Vari Hall', 'Free coffee for students', 'Food', ST_GeogFromText('POINT(-79.5035 43.7740)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '3 hours'),
+			('Library Jazz Session', 'Scott Library 2nd floor', 'Music', ST_GeogFromText('POINT(-79.5025 43.7725)'), (now() AT TIME ZONE 'utc'), (now() AT TIME ZONE 'utc') + INTERVAL '4 hours');
 		`
 		DB.Exec(seedSQL)
 	}
