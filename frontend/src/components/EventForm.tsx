@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Clock, Tag, MapPin, AlignLeft, ShieldCheck, AlertCircle, ChevronDown, Check, ChevronUp } from 'lucide-react';
+import { X, Clock, Tag, MapPin, AlignLeft, ShieldCheck, AlertCircle, ChevronDown, Check, ChevronUp, Utensils, BookOpen, Users, Cpu, Music, Dumbbell, ShieldAlert, ShoppingBag } from 'lucide-react';
 
 interface EventFormProps {
     lat: number;
@@ -34,7 +34,16 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
     const [locationError, setLocationError] = useState<string | null>(null);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
-    const categories = ['Tech', 'Music', 'Food', 'Entertainment'];
+    const categories = [
+        { id: 'Food', name: 'Food & Drink', icon: Utensils },
+        { id: 'Study', name: 'Study Groups', icon: BookOpen },
+        { id: 'Social', name: 'Social & Meet', icon: Users },
+        { id: 'Tech', name: 'Technology', icon: Cpu },
+        { id: 'Music', name: 'Music & Arts', icon: Music },
+        { id: 'Sports', name: 'Sports & Gym', icon: Dumbbell },
+        { id: 'Safety', name: 'Campus Safety', icon: ShieldAlert },
+        { id: 'Sale', name: 'Sale & Free', icon: ShoppingBag },
+    ];
 
     const checkLocationAndSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -167,20 +176,25 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                                 <>
                                     <div className="fixed inset-0 z-[60]" onClick={() => setIsCategoryOpen(false)} />
                                     <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#0d0d12]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.8)] py-3 overflow-hidden z-[70] animate-in fade-in slide-in-from-top-2 duration-300">
-                                        {categories.map((cat) => (
-                                            <button
-                                                key={cat}
-                                                type="button"
-                                                onClick={() => {
-                                                    setCategory(cat);
-                                                    setIsCategoryOpen(false);
-                                                }}
-                                                className={`w-full px-6 py-4 text-xs font-black uppercase italic flex items-center justify-between transition-all ${category === cat ? 'bg-primary text-white' : 'text-foreground/60 hover:bg-white/5 hover:text-white'}`}
-                                            >
-                                                {cat}
-                                                {category === cat && <Check className="w-4 h-4" />}
-                                            </button>
-                                        ))}
+                                        <div className="max-h-60 overflow-y-auto scrollbar-hide">
+                                            {categories.map((cat) => (
+                                                <button
+                                                    key={cat.id}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setCategory(cat.id);
+                                                        setIsCategoryOpen(false);
+                                                    }}
+                                                    className={`w-full px-6 py-4 text-[10px] font-black uppercase italic flex items-center justify-between transition-all ${category === cat.id ? 'bg-primary text-white' : 'text-foreground/60 hover:bg-white/5 hover:text-white'}`}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <cat.icon className={`w-4 h-4 ${category === cat.id ? 'text-white' : 'text-primary'}`} />
+                                                        {cat.name}
+                                                    </div>
+                                                    {category === cat.id && <Check className="w-4 h-4" />}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 </>
                             )}

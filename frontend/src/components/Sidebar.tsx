@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Utensils, Cpu, Ticket, Moon, Sun, Compass, PlusCircle, XCircle } from 'lucide-react';
+import { Music, Utensils, Cpu, Moon, Sun, Compass, PlusCircle, XCircle, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag } from 'lucide-react';
 
 interface SidebarProps {
     selectedCategory: string;
@@ -13,10 +13,14 @@ interface SidebarProps {
 
 const categories = [
     { id: 'all', name: 'Discover All', icon: Compass },
-    { id: 'Tech', name: 'Technology', icon: Cpu },
-    { id: 'Music', name: 'Music & Art', icon: Music },
     { id: 'Food', name: 'Food & Drink', icon: Utensils },
-    { id: 'Entertainment', name: 'Entertainment', icon: Ticket },
+    { id: 'Study', name: 'Study Groups', icon: BookOpen },
+    { id: 'Social', name: 'Social & Meet', icon: Users },
+    { id: 'Tech', name: 'Technology', icon: Cpu },
+    { id: 'Music', name: 'Music & Arts', icon: Music },
+    { id: 'Sports', name: 'Sports & Gym', icon: Dumbbell },
+    { id: 'Safety', name: 'Campus Safety', icon: ShieldAlert },
+    { id: 'Sale', name: 'Sale & Free', icon: ShoppingBag },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({
