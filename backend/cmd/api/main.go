@@ -33,7 +33,6 @@ func main() {
 		api.GET("/events", handlers.GetEvents)
 		api.POST("/events", handlers.CreateEvent)
 		api.POST("/events/:id/verify", handlers.VerifyEvent)
-		api.GET("/stats", handlers.GetStats)
 	}
 
 	port := os.Getenv("PORT")
