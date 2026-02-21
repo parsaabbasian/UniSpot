@@ -95,57 +95,59 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
 
     return (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300 font-sans">
-            <div className="w-full max-w-md glass-morphism rounded-[2.5rem] p-8 shadow-2xl relative animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] border border-white/10">
+            <div className="w-full max-w-md glass-morphism rounded-[2.5rem] p-8 shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] border border-white/20 before:absolute before:inset-0 before:-z-10 before:bg-gradient-to-br before:from-primary/20 before:via-transparent before:to-secondary/20 before:rounded-[2.5rem] before:animate-spin-slow">
                 <button
                     onClick={onClose}
-                    className="absolute top-8 right-8 p-2 rounded-xl hover:bg-foreground/10 transition-colors text-foreground/40 hover:text-foreground"
+                    className="absolute top-8 right-8 p-2 rounded-xl bg-white/5 hover:bg-white/20 transition-all text-foreground/40 hover:text-foreground hover:rotate-90 active:scale-90"
                 >
                     <X className="w-5 h-5" />
                 </button>
 
                 <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-inner">
-                        <ShieldCheck className="w-8 h-8 text-primary" />
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.5)]">
+                        <ShieldCheck className="w-8 h-8 text-white animate-pulse" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black tracking-tight text-foreground italic">Post to UniSpot</h2>
-                        <p className="text-foreground/40 text-[10px] font-bold uppercase tracking-widest">Verification Required</p>
+                        <h2 className="text-2xl font-black tracking-tighter text-foreground italic uppercase">Post to UniSpot</h2>
+                        <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em]">GPS Verification Required</p>
                     </div>
                 </div>
 
                 <form onSubmit={checkLocationAndSubmit} className="flex flex-col gap-6">
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1">Event Title</label>
+                    <div className="space-y-2 group">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 group-focus-within:text-primary transition-colors">
+                            <Tag className="w-3 h-3" /> Event Title
+                        </label>
                         <input
                             autoFocus
                             required
                             placeholder="What's happening?"
-                            className="w-full bg-foreground/5 dark:bg-white/5 border border-foreground/5 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-foreground/20 text-foreground font-bold"
+                            className="w-full bg-black/20 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-foreground/20 text-foreground font-black italic shadow-inner"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
+                    <div className="space-y-2 group">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 group-focus-within:text-primary transition-colors">
                             <AlignLeft className="w-3 h-3" /> Description
                         </label>
                         <textarea
                             placeholder="Add some details..."
                             rows={3}
-                            className="w-full bg-foreground/5 dark:bg-white/5 border border-foreground/5 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-foreground/20 text-foreground resize-none font-medium"
+                            className="w-full bg-black/20 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-foreground/20 text-foreground resize-none font-medium shadow-inner"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
+                        <div className="space-y-2 group">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 group-focus-within:text-primary transition-colors">
                                 <Tag className="w-3 h-3" /> Category
                             </label>
                             <select
-                                className="w-full bg-foreground/5 dark:bg-white/5 border border-foreground/5 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer text-foreground font-bold"
+                                className="w-full bg-black/20 dark:bg-white/5 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none cursor-pointer text-foreground font-black italic shadow-inner"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                             >
@@ -156,12 +158,12 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                             </select>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
+                        <div className="space-y-2 group">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 group-focus-within:text-primary transition-colors">
                                 <Clock className="w-3 h-3" /> Duration
                             </label>
                             <select
-                                className="w-full bg-foreground/5 dark:bg-white/5 border border-foreground/5 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer text-foreground font-bold"
+                                className="w-full bg-black/20 dark:bg-white/5 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none cursor-pointer text-foreground font-black italic shadow-inner"
                                 value={duration}
                                 onChange={(e) => setDuration(parseInt(e.target.value))}
                             >
@@ -180,13 +182,14 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                         </div>
                     )}
 
-                    <div className="flex items-center gap-4 p-5 rounded-2xl bg-foreground/5 border border-dashed border-foreground/10">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                            <MapPin className="w-5 h-5 text-primary" />
+                    <div className="flex items-center gap-4 p-5 rounded-2xl bg-black/20 dark:bg-white/5 border border-white/10 shadow-inner group overflow-hidden relative">
+                        <div className="absolute right-0 top-0 w-32 h-32 bg-primary/10 blur-2xl group-hover:bg-primary/20 transition-colors"></div>
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(79,70,229,0.5)]">
+                            <MapPin className="w-5 h-5 text-white animate-bounce" />
                         </div>
-                        <div className="text-xs">
-                            <p className="text-foreground/30 uppercase font-black tracking-widest">Pin Location</p>
-                            <p className="text-foreground/80 font-bold">{lat.toFixed(5)}, {lng.toFixed(5)}</p>
+                        <div className="text-xs relative z-10">
+                            <p className="text-primary uppercase font-black tracking-widest">Locked Location</p>
+                            <p className="text-foreground/80 font-black italic">{lat.toFixed(5)}, {lng.toFixed(5)}</p>
                         </div>
                     </div>
 

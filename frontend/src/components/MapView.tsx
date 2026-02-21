@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup } from 'react-map-gl/mapbox';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -19,8 +19,12 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const [viewState, setViewState] = useState({
         longitude: -79.5019,
         latitude: 43.7735,
-        zoom: 15
+        zoom: 15,
+        pitch: 45,
+        bearing: -17.6
     });
+
+    const [mapStyleOverlay, setMapStyleOverlay] = useState<'streets' | 'satellite'>('streets');
 
     const [popupInfo, setPopupInfo] = useState<Event | null>(null);
     const [votedEvents, setVotedEvents] = useState<number[]>([]);
@@ -161,7 +165,11 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
                 style={{ width: '100%', height: '100%' }}
-                mapStyle={isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11"}
+                mapStyle={
+                    mapStyleOverlay === 'satellite'
+                        ? "mapbox://styles/mapbox/satellite-streets-v12"
+                        : (isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/light-v11")
+                }
                 mapboxAccessToken={MAPBOX_TOKEN}
                 interactiveLayerIds={['clusters', 'unclustered-point']}
                 onClick={handleMapClick}
@@ -182,11 +190,41 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
                 <NavigationControl position="bottom-right" />
 
+                {/* Map Utilities Navbar */}
+                <div className="absolute top-6 right-6 flex flex-col gap-3 z-10">
+                    <button
+                        onClick={() => {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition((position) => {
+                                    setViewState({
+                                        ...viewState,
+                                        longitude: position.coords.longitude,
+                                        latitude: position.coords.latitude,
+                                        zoom: 16,
+                                        pitch: 45
+                                    });
+                                });
+                            }
+                        }}
+                        className="w-12 h-12 glass-morphism rounded-full flex items-center justify-center text-foreground shadow-2xl border border-white/20 hover:scale-105 active:scale-95 transition-all bg-background/80 backdrop-blur-md"
+                        title="Locate Me"
+                    >
+                        <LocateFixed className="w-5 h-5" />
+                    </button>
+                    <button
+                        onClick={() => setMapStyleOverlay(prev => prev === 'streets' ? 'satellite' : 'streets')}
+                        className={`w-12 h-12 glass-morphism rounded-full flex items-center justify-center shadow-2xl border border-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md ${mapStyleOverlay === 'satellite' ? 'bg-primary text-white border-primary/50' : 'bg-background/80 text-foreground'}`}
+                        title="Toggle Satellite View"
+                    >
+                        <Layers className="w-5 h-5" />
+                    </button>
+                </div>
+
                 {events.length === 0 && !isSelectingLocation && (
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center bg-background/80 backdrop-blur-xl p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-white/10 shadow-2xl w-[80%] max-w-[320px]">
-                        <img src="/logo.svg" alt="UniSpot Empty" className="w-12 h-12 md:w-14 md:h-14 mx-auto mb-4 animate-bounce" />
-                        <h3 className="text-lg md:text-xl font-black mb-2 italic">Nothing here yet!</h3>
-                        <p className="text-foreground/40 text-[10px] md:text-sm font-medium uppercase tracking-tighter">Click "Post Event" in the sidebar to share what's happening!</p>
+                        <img src="/logo.svg" alt="UniSpot Empty" className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 animate-bounce" />
+                        <h3 className="text-xl md:text-2xl font-black mb-3 italic uppercase tracking-tighter bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nothing here yet!</h3>
+                        <p className="text-foreground/40 text-[10px] md:text-xs font-black uppercase tracking-[0.2em]">Click <span className="text-primary italic">"Drop a Mark"</span> in the sidebar to ignite the map.</p>
                     </div>
                 )}
 
@@ -247,8 +285,11 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                         : (isPopular ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/30' : 'bg-primary text-white hover:bg-primary-dark shadow-primary/30')
                                         }`}
                                 >
-                                    {hasVoted ? <Check className="w-3.5 h-3.5 md:w-4 md:h-4" /> : <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />}
-                                    {hasVoted ? 'Verified' : 'Verify'}
+                                    <div className="relative overflow-hidden w-full h-full flex items-center justify-center gap-1.5">
+                                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                                        {hasVoted ? <Check className="w-3.5 h-3.5 md:w-4 md:h-4 z-10 relative" /> : <Plus className="w-3.5 h-3.5 md:w-4 md:h-4 z-10 relative" />}
+                                        <span className="z-10 relative">{hasVoted ? 'Verified' : 'Verify'}</span>
+                                    </div>
                                 </button>
                                 <button
                                     onClick={(e) => handleGetDirections(e, popupInfo.lat, popupInfo.lng)}
