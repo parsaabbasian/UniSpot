@@ -160,7 +160,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     const isPopular = popupInfo ? popupInfo.verified_count >= 10 : false;
 
     return (
-        <div className={`w-full h-full relative overflow-hidden rounded-2xl md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/10 bg-background/20 font-sans transition-all duration-300 ${isSelectingLocation ? 'ring-4 ring-primary ring-inset cursor-crosshair' : ''}`}>
+        <div className={`w-full h-full relative overflow-hidden rounded-2xl md:rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/10 bg-background/20 font-sans transition-all duration-300 ${isSelectingLocation ? 'ring-4 ring-primary ring-inset cursor-crosshair' : ''}`}>
             <Map
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
