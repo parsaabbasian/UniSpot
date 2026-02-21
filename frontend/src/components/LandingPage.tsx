@@ -25,23 +25,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 contrast-125 mix-blend-overlay"></div>
             </div>
 
-            {/* Modern Fixed Navbar */}
-            <nav className="fixed top-0 left-0 w-full p-6 md:p-8 flex justify-between items-center z-[100] transition-all duration-500 backdrop-blur-xl bg-black/20 border-b border-white/5">
-                <div className="flex items-center gap-3 md:gap-4 group cursor-pointer">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
-                        <MapPin className="w-5 h-5 md:w-7 md:h-7 text-white" />
+            {/* Modern Floating Navbar */}
+            <div className="fixed top-6 left-0 w-full flex justify-center z-[100] px-6">
+                <nav className="w-full max-w-5xl px-6 md:px-8 py-4 flex justify-between items-center backdrop-blur-2xl bg-white/[0.03] border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-500 hover:border-primary/30 group">
+                    <div className="flex items-center gap-3 md:gap-4 cursor-pointer">
+                        <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                            <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                        </div>
+                        <span className="text-xl md:text-2xl font-black tracking-tighter italic bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent uppercase">UNISPOT</span>
                     </div>
-                    <span className="text-xl md:text-3xl font-black tracking-tighter italic bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">UNISPOT</span>
-                </div>
-                <button
-                    onClick={onEnter}
-                    className="group px-6 md:px-10 py-3 md:py-4 bg-white text-black rounded-full text-xs md:text-sm font-black uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:shadow-primary/20"
-                >
-                    <span className="flex items-center gap-2 md:gap-3">
-                        Launch <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                </button>
-            </nav>
+
+                    <div className="hidden md:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+                        <a href="#features" className="hover:text-primary transition-colors">Features</a>
+                        <a href="#community" className="hover:text-primary transition-colors">Community</a>
+                        <a href="#access" className="hover:text-primary transition-colors">Access</a>
+                    </div>
+
+                    <button
+                        onClick={onEnter}
+                        className="group px-6 md:px-8 py-2.5 md:py-3 bg-white text-black rounded-full text-[10px] md:text-xs font-black uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 shadow-[0_10px_30px_rgba(255,255,255,0.1)] hover:shadow-primary/20"
+                    >
+                        <span className="flex items-center gap-2">
+                            Launch <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                    </button>
+                </nav>
+            </div>
 
             {/* Main Content Sections */}
             <main className="relative z-10">
@@ -78,7 +87,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                 </section>
 
                 {/* Feature Highlights */}
-                <section className="max-w-full px-6 md:px-20 py-32 md:py-48 border-y border-white/5 bg-white/[0.02] backdrop-blur-3xl">
+                <section id="features" className="max-w-full px-6 md:px-20 py-32 md:py-48 border-y border-white/5 bg-white/[0.01] relative overflow-hidden">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
                     <div className="max-w-7xl mx-auto">
                         <div className="mb-16 md:mb-20 text-center md:text-left">
                             <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase mb-6 leading-none">Designed for <br />the modern Lion.</h2>
@@ -117,7 +127,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                 </section>
 
                 {/* Community Proof Section */}
-                <section className="py-48 md:py-64 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+                <section id="community" className="py-48 md:py-64 flex flex-col items-center justify-center px-6 relative overflow-hidden">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-primary/5 rounded-full blur-[100px] -skew-y-12"></div>
                     <Users className="w-16 h-16 md:w-24 md:h-24 text-primary/40 mb-10 md:mb-12 animate-bounce" />
                     <h2 className="text-5xl md:text-[6.5vw] font-black italic tracking-tighter uppercase mb-12 md:mb-16 text-center leading-[0.9]">JOIN THE <br />PACK.</h2>
@@ -135,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                 </section>
 
                 {/* Final CTA */}
-                <section className="py-32 md:py-48 px-6 text-center max-w-[100vw]">
+                <section id="access" className="py-32 md:py-48 px-6 text-center max-w-[100vw]">
                     <div className="max-w-5xl mx-auto p-12 md:p-24 rounded-[3rem] md:rounded-[4.5rem] bg-gradient-to-br from-primary via-primary-dark to-accent shadow-[0_40px_100px_rgba(79,70,229,0.5)] border border-white/10 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
                         <Star className="w-12 h-12 md:w-16 md:h-16 text-white mx-auto mb-8 md:mb-10 animate-spin-slow" />
