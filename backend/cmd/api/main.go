@@ -25,8 +25,18 @@ func main() {
 	// Start WebSocket hub
 	go ws.GlobalHub.Run()
 
-	// Start Database Listener for real-time deletions
-	go startDBListener()
+	// Start Database Listener for real-time changes — auto-reconnects on failure
+	go func() {
+		backoff := 2 * time.Second
+		for {
+			startDBListener()
+			log.Printf("DB Listener exited. Reconnecting in %v...", backoff)
+			time.Sleep(backoff)
+			if backoff < 60*time.Second {
+				backoff *= 2
+			}
+		}
+	}()
 
 	// Start Event Expiry Worker
 	go startEventExpiryWorker()

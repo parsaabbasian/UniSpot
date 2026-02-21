@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import MapView from './components/MapView';
 import EventForm from './components/EventForm';
@@ -19,6 +19,8 @@ function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeUserCount, setActiveUserCount] = useState(0);
   const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete', title: string, category: string } | null>(null);
+  const reconnectAttempts = useRef(0);
+  const reconnectTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -124,13 +126,36 @@ function App() {
         }
       };
 
+      socket.onerror = (err) => {
+        console.warn('WebSocket error:', err);
+      };
+
       socket.onclose = () => {
-        setTimeout(connectWS, 3000); // Reconnect after 3s
+        // Exponential backoff: 2s, 4s, 8s ... up to 30s max
+        const delay = Math.min(2000 * Math.pow(2, reconnectAttempts.current), 30000);
+        reconnectAttempts.current += 1;
+        console.log(`WS closed. Reconnecting in ${delay / 1000}s (attempt ${reconnectAttempts.current})`);
+        reconnectTimer.current = setTimeout(connectWS, delay);
       };
     };
 
     connectWS();
-    return () => socket?.close();
+
+    // Reconnect immediately when the tab becomes visible again
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && socket?.readyState !== WebSocket.OPEN) {
+        clearTimeout(reconnectTimer.current);
+        reconnectAttempts.current = 0;
+        connectWS();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      socket?.close();
+      clearTimeout(reconnectTimer.current);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, [fetchEvents]);
 
   const handleMapClick = (lat: number, lng: number) => {
