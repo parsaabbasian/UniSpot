@@ -79,7 +79,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
         });
 
         return () => {
-            authListener.subscription.unsubscribe();
+            if (authListener?.subscription) authListener.subscription.unsubscribe();
         };
     }, []);
 
