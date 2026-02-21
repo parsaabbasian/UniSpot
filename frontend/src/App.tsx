@@ -16,6 +16,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeUserCount, setActiveUserCount] = useState(0);
   const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete', title: string, category: string } | null>(null);
 
@@ -150,27 +151,38 @@ function App() {
         />
       )}
 
-      {/* Sidebar - Desktop: fixed width, Mobile: absolute overlay */}
+      {/* Sidebar - Desktop: fixed width or collapsed, Mobile: absolute overlay */}
       <div className={`
         fixed inset-y-0 left-0 z-[66] md:relative md:inset-auto md:z-auto transition-all duration-500 ease-in-out
-        ${isSidebarOpen ? 'translate-x-0 w-[85%] sm:w-80 p-4' : '-translate-x-full md:translate-x-0 md:w-64 lg:w-80 p-0'}
+        ${isSidebarOpen ? 'translate-x-0 w-[85%] sm:w-80 p-4' : '-translate-x-full md:translate-x-0 md:p-0'}
+        ${isSidebarCollapsed ? 'md:w-10' : 'md:w-64 lg:w-80'}
         bg-background/95 md:bg-transparent backdrop-blur-2xl md:backdrop-blur-none
       `}>
-        <Sidebar
-          selectedCategory={selectedCategory}
-          onCategoryChange={(cat) => {
-            setSelectedCategory(cat);
-            setIsSidebarOpen(false);
-          }}
-          isDarkMode={isDarkMode}
-          onToggleTheme={() => setIsDarkMode(!isDarkMode)}
-          isSelectingLocation={isSelectingLocation}
-          onToggleSelectLocation={() => {
-            onToggleSelectLocation();
-            setIsSidebarOpen(false);
-          }}
-          activeUserCount={activeUserCount}
-        />
+        {/* Desktop collapse toggle button */}
+        <button
+          onClick={() => setIsSidebarCollapsed(c => !c)}
+          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-[80] w-6 h-12 items-center justify-center glass-morphism rounded-full border border-white/20 shadow-lg text-foreground/50 hover:text-primary transition-all duration-300 hover:scale-105"
+          title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className={`w-3 h-3 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-0' : 'rotate-180'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+        </button>
+        <div className={`transition-all duration-500 ${isSidebarCollapsed ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 scale-100'} h-full`}>
+          <Sidebar
+            selectedCategory={selectedCategory}
+            onCategoryChange={(cat) => {
+              setSelectedCategory(cat);
+              setIsSidebarOpen(false);
+            }}
+            isDarkMode={isDarkMode}
+            onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+            isSelectingLocation={isSelectingLocation}
+            onToggleSelectLocation={() => {
+              onToggleSelectLocation();
+              setIsSidebarOpen(false);
+            }}
+            activeUserCount={activeUserCount}
+          />
+        </div>
       </div>
 
       <main className="flex-1 h-full relative p-2 md:p-0">
@@ -209,18 +221,18 @@ function App() {
         {notification && (
           <div className="fixed top-24 md:top-10 right-5 z-[100] bg-background/80 backdrop-blur-3xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 overflow-hidden min-w-[240px]">
             <div className={`absolute top-0 left-0 w-1.5 h-full ${notification.type === 'new' ? 'bg-primary' :
-                notification.type === 'verify' ? 'bg-green-500' : 'bg-red-500'
+              notification.type === 'verify' ? 'bg-green-500' : 'bg-red-500'
               }`}></div>
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-xl scale-90 ${notification.type === 'new' ? 'bg-primary/20 text-primary' :
-                  notification.type === 'verify' ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'
+                notification.type === 'verify' ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'
                 }`}>
                 {notification.type === 'new' ? <Plus className="w-4 h-4" /> :
                   notification.type === 'verify' ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
               </div>
               <div>
                 <p className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${notification.type === 'new' ? 'text-primary' :
-                    notification.type === 'verify' ? 'text-green-500' : 'text-red-500'
+                  notification.type === 'verify' ? 'text-green-500' : 'text-red-500'
                   }`}>
                   {notification.type === 'new' ? 'New Event Found' :
                     notification.type === 'verify' ? 'Event Verified' : 'Event Removed'}
