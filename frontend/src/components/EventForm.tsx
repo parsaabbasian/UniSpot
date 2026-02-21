@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Clock, Tag, MapPin, AlignLeft, ShieldCheck, AlertCircle } from 'lucide-react';
+import { X, Clock, Tag, MapPin, AlignLeft, ShieldCheck, AlertCircle, ChevronDown, Check } from 'lucide-react';
 
 interface EventFormProps {
     lat: number;
@@ -31,6 +31,16 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
     const [submitting, setSubmitting] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [locationError, setLocationError] = useState<string | null>(null);
+    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const [isDurationOpen, setIsDurationOpen] = useState(false);
+
+    const categories = ['Tech', 'Music', 'Food', 'Entertainment'];
+    const durations = [
+        { label: '1 Hour', value: 1 },
+        { label: '2 Hours', value: 2 },
+        { label: '4 Hours', value: 4 },
+        { label: '8 Hours', value: 8 }
+    ];
 
     const checkLocationAndSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -142,36 +152,74 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2 group">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 group-focus-within:text-primary transition-colors">
+                        <div className="space-y-2 relative">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
                                 <Tag className="w-3 h-3" /> Category
                             </label>
-                            <select
-                                className="w-full bg-black/20 dark:bg-white/5 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none cursor-pointer text-foreground font-black italic shadow-inner"
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
+                            <div
+                                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                                className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
                             >
-                                <option value="Tech">Tech</option>
-                                <option value="Music">Music</option>
-                                <option value="Food">Food</option>
-                                <option value="Entertainment">Other</option>
-                            </select>
+                                <span className="text-sm font-black italic uppercase text-foreground">{category}</span>
+                                <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                            </div>
+
+                            {isCategoryOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-10" onClick={() => setIsCategoryOpen(false)} />
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#0a0a0f] border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {categories.map((cat) => (
+                                            <div
+                                                key={cat}
+                                                onClick={() => {
+                                                    setCategory(cat);
+                                                    setIsCategoryOpen(false);
+                                                }}
+                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-colors ${category === cat ? 'bg-primary text-white' : 'text-foreground/60 hover:bg-white/5 hover:text-white'}`}
+                                            >
+                                                {cat}
+                                                {category === cat && <Check className="w-3 h-3" />}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </div>
 
-                        <div className="space-y-2 group">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2 group-focus-within:text-primary transition-colors">
+                        <div className="space-y-2 relative">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground/30 ml-1 flex items-center gap-2">
                                 <Clock className="w-3 h-3" /> Duration
                             </label>
-                            <select
-                                className="w-full bg-black/20 dark:bg-white/5 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none cursor-pointer text-foreground font-black italic shadow-inner"
-                                value={duration}
-                                onChange={(e) => setDuration(parseInt(e.target.value))}
+                            <div
+                                onClick={() => setIsDurationOpen(!isDurationOpen)}
+                                className="w-full bg-black/40 dark:bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between cursor-pointer group hover:border-primary/50 transition-all shadow-inner"
                             >
-                                <option value={1}>1 Hour</option>
-                                <option value={2}>2 Hours</option>
-                                <option value={4}>4 Hours</option>
-                                <option value={8}>8 Hours</option>
-                            </select>
+                                <span className="text-sm font-black italic uppercase text-foreground">
+                                    {durations.find(d => d.value === duration)?.label}
+                                </span>
+                                <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isDurationOpen ? 'rotate-180' : ''}`} />
+                            </div>
+
+                            {isDurationOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-10" onClick={() => setIsDurationOpen(false)} />
+                                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#0a0a0f] border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        {durations.map((d) => (
+                                            <div
+                                                key={d.value}
+                                                onClick={() => {
+                                                    setDuration(d.value);
+                                                    setIsDurationOpen(false);
+                                                }}
+                                                className={`px-6 py-3 text-xs font-black uppercase italic cursor-pointer flex items-center justify-between transition-colors ${duration === d.value ? 'bg-primary text-white' : 'text-foreground/60 hover:bg-white/5 hover:text-white'}`}
+                                            >
+                                                {d.label}
+                                                {duration === d.value && <Check className="w-3 h-3" />}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 
