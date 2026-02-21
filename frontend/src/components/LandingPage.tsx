@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ArrowRight, Users, Star, Layout, Globe, Smartphone, Coffee } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Users, Star, Layout, Globe, Smartphone, Coffee, X, MapPin } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: () => void;
@@ -11,6 +11,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
+    const [showLocationGuide, setShowLocationGuide] = useState(false);
+
     const handleLaunch = () => {
         if (navigator.geolocation) {
             // Explicitly set options for iOS compatibility
@@ -18,7 +20,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                 onEnter();
             }, (err) => {
                 console.warn('Location Error:', err);
-                onEnter(); // Still enter even if location fails
+                if (err.code === 1) { // PERMISSION_DENIED
+                    setShowLocationGuide(true);
+                } else {
+                    onEnter(); // Still enter even if location fails (timeout/position unavailable)
+                }
             }, {
                 enableHighAccuracy: true,
                 timeout: 5000,
@@ -55,6 +61,50 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
 
     return (
         <div className={`w-full min-h-screen transition-colors duration-700 ${isDarkMode ? 'bg-[#030303] text-white' : 'bg-[#fafafa] text-[#1a1a1a]'} selection:bg-primary/30 font-sans relative overflow-x-hidden scroll-smooth`}>
+            {/* Location Permission Denied Guide Overlay */}
+            {showLocationGuide && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-xl p-6 animate-in fade-in duration-500">
+                    <div className="max-w-md w-full glass-morphism p-10 rounded-[3rem] border border-white/20 shadow-[0_0_100px_rgba(79,70,229,0.2)] text-center relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+                        <button
+                            onClick={() => { setShowLocationGuide(false); onEnter(); }}
+                            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                            <MapPin className="w-10 h-10 text-primary animate-bounce" />
+                        </div>
+
+                        <h2 className="text-3xl font-black italic uppercase tracking-tighter mb-4 text-white">Location Blocked</h2>
+                        <p className="text-white/60 text-sm font-medium leading-relaxed mb-10">
+                            Safari on iOS requires you to manually allow location access for verified campus posting.
+                        </p>
+
+                        <div className="space-y-6 text-left mb-10">
+                            {[
+                                { step: '1', text: 'Tap the (AA) or "Website Settings" icon in Safari bar' },
+                                { step: '2', text: 'Go to Website Settings' },
+                                { step: '3', text: 'Set Location to "Ask" or "Allow"' },
+                            ].map((s) => (
+                                <div key={s.step} className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                                    <span className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-black shadow-lg shadow-primary/30 text-white shrink-0">{s.step}</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">{s.text}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="w-full bg-primary hover:bg-primary-dark text-white font-black py-6 rounded-[2rem] transition-all shadow-xl shadow-primary/40 active:scale-95 text-xs uppercase tracking-widest"
+                        >
+                            Refreshed Settings? Try Again
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Dynamic Background */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
                 <div className={`absolute top-[-10%] left-[-10%] w-[80%] h-[70%] blur-[180px] rounded-full animate-pulse transition-all duration-[3000ms] ${isDarkMode ? 'bg-primary/10 opacity-40' : 'bg-primary/5 opacity-60'}`}></div>

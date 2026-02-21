@@ -72,7 +72,11 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated }) =
             },
             (err) => {
                 console.error('Geo Error:', err);
-                setLocationError("Please enable location access in Safari/iOS Settings to verify you are at York U.");
+                if (err.code === 1) {
+                    setLocationError("Location Blocked. Tap (AA) in Safari bar -> Website Settings -> Location -> Set to 'Allow'.");
+                } else {
+                    setLocationError("Please enable location access in Safari/iOS Settings to verify you are at York U.");
+                }
                 setIsVerifying(false);
             },
             {
