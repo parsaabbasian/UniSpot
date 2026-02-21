@@ -36,6 +36,21 @@ func Connect() {
 		log.Printf("Migration warning: %v", err)
 	}
 
+	// Setup real-time deletion trigger
+	DB.Exec(`
+		CREATE OR REPLACE FUNCTION notify_event_delete() RETURNS trigger AS $$
+		BEGIN
+			PERFORM pg_notify('event_deleted', OLD.id::text);
+			RETURN OLD;
+		END;
+		$$ LANGUAGE plpgsql;
+		
+		DROP TRIGGER IF EXISTS trg_event_delete ON events;
+		CREATE TRIGGER trg_event_delete
+		AFTER DELETE ON events
+		FOR EACH ROW EXECUTE FUNCTION notify_event_delete();
+	`)
+
 	// Seed if empty
 	var count int64
 	DB.Model(&models.Event{}).Count(&count)

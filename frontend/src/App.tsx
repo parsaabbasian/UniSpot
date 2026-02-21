@@ -76,6 +76,8 @@ function App() {
           ));
         } else if (message.action === 'user_count') {
           setActiveUserCount(message.data.count);
+        } else if (message.action === 'delete_event') {
+          setEvents(prev => prev.filter(e => e.id !== message.data.id));
         }
       };
 
