@@ -34,7 +34,7 @@ func Connect() {
 	DB.Exec("CREATE EXTENSION IF NOT EXISTS postgis;")
 
 	// Automatically create tables
-	err = DB.AutoMigrate(&models.Event{}, &models.RSVP{})
+	err = DB.AutoMigrate(&models.Event{}, &models.RSVP{}, &models.Verification{})
 	if err != nil {
 		log.Printf("Migration warning: %v", err)
 	}

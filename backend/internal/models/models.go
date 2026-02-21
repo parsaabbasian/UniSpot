@@ -23,3 +23,10 @@ type RSVP struct {
 	EventID   uint      `gorm:"not null" json:"event_id"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type Verification struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	EventID   uint      `gorm:"not null;index:idx_event_ip,unique" json:"event_id"`
+	IPAddress string    `gorm:"not null;index:idx_event_ip,unique" json:"ip_address"`
+	CreatedAt time.Time `json:"created_at"`
+}
