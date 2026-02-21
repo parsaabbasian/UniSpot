@@ -66,20 +66,28 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full bg-background md:p-4 gap-4 overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+    <div className="flex flex-col md:flex-row h-screen w-full bg-background md:p-3 lg:p-4 gap-3 md:gap-4 overflow-hidden animate-in fade-in zoom-in-95 duration-700">
       {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="md:hidden fixed top-6 left-6 z-[60] p-3 glass-morphism rounded-2xl text-foreground shadow-xl border border-white/10"
+        className="md:hidden fixed top-5 left-5 z-[70] p-4 glass-morphism rounded-2xl text-foreground shadow-2xl border border-white/20 active:scale-90 transition-transform flex items-center justify-center"
       >
-        {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isSidebarOpen ? <X className="w-5 h-5 md:w-6 md:h-6" /> : <Menu className="w-5 h-5 md:w-6 md:h-6" />}
       </button>
+
+      {/* Sidebar Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[65] animate-in fade-in duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar - Desktop: fixed width, Mobile: absolute overlay */}
       <div className={`
-        fixed inset-0 z-50 md:relative md:inset-auto md:z-auto transition-transform duration-500 ease-in-out
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        md:w-80 w-full p-4 md:p-0 bg-background/80 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none
+        fixed inset-y-0 left-0 z-[66] md:relative md:inset-auto md:z-auto transition-all duration-500 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0 w-[85%] sm:w-80 p-4' : '-translate-x-full md:translate-x-0 md:w-80 lg:w-96 p-0'}
+        bg-background/95 md:bg-transparent backdrop-blur-2xl md:backdrop-blur-none
       `}>
         <Sidebar
           selectedCategory={selectedCategory}
@@ -107,12 +115,12 @@ function App() {
         />
 
         {isSelectingLocation && (
-          <div className="fixed md:absolute top-24 md:top-8 left-1/2 -translate-x-1/2 z-[45] bg-primary px-6 md:px-8 py-3 md:py-4 rounded-3xl shadow-2xl text-white font-black italic flex items-center gap-4 animate-in slide-in-from-top-4 duration-500 border border-white/20 text-sm md:text-base whitespace-nowrap">
-            <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
-            Select event location
+          <div className="fixed md:absolute top-24 md:top-10 left-1/2 -translate-x-1/2 z-[45] bg-primary/90 backdrop-blur-xl px-8 py-4 rounded-full shadow-[0_20px_40px_rgba(79,70,229,0.4)] text-white font-black italic flex items-center gap-4 animate-in slide-in-from-top-6 duration-700 border border-white/20 text-xs md:text-base whitespace-nowrap group">
+            <div className="w-2.5 h-2.5 bg-white rounded-full animate-ping shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+            TAP ANYWHERE TO MARK EVENT
             <button
               onClick={() => setIsSelectingLocation(false)}
-              className="ml-2 bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-all"
+              className="ml-4 bg-white/20 hover:bg-white/40 p-2 rounded-full transition-all hover:rotate-90"
             >
               <SidebarX className="w-4 h-4" />
             </button>

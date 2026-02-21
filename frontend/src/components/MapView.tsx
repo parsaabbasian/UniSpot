@@ -225,16 +225,16 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                             )}
 
                             <div className="flex flex-wrap items-center gap-2 mb-5 md:mb-6">
-                                <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[8px] md:text-[10px] font-black text-white uppercase shadow-sm`} style={{ backgroundColor: categoryColors[popupInfo.category] || '#6366f1' }}>
-                                    <Tag className="w-2.5 h-2.5 md:w-3 md:h-3" /> {popupInfo.category}
+                                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[11px] font-black text-white uppercase shadow-lg shadow-black/20" style={{ backgroundColor: categoryColors[popupInfo.category] || '#6366f1' }}>
+                                    <Tag className="w-3 h-3" /> {popupInfo.category}
                                 </span>
-                                <span className="flex items-center gap-1 px-2.5 py-1 bg-foreground/5 rounded-full text-[8px] md:text-[10px] font-black text-foreground/50 uppercase border border-foreground/5">
-                                    <Clock className="w-2.5 h-2.5 md:w-3 md:h-3" /> {popupInfo.duration_hours || 2}h
+                                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/10 dark:bg-white/10 rounded-full text-[9px] md:text-[11px] font-black text-foreground/70 dark:text-white/70 uppercase border border-foreground/5 dark:border-white/5 shadow-sm">
+                                    <Clock className="w-3 h-3" /> {popupInfo.duration_hours || 2}H
                                 </span>
-                                <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase shadow-sm ${isPopular ? 'bg-orange-500/10 text-orange-600 border border-orange-500/10' : 'bg-green-500/10 text-green-500 border border-green-500/10'
+                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[11px] font-black uppercase shadow-lg ${isPopular ? 'bg-orange-500/20 text-orange-500 border border-orange-500/20 shadow-orange-500/10' : 'bg-green-500/20 text-green-500 border border-green-500/20 shadow-green-500/10'
                                     }`}>
-                                    {isPopular ? <TrendingUp className="w-2.5 h-2.5 md:w-3 md:h-3" /> : <Check className="w-2.5 h-2.5 md:w-3 md:h-3" />}
-                                    {popupInfo.verified_count || 0}
+                                    {isPopular ? <TrendingUp className="w-3 h-3" /> : <Check className="w-3 h-3" />}
+                                    {popupInfo.verified_count || 0} VERIFICATIONS
                                 </span>
                             </div>
 
