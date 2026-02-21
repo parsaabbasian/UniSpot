@@ -26,9 +26,21 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeUserCount, setActiveUserCount] = useState(0);
-  const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete', title: string, category: string, userName?: string } | null>(null);
+  const [notification, setNotification] = useState<{ type: 'new' | 'verify' | 'delete' | 'error', title: string, category: string, userName?: string } | null>(null);
   const reconnectAttempts = useRef(0);
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -192,6 +204,21 @@ function App() {
 
   const handleMapClick = (lat: number, lng: number) => {
     if (isSelectingLocation) {
+      // York U Keele Campus Center
+      const YORK_U_COORDS = { lat: 43.7735, lng: -79.5019 };
+      const distance = calculateDistance(lat, lng, YORK_U_COORDS.lat, YORK_U_COORDS.lng);
+
+      // Check if within 2.5km (roughly campus area + immediate surroundings)
+      if (distance > 2.5) {
+        setNotification({
+          type: 'error' as any,
+          title: 'Outside Campus Boundary',
+          category: 'Location Restricted'
+        });
+        setTimeout(() => setNotification(null), 4000);
+        return;
+      }
+
       setPendingEventCoords({ lat, lng });
       setIsSelectingLocation(false);
     }
@@ -336,7 +363,7 @@ function App() {
         {isSelectingLocation && (
           <div className="fixed md:absolute top-24 md:top-10 left-1/2 -translate-x-1/2 z-[45] bg-primary/95 backdrop-blur-xl px-6 py-3 rounded-full shadow-[0_20px_40px_rgba(79,70,229,0.3)] text-white font-bold flex items-center gap-3 animate-in slide-in-from-top-6 duration-700 border border-white/20 text-[10px] md:text-sm whitespace-nowrap group tracking-wider">
             <div className="w-2 h-2 bg-white rounded-full animate-ping shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
-            TAP ANYWHERE TO MARK EVENT
+            TAP ANYWHERE WITHIN YORK U TO DROP PIN
             <button
               onClick={() => setIsSelectingLocation(false)}
               className="ml-4 bg-white/20 hover:bg-white/40 p-2 rounded-full transition-all hover:rotate-90"
@@ -359,9 +386,9 @@ function App() {
           />
         )}
         {notification && (
-          <div className="fixed top-24 md:top-10 right-5 z-[100] bg-background/80 backdrop-blur-3xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 overflow-hidden min-w-[240px]">
+          <div className={`fixed top-24 md:top-10 right-5 z-[100] bg-background/80 backdrop-blur-3xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 overflow-hidden min-w-[240px] ${notification.type === 'error' ? 'ring-2 ring-red-500/50' : ''}`}>
             <div className={`absolute top-0 left-0 w-1.5 h-full ${notification.type === 'new' ? 'bg-primary' :
-              notification.type === 'verify' ? 'bg-green-500' : 'bg-red-500'
+              notification.type === 'verify' ? 'bg-green-500' : notification.type === 'error' ? 'bg-red-500' : 'bg-red-500'
               }`}></div>
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-xl scale-90 ${notification.type === 'new' ? 'bg-primary/20 text-primary' :
@@ -375,7 +402,8 @@ function App() {
                   notification.type === 'verify' ? 'text-green-500' : 'text-red-500'
                   }`}>
                   {notification.type === 'new' ? 'New Event Found' :
-                    notification.type === 'verify' ? 'Event Verified' : 'Event Removed'}
+                    notification.type === 'verify' ? 'Event Verified' :
+                      notification.type === 'error' ? 'Boundary Error' : 'Event Removed'}
                 </p>
                 <h4 className="text-sm font-black text-foreground italic line-clamp-1 uppercase tracking-tighter">{notification.title}</h4>
                 {notification.userName && (
@@ -384,6 +412,11 @@ function App() {
                 <p className="text-[9px] text-foreground/40 font-bold uppercase mt-0.5 tracking-wider">{notification.category}</p>
               </div>
             </div>
+            {notification.type === 'error' && (
+              <div className="mt-2 text-[9px] font-bold text-red-500/80 uppercase tracking-tighter">
+                You can only drop marks within the York University campus region.
+              </div>
+            )}
           </div>
         )}
 
