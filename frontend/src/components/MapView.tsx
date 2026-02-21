@@ -409,7 +409,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 )}
                                 <div
                                     className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-105 border ${liveEventId === event.id ? 'bg-primary border-primary animate-pulse shadow-[0_0_20px_rgba(99,102,241,0.8)]' :
-                                            isDarkMode ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'
+                                        isDarkMode ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'
                                         }`}
                                     style={{ color: liveEventId === event.id ? 'white' : catColor }}
                                 >
@@ -425,6 +425,20 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                         </Marker>
                     );
                 })}
+
+                {/* User Location — Blue Dot (Google Maps style) */}
+                {userLocation && (
+                    <Marker longitude={userLocation.lng} latitude={userLocation.lat} anchor="center">
+                        <div className="relative w-5 h-5 flex items-center justify-center" style={{ zIndex: 100 }}>
+                            {/* Outer pulse ring */}
+                            <div className="absolute w-10 h-10 rounded-full bg-blue-500/20 animate-ping"></div>
+                            {/* Semi-transparent halo */}
+                            <div className="absolute w-6 h-6 rounded-full bg-blue-400/30 border border-blue-300/50"></div>
+                            {/* Inner solid dot */}
+                            <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-[0_0_10px_rgba(59,130,246,0.8)]"></div>
+                        </div>
+                    </Marker>
+                )}
 
                 <NavigationControl position="bottom-right" />
 
