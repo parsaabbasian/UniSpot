@@ -138,7 +138,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         };
     };
 
-    // Format time helper (HH:MM AM/PM) - Standard for Canada/York U
+    // Format time helper (HH:MM AM/PM) - Standard for Canada/Toronto
     const formatTime = (timeStr: string) => {
         try {
             const date = parseEventDate(timeStr);
@@ -146,7 +146,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
-            }).replace(/\./g, ''); // Clean AM/PM
+            }).replace(/\./g, '').toUpperCase();
         } catch (e) {
             return '';
         }

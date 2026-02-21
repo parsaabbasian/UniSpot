@@ -33,6 +33,9 @@ func Connect() {
 	// Ensure PostGIS is enabled
 	DB.Exec("CREATE EXTENSION IF NOT EXISTS postgis;")
 
+	// Set session timezone to Toronto
+	DB.Exec("SET TIME ZONE 'America/Toronto';")
+
 	// Automatically create tables
 	err = DB.AutoMigrate(&models.Event{}, &models.RSVP{}, &models.Verification{})
 	if err != nil {

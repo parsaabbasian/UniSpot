@@ -17,6 +17,7 @@ function App() {
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeUserCount, setActiveUserCount] = useState(0);
+  const [notification, setNotification] = useState<{ title: string, category: string } | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -69,7 +70,12 @@ function App() {
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
         if (message.action === 'new_event') {
-          setEvents(prev => [message.data, ...prev]);
+          setEvents(prev => {
+            if (prev.find(e => e.id === message.data.id)) return prev;
+            return [message.data, ...prev];
+          });
+          setNotification({ title: message.data.title, category: message.data.category });
+          setTimeout(() => setNotification(null), 5000);
         } else if (message.action === 'verify_event') {
           setEvents(prev => prev.map(e =>
             e.id === message.data.id ? { ...e, verified_count: message.data.verified_count } : e
@@ -184,6 +190,14 @@ function App() {
               setSelectedCategory('all');
             }}
           />
+        )}
+        {notification && (
+          <div className="fixed top-24 md:top-10 right-5 z-[100] bg-white/10 backdrop-blur-3xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10 duration-500 overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Live Update</p>
+            <h4 className="text-sm font-black text-white italic">{notification.title}</h4>
+            <p className="text-[9px] text-white/50 font-bold uppercase mt-1">Added to {notification.category}</p>
+          </div>
         )}
       </main>
     </div>
