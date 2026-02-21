@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
 import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
-import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Tag, Plus, Check, Flame, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Zap, BookOpen, Users, Dumbbell, ShieldAlert, ShoppingBag, X, ExternalLink } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Event } from '../types';
 
@@ -578,27 +578,6 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, onViewD
                                         <span>{walkingInfo.distance > 1000 ? `${(walkingInfo.distance / 1000).toFixed(1)}KM` : `${Math.round(walkingInfo.distance)}M`}</span>
                                     </div>
                                 )}
-                            </div>
-
-                            {popupInfo.description && (
-                                <div className="flex gap-2 mb-4 md:mb-5 bg-foreground/5 p-3 md:p-4 rounded-[1rem] md:rounded-[1.5rem] border border-foreground/5">
-                                    <p className="text-xs md:text-sm text-foreground/80 leading-relaxed font-semibold italic line-clamp-3">
-                                        "{popupInfo.description}"
-                                    </p>
-                                </div>
-                            )}
-
-                            <div className="flex flex-wrap items-center gap-2 mb-6 md:mb-8">
-                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase border shadow-sm ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`} style={{ borderColor: `${categoryColors[popupInfo.category]}40`, color: categoryColors[popupInfo.category] }}>
-                                    <Tag className="w-3 h-3" /> {popupInfo.category}
-                                </span>
-                                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/5 rounded-full text-[9px] md:text-[10px] font-black text-foreground/50 uppercase border border-foreground/5">
-                                    <Clock className="w-3 h-3" /> {popupInfo.duration_hours || 2}H
-                                </span>
-                                <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase border ${isPopular ? 'bg-primary/5 text-primary border-primary/20' : 'bg-green-500/5 text-green-500 border-green-500/20'}`}>
-                                    {isPopular ? <TrendingUp className="w-3 h-3" /> : <Check className="w-3 h-3" />}
-                                    {popupInfo.verified_count || 0} PROOFS
-                                </span>
                             </div>
 
                             <button
