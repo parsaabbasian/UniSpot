@@ -1,3 +1,4 @@
+// UniSpot - Campus Intelligence App
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import MapView from './components/MapView';
