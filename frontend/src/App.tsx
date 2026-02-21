@@ -89,6 +89,27 @@ function App() {
             }
             return updated;
           });
+        } else if (message.action === 'update_event') {
+          // Supabase direct edit — patch the event in-place
+          setEvents(prev => prev.map(e => {
+            if (e.id === message.data.id) {
+              return {
+                ...e,
+                title: message.data.title ?? e.title,
+                description: message.data.description ?? e.description,
+                category: message.data.category ?? e.category,
+                verified_count: message.data.verified_count ?? e.verified_count,
+                start_time: message.data.start_time ?? e.start_time,
+                end_time: message.data.end_time ?? e.end_time,
+              };
+            }
+            return e;
+          }));
+          const updated = events.find(e => e.id === message.data.id);
+          if (updated) {
+            setNotification({ type: 'verify', title: message.data.title ?? updated.title, category: message.data.category ?? updated.category });
+            setTimeout(() => setNotification(null), 3000);
+          }
         } else if (message.action === 'user_count') {
           setActiveUserCount(message.data.count);
         } else if (message.action === 'delete_event') {

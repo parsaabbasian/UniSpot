@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"os"
 	"strconv"
@@ -83,11 +84,14 @@ func startDBListener() {
 	}
 	defer conn.Close(context.Background())
 
-	_, err = conn.Exec(context.Background(), "LISTEN event_deleted")
+	// LISTEN to both delete and update channels
+	_, err = conn.Exec(context.Background(), "LISTEN event_deleted; LISTEN event_updated")
 	if err != nil {
 		log.Printf("Failed to listen: %v", err)
 		return
 	}
+
+	log.Printf("DB Listener active: watching event_deleted and event_updated channels")
 
 	for {
 		notification, err := conn.WaitForNotification(context.Background())
@@ -96,12 +100,24 @@ func startDBListener() {
 			continue
 		}
 
-		// Convert ID to int for consistency with frontend expectations if possible
-		id, _ := strconv.Atoi(notification.Payload)
+		switch notification.Channel {
+		case "event_deleted":
+			id, _ := strconv.Atoi(notification.Payload)
+			ws.GlobalHub.BroadcastEvent("delete_event", map[string]interface{}{
+				"id": id,
+			})
+			log.Printf("Broadcasted delete_event for ID: %d", id)
 
-		ws.GlobalHub.BroadcastEvent("delete_event", map[string]interface{}{
-			"id": id,
-		})
+		case "event_updated":
+			// Payload is the full row JSON from row_to_json(NEW)
+			var updatedEvent map[string]interface{}
+			if err := json.Unmarshal([]byte(notification.Payload), &updatedEvent); err != nil {
+				log.Printf("Failed to parse updated event: %v", err)
+				continue
+			}
+			ws.GlobalHub.BroadcastEvent("update_event", updatedEvent)
+			log.Printf("Broadcasted update_event: %v", updatedEvent["id"])
+		}
 	}
 }
 

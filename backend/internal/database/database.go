@@ -57,6 +57,21 @@ func Connect() {
 		FOR EACH ROW EXECUTE FUNCTION notify_event_delete();
 	`)
 
+	// Setup real-time update trigger — fires on ANY column change
+	DB.Exec(`
+		CREATE OR REPLACE FUNCTION notify_event_update() RETURNS trigger AS $$
+		BEGIN
+			PERFORM pg_notify('event_updated', row_to_json(NEW)::text);
+			RETURN NEW;
+		END;
+		$$ LANGUAGE plpgsql;
+
+		DROP TRIGGER IF EXISTS trg_event_update ON events;
+		CREATE TRIGGER trg_event_update
+		AFTER UPDATE ON events
+		FOR EACH ROW EXECUTE FUNCTION notify_event_update();
+	`)
+
 	// Seed if empty
 	var count int64
 	DB.Model(&models.Event{}).Count(&count)
