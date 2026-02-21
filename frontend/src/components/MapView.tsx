@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Map, { Source, Layer, NavigationControl, Popup, Marker } from 'react-map-gl/mapbox';
+import mapboxgl from 'mapbox-gl';
 import type { GeoJSONSource } from 'mapbox-gl';
 import { ShieldCheck, Tag, Plus, Check, Flame, TrendingUp, Navigation, Clock, LocateFixed, Layers, Music, Utensils, Cpu, Ticket, Zap } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -28,6 +29,8 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
 
     const [popupInfo, setPopupInfo] = useState<Event | null>(null);
     const [votedEvents, setVotedEvents] = useState<number[]>([]);
+    const [routeData, setRouteData] = useState<any>(null);
+    const [userLocation, setUserLocation] = useState<{ lng: number, lat: number } | null>(null);
     const mapRef = useRef<any>(null);
 
     useEffect(() => {
@@ -66,10 +69,10 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
     };
 
     const categoryColors: Record<string, string> = {
-        'Tech': '#FF2D55',      // Cyber Ruby
-        'Music': '#5856D6',     // Electric Indigo
-        'Food': '#FFCC00',      // Gold
-        'Entertainment': '#00FFC2' // Mint
+        'Tech': '#6366F1',      // Indigo
+        'Music': '#8B5CF6',     // Violet
+        'Food': '#F59E0B',      // Amber
+        'Entertainment': '#10B981' // Emerald
     };
 
     const clusterLayer: any = {
@@ -78,7 +81,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         source: 'events',
         filter: ['has', 'point_count'],
         paint: {
-            'circle-color': ['step', ['get', 'point_count'], '#E31837', 5, '#C41230', 15, '#990D26'],
+            'circle-color': ['step', ['get', 'point_count'], '#6366F1', 5, '#4F46E5', 15, '#3730A3'],
             'circle-radius': ['step', ['get', 'point_count'], 20, 5, 30, 15, 40],
             'circle-stroke-width': 2,
             'circle-stroke-color': 'rgba(255,255,255,0.3)'
@@ -147,9 +150,59 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
         }
     };
 
-    const handleGetDirections = (e: React.MouseEvent, lat: number, lng: number) => {
+    const handleGetDirections = async (e: React.MouseEvent, destLat: number, destLng: number) => {
         e.stopPropagation();
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+
+        // Get user location if not already available
+        let startLng = userLocation?.lng;
+        let startLat = userLocation?.lat;
+
+        if (!startLng || !startLat) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const { longitude, latitude } = position.coords;
+                    setUserLocation({ lng: longitude, lat: latitude });
+                    fetchRoute(longitude, latitude, destLng, destLat);
+                });
+            }
+            return;
+        }
+
+        fetchRoute(startLng, startLat, destLng, destLat);
+    };
+
+    const fetchRoute = async (startLng: number, startLat: number, destLng: number, destLat: number) => {
+        try {
+            const query = await fetch(
+                `https://api.mapbox.com/directions/v5/mapbox/walking/${startLng},${startLat};${destLng},${destLat}?steps=true&geometries=geojson&access_token=${MAPBOX_TOKEN}`
+            );
+            const json = await query.json();
+            const data = json.routes[0];
+            const route = data.geometry.coordinates;
+
+            setRouteData({
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: route
+                }
+            });
+
+            setPopupInfo(null); // Close popup when directions start
+
+            // Fit map to route
+            if (mapRef.current) {
+                const coordinates = route;
+                const bounds = coordinates.reduce((acc: any, coord: any) => {
+                    return acc.extend(coord);
+                }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+                mapRef.current.fitBounds(bounds, { padding: 50 });
+            }
+        } catch (error) {
+            console.error('Failed to fetch route:', error);
+        }
     };
 
     const hasVoted = popupInfo ? votedEvents.includes(popupInfo.id) : false;
@@ -195,6 +248,24 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                     <Layer {...clusterCountLayer} />
                 </Source>
 
+                {routeData && (
+                    <Source id="routeSource" type="geojson" data={routeData}>
+                        <Layer
+                            id="routeLayer"
+                            type="line"
+                            layout={{
+                                'line-join': 'round',
+                                'line-cap': 'round'
+                            }}
+                            paint={{
+                                'line-color': '#6366F1',
+                                'line-width': 6,
+                                'line-opacity': 0.8
+                            }}
+                        />
+                    </Source>
+                )}
+
                 {events.map((event) => {
                     const isHot = event.verified_count >= 10;
                     const catColor = categoryColors[event.category] || '#6366f1';
@@ -212,7 +283,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                         >
                             <div className={`relative cursor-pointer group animate-in fade-in zoom-in duration-500`} style={{ zIndex: popupInfo?.id === event.id ? 50 : 1 }}>
                                 {isHot && (
-                                    <div className="absolute -inset-2 bg-orange-500 rounded-full blur animate-pulse opacity-50"></div>
+                                    <div className="absolute -inset-2 bg-primary rounded-full blur animate-pulse opacity-40"></div>
                                 )}
                                 <div className="absolute -inset-1 bg-white rounded-full blur-sm opacity-50 group-hover:opacity-100 transition-opacity"></div>
                                 <div
@@ -221,7 +292,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 >
                                     {getCategoryIcon(event.category)}
                                     {isHot && (
-                                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-400 to-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full border border-white shadow-sm flex items-center gap-0.5">
+                                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent text-white text-[8px] font-black px-1.5 py-0.5 rounded-full border border-white shadow-sm flex items-center gap-0.5">
                                             <Flame className="w-2 h-2" /> HOT
                                         </div>
                                     )}
@@ -284,7 +355,7 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                     >
                         <div className="p-4 md:p-6 min-w-[260px] max-w-[300px] glass-morphism rounded-[1.5rem] md:rounded-[2.5rem] border border-white/20 overflow-hidden relative shadow-2xl">
                             {isPopular && (
-                                <div className="absolute top-3 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary to-primary-dark rounded-full text-[8px] md:text-[10px] font-black text-white shadow-lg animate-pulse">
+                                <div className="absolute top-3 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary to-accent rounded-full text-[8px] md:text-[10px] font-black text-white shadow-lg animate-pulse">
                                     <Flame className="w-2.5 h-3 md:w-3.5 md:h-4" /> HOT SPOT
                                 </div>
                             )}
@@ -354,10 +425,11 @@ const MapView: React.FC<MapViewProps> = ({ events, onMapClick, onVerify, isDarkM
                                 </button>
                                 <button
                                     onClick={(e) => handleGetDirections(e, popupInfo.lat, popupInfo.lng)}
-                                    className="px-4 md:px-5 py-3 md:py-4 bg-foreground/5 hover:bg-foreground/10 text-foreground rounded-xl md:rounded-2xl transition-all shadow-sm border border-foreground/5 active:scale-[0.98]"
+                                    className="px-4 md:px-5 py-3 md:py-4 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl md:rounded-2xl transition-all shadow-sm border border-primary/10 active:scale-[0.98] flex items-center gap-2 group"
                                     title="Get Directions"
                                 >
-                                    <Navigation className="w-4 h-4 md:w-5 md:h-5" />
+                                    <Navigation className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:rotate-12" />
+                                    <span className="text-[10px] md:text-xs font-black uppercase">Go</span>
                                 </button>
                             </div>
                         </div>

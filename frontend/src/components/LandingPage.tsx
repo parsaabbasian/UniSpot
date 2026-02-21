@@ -39,7 +39,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             {/* Dynamic Ambient Background */}
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[70%] bg-primary/10 blur-[180px] rounded-full animate-pulse opacity-40"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-primary/5 blur-[120px] rounded-full animate-pulse opacity-20"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-secondary/15 blur-[120px] rounded-full animate-pulse opacity-30"></div>
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 contrast-125 mix-blend-overlay"></div>
             </div>
 
@@ -80,7 +80,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                     </div>
 
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-primary/15 blur-[100px] group-hover:bg-primary/25 transition-all duration-1000"></div>
+                        <div className="absolute inset-0 bg-primary/10 blur-[100px] group-hover:bg-primary/20 transition-all duration-1000"></div>
                         <h1 className="text-[10vw] md:text-[6.5vw] font-black tracking-tight mb-8 md:mb-10 leading-[0.9] italic uppercase select-none relative z-10">
                             CAMPUS <br />
                             <span className="text-primary italic relative">
@@ -169,7 +169,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
 
                 {/* Final CTA */}
                 <section id="access" className="py-32 md:py-48 px-6 text-center max-w-[100vw]">
-                    <div className="max-w-5xl mx-auto p-12 md:p-24 rounded-[3rem] md:rounded-[4.5rem] bg-gradient-to-br from-primary via-primary-dark to-accent shadow-[0_40px_100px_rgba(79,70,229,0.5)] border border-white/10 relative overflow-hidden group">
+                    <div className="max-w-5xl mx-auto p-12 md:p-24 rounded-[3rem] md:rounded-[4.5rem] bg-gradient-to-br from-primary via-primary-dark to-secondary shadow-[0_40px_100px_rgba(99,102,241,0.3)] border border-white/10 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
                         <Star className="w-12 h-12 md:w-16 md:h-16 text-white mx-auto mb-8 md:mb-10 animate-spin-slow" />
                         <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter mb-10 md:mb-12 uppercase leading-[0.9]">Ready for the <br />real York experience?</h2>
