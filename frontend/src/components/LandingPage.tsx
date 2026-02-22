@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, X, MapPin, Mail, ArrowRight, CheckCircle2, Navigation } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { ShieldCheck, X, MapPin, User, ArrowRight, CheckCircle2, Navigation } from 'lucide-react';
 
 interface LandingPageProps {
     onEnter: (userData: { name: string, email: string }) => void;
@@ -13,75 +12,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
     const [lastScrollY, setLastScrollY] = useState(0);
     const [showLocationGuide, setShowLocationGuide] = useState(false);
     const [showAuthForm, setShowAuthForm] = useState(false);
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [error, setError] = useState('');
 
-    const validateEmail = (email: string) => {
-        return email.toLowerCase().endsWith('@my.yorku.ca');
-    };
-
-    const handleLaunch = async () => {
-        if (!email) {
+    const handleLaunch = () => {
+        if (!showAuthForm) {
             setShowAuthForm(true);
             return;
         }
 
-        if (!validateEmail(email)) {
-            setError('Please use a valid @my.yorku.ca email');
+        if (!name.trim()) {
+            setError('Please enter a nickname to continue');
             return;
         }
 
-        try {
-            // Initiate Supabase Magic Link Login
-            const { error: authError } = await supabase.auth.signInWithOtp({
-                email: email,
-                options: {
-                    emailRedirectTo: window.location.origin,
-                },
-            });
-
-            if (authError) throw authError;
-
-            setError('Check your student email for the secure login link!');
-        } catch (err: any) {
-            console.error('Login Error:', err);
-            setError(err.message || 'Failed to send login link.');
-        }
+        // Simple entry without email verification
+        onEnter({
+            name: name.trim(),
+            email: `${name.trim().toLowerCase().replace(/\s+/g, '')}@student.yorku.ca`
+        });
     };
-
-    useEffect(() => {
-        // Listen for Supabase Auth state changes (e.g., when they click the magic link)
-        const { data: authListener } = supabase.auth.onAuthStateChange((event: string, session: any) => {
-            if (event === 'SIGNED_IN' && session?.user) {
-                // If they logged in, get their location and enter
-                const userEmail = session.user.email || '';
-                const userName = userEmail.split('@')[0];
-
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(() => {
-                        onEnter({ name: userName, email: userEmail });
-                    }, (err) => {
-                        if (err.code === 1) setShowLocationGuide(true);
-                        else onEnter({ name: userName, email: userEmail });
-                    }, { enableHighAccuracy: true });
-                } else {
-                    onEnter({ name: userName, email: userEmail });
-                }
-            }
-        });
-
-        // Also check if already logged in on mount
-        supabase.auth.getSession().then(({ data: { session } }: any) => {
-            if (session?.user) {
-                const userEmail = session.user.email || '';
-                onEnter({ name: userEmail.split('@')[0], email: userEmail });
-            }
-        });
-
-        return () => {
-            if (authListener?.subscription) authListener.subscription.unsubscribe();
-        };
-    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -153,7 +103,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                 </div>
             )}
 
-            {/* User Auth Overlay */}
+            {/* User Nickname Form Overlay */}
             {showAuthForm && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-xl p-6 animate-in fade-in duration-500">
                     <div className="max-w-md w-full glass-morphism p-10 rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(79,70,229,0.2)] text-center relative overflow-hidden">
@@ -169,21 +119,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             <img src="/logo.svg" alt="UniSpot" className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(79,70,229,0.8)]" style={{ filter: 'brightness(0) saturate(100%) invert(43%) sepia(87%) saturate(2250%) hue-rotate(227deg) brightness(89%) contrast(92%)' }} />
                         </div>
 
-                        <h2 className="text-3xl font-extrabold tracking-tight mb-2 text-white">Unlock UniSpot</h2>
-                        <p className="text-white/60 text-sm font-medium mb-10">Student verification is required to explore the map and share events.</p>
+                        <h2 className="text-3xl font-extrabold tracking-tight mb-2 text-white">Join UniSpot</h2>
+                        <p className="text-white/60 text-sm font-medium mb-10">Choose a nickname to explore the campus map and share events.</p>
 
                         <div className="space-y-4 mb-8">
                             <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-primary transition-colors" />
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-primary transition-colors" />
                                 <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    value={email}
+                                    type="text"
+                                    placeholder="Your Nickname"
+                                    value={name}
                                     onChange={(e) => {
-                                        setEmail(e.target.value);
+                                        setName(e.target.value);
                                         setError('');
                                     }}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleLaunch()}
                                     className={`w-full bg-white/5 border rounded-2xl py-4 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 focus:bg-white/10 transition-all placeholder:text-white/30 text-white ${error ? 'border-red-500/50' : 'border-white/10'}`}
+                                    autoFocus
                                 />
                             </div>
                             {error && <p className="text-red-400 text-xs font-semibold tracking-wide text-left pl-2">{error}</p>}
@@ -193,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             onClick={handleLaunch}
                             className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-[2rem] transition-all shadow-xl shadow-primary/30 active:scale-95 text-base"
                         >
-                            Send Secure Login Link <ArrowRight className="w-5 h-5" />
+                            Enter Map <ArrowRight className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
