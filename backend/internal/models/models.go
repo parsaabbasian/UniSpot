@@ -19,6 +19,7 @@ type Event struct {
 	Verifiers     []string  `gorm:"-" json:"verifiers"`
 	Latitude      float64   `gorm:"-" json:"lat"`
 	Longitude     float64   `gorm:"-" json:"lng"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type RSVP struct {
