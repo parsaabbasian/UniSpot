@@ -103,50 +103,78 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                 </div>
             )}
 
-            {/* User Nickname Form Overlay */}
+            {/* Premium Nickname Form Overlay */}
             {showAuthForm && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-xl p-6 animate-in fade-in duration-500">
-                    <div className="max-w-md w-full glass-morphism p-10 rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(79,70,229,0.2)] text-center relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
-                        <button
-                            onClick={() => setShowAuthForm(false)}
-                            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-2xl p-4 sm:p-6 animate-in fade-in duration-500">
+                    <div className="max-w-xl w-full relative group">
+                        {/* Animated Glow Backdrop for the card */}
+                        <div className="absolute -inset-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-[3.5rem] blur-xl opacity-25 group-hover:opacity-40 transition-opacity duration-1000 animate-pulse"></div>
 
-                        <div className="w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <img src="/logo.svg" alt="UniSpot" className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(99,102,241,0.3)]" />
-                        </div>
+                        <div className="relative glass-morphism p-8 sm:p-12 rounded-[3.5rem] border border-white/10 shadow-2xl text-center overflow-hidden">
+                            {/* Decorative Canvas-like background */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
 
-                        <h2 className="text-3xl font-extrabold tracking-tight mb-2 text-white">Join UniSpot</h2>
-                        <p className="text-white/60 text-sm font-medium mb-10">Choose a nickname to explore the campus map and share events.</p>
+                            <button
+                                onClick={() => setShowAuthForm(false)}
+                                className="absolute top-8 right-8 p-3 rounded-full bg-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white z-10"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
 
-                        <div className="space-y-4 mb-8">
-                            <div className="relative group">
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-primary transition-colors" />
-                                <input
-                                    type="text"
-                                    placeholder="Your Nickname"
-                                    value={name}
-                                    onChange={(e) => {
-                                        setName(e.target.value);
-                                        setError('');
-                                    }}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleLaunch()}
-                                    className={`w-full bg-white/5 border rounded-2xl py-4 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 focus:bg-white/10 transition-all placeholder:text-white/30 text-white ${error ? 'border-red-500/50' : 'border-white/10'}`}
-                                    autoFocus
-                                />
+                            <div className="relative z-10 text-center">
+                                <div className="w-24 h-24 flex items-center justify-center mx-auto mb-8 transition-transform duration-700 hover:rotate-[360deg]">
+                                    <img src="/logo.svg" alt="UniSpot" className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(99,102,241,0.5)]" />
+                                </div>
+
+                                <h2 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 text-white bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                                    Welcome to UniSpot
+                                </h2>
+                                <p className="text-white/50 text-base sm:text-lg font-medium mb-12 max-w-sm mx-auto leading-relaxed">
+                                    Your portal to York University starts here. <br />Enter a nickname to begin.
+                                </p>
+
+                                <div className="space-y-6 mb-10 text-left">
+                                    <div className="relative group/input">
+                                        <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                                            <User className="w-6 h-6 text-white/20 group-focus-within/input:text-primary transition-colors" />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Choose your handle..."
+                                            value={name}
+                                            onChange={(e) => {
+                                                setName(e.target.value);
+                                                setError('');
+                                            }}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleLaunch()}
+                                            className={`w-full bg-white/5 border-[1.5px] rounded-[2rem] py-6 pl-16 pr-6 text-lg font-bold transition-all placeholder:text-white/10 text-white focus:outline-none focus:bg-white/10 ${error ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.1)]' : 'border-white/5 focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
+                                            autoFocus
+                                        />
+                                        {error && (
+                                            <div className="absolute -bottom-7 left-6 animate-in slide-in-from-top-1">
+                                                <p className="text-red-400 text-xs font-black uppercase tracking-widest">{error}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleLaunch}
+                                    className="w-full relative group/btn overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent opacity-100 group-hover/btn:scale-110 transition-transform duration-500"></div>
+                                    <div className="relative flex items-center justify-center gap-3 bg-primary text-white font-black py-6 rounded-[2rem] transition-all text-xl uppercase tracking-widest group-hover/btn:bg-transparent">
+                                        Enter Reality <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-2 transition-transform" />
+                                    </div>
+                                </button>
+
+                                <div className="mt-8 flex items-center justify-center gap-2">
+                                    <ShieldCheck className="w-4 h-4 text-primary" />
+                                    <span className="text-[10px] uppercase font-black tracking-[0.2em] text-white/20 italic">Encrypted Campus Access</span>
+                                </div>
                             </div>
-                            {error && <p className="text-red-400 text-xs font-semibold tracking-wide text-left pl-2">{error}</p>}
                         </div>
-
-                        <button
-                            onClick={handleLaunch}
-                            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-[2rem] transition-all shadow-xl shadow-primary/30 active:scale-95 text-base"
-                        >
-                            Enter Map <ArrowRight className="w-5 h-5" />
-                        </button>
                     </div>
                 </div>
             )}
@@ -206,11 +234,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                         Real-time Campus Network
                     </div>
 
-                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 leading-[1.05] relative z-10">
+                    <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black tracking-tighter mb-8 leading-[0.9] sm:leading-[0.85] relative z-10 transition-transform duration-1000">
                         Discover your <br className="hidden sm:block" />
-                        <span className="relative inline-block mt-2">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-accent">entire campus.</span>
-                            <span className={`absolute -bottom-2 md:-bottom-3 left-0 w-full h-3 md:h-4 rounded-full blur-md opacity-40 mix-blend-multiply ${isDarkMode ? 'bg-primary' : 'bg-primary/50'}`}></span>
+                        <span className="relative inline-block mt-4 sm:mt-6">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-accent animate-pulse">entire campus.</span>
+                            <span className="absolute -bottom-4 left-0 w-full h-4 bg-primary/20 blur-3xl rounded-full"></span>
                         </span>
                     </h1>
 

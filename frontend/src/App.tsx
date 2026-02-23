@@ -26,7 +26,11 @@ function App() {
     return { isMap, isAdmin, eventId };
   };
 
-  const [showMap, setShowMap] = useState(() => parseHash().isMap);
+  const [showMap, setShowMap] = useState(() => {
+    const { isMap } = parseHash();
+    const hasUser = localStorage.getItem('unispot_user') !== null;
+    return isMap || hasUser;
+  });
   const [showAdmin, setShowAdmin] = useState(() => parseHash().isAdmin);
   const [deepLinkedEventId, setDeepLinkedEventId] = useState<number | null>(() => parseHash().eventId);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -39,7 +43,14 @@ function App() {
     return saved ? JSON.parse(saved) : null;
   });
   const [pendingEventCoords, setPendingEventCoords] = useState<{ lat: number, lng: number } | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('unispot_theme');
+    return saved ? saved === 'dark' : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('unispot_theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
