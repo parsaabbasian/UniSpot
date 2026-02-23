@@ -64,6 +64,14 @@ func main() {
 		api.GET("/health", func(c *gin.Context) {
 			c.JSON(200, gin.H{"status": "ok", "version": "1.0.1"})
 		})
+
+		// Admin routes (Protected by password in frontend for now, or you can add middleware)
+		admin := api.Group("/admin")
+		{
+			admin.GET("/events", handlers.AdminGetEvents)
+			admin.POST("/events/:id/approve", handlers.AdminToggleApproval)
+			admin.DELETE("/events/:id", handlers.AdminDeleteEvent)
+		}
 	}
 
 	r.GET("/ws", func(c *gin.Context) {

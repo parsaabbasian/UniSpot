@@ -10,5 +10,7 @@ export interface Event {
     start_time: string;
     end_time: string;
     creator_name?: string;
+    creator_email?: string;
     verifiers?: string[];
+    is_approved?: boolean;
 }

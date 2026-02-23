@@ -5,6 +5,7 @@ import MapView from './components/MapView';
 import EventForm from './components/EventForm';
 import LandingPage from './components/LandingPage';
 import EventDetailOverlay from './components/EventDetailOverlay';
+import AdminDashboard from './components/AdminDashboard';
 import axios from 'axios';
 import { Menu, X, Plus, Check } from 'lucide-react';
 
@@ -14,6 +15,7 @@ function App() {
   const parseHash = () => {
     const hash = window.location.hash;
     const isMap = hash.startsWith('#map');
+    const isAdmin = hash.startsWith('#admin');
     let eventId = null;
 
     if (hash.includes('?event=')) {
@@ -21,10 +23,11 @@ function App() {
       eventId = parseInt(parts[1], 10);
     }
 
-    return { isMap, eventId };
+    return { isMap, isAdmin, eventId };
   };
 
   const [showMap, setShowMap] = useState(() => parseHash().isMap);
+  const [showAdmin, setShowAdmin] = useState(() => parseHash().isAdmin);
   const [deepLinkedEventId, setDeepLinkedEventId] = useState<number | null>(() => parseHash().eventId);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,8 +62,9 @@ function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      const { isMap, eventId } = parseHash();
+      const { isMap, isAdmin, eventId } = parseHash();
       setShowMap(isMap);
+      setShowAdmin(isAdmin);
       if (eventId !== null) {
         setDeepLinkedEventId(eventId);
       }
@@ -312,6 +316,16 @@ function App() {
     return matchesCategory && matchesSearch;
   });
 
+  if (showAdmin) {
+    return (
+      <AdminDashboard
+        onBack={() => {
+          window.location.hash = 'map';
+        }}
+      />
+    );
+  }
+
   if (!showMap || !currentUser) {
     return (
       <LandingPage
@@ -327,7 +341,7 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full bg-background md:p-3 lg:p-4 gap-3 md:gap-4 overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+    <div className="flex flex-col md:flex-row h-[100dvh] w-full bg-background md:p-3 lg:p-4 gap-3 md:gap-4 overflow-hidden animate-in fade-in zoom-in-95 duration-700">
       {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
