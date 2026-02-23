@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
@@ -13,26 +12,15 @@ import (
 )
 
 func AdminGetEvents(c *gin.Context) {
-	var rawEvents []struct {
-		ID            uint           `json:"id"`
-		Title         string         `json:"title"`
-		Description   string         `json:"description"`
-		Category      string         `json:"category"`
-		StartTime     time.Time      `json:"start_time"`
-		EndTime       time.Time      `json:"end_time"`
-		VerifiedCount int            `json:"verified_count"`
-		IsApproved    bool           `json:"is_approved"`
-		CreatorName   string         `json:"creator_name"`
-		CreatorEmail  string         `json:"creator_email"`
-		CreatedAt     time.Time      `json:"created_at"`
-		Loc           string         `gorm:"column:location_text"`
-		Verifiers     pq.StringArray `gorm:"column:verifier_names"`
+	var results []struct {
+		models.Event
+		LocationText string         `gorm:"column:location_text"`
+		Verifiers    pq.StringArray `gorm:"column:verifier_names"`
 	}
 
 	query := `
 		SELECT 
-			e.id, e.title, e.description, e.category, e.start_time, e.end_time, 
-			e.verified_count, e.creator_name, e.creator_email, e.is_approved, e.created_at,
+			e.*, 
 			ST_AsText(e.location) as location_text, 
 			COALESCE(array_agg(v.user_name) FILTER (WHERE v.user_name IS NOT NULL), '{}') as verifier_names
 		FROM events e
@@ -41,29 +29,18 @@ func AdminGetEvents(c *gin.Context) {
 		ORDER BY e.id DESC
 	`
 
-	if err := database.DB.Raw(query).Scan(&rawEvents).Error; err != nil {
+	if err := database.DB.Raw(query).Scan(&results).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	events := make([]models.Event, len(rawEvents))
-	for i, re := range rawEvents {
-		events[i] = models.Event{
-			ID:            re.ID,
-			Title:         re.Title,
-			Description:   re.Description,
-			Category:      re.Category,
-			StartTime:     re.StartTime,
-			EndTime:       re.EndTime,
-			VerifiedCount: re.VerifiedCount,
-			IsApproved:    re.IsApproved,
-			CreatorName:   re.CreatorName,
-			CreatorEmail:  re.CreatorEmail,
-			CreatedAt:     re.CreatedAt,
-			Verifiers:     []string(re.Verifiers),
-		}
+	events := make([]models.Event, len(results))
+	for i, res := range results {
+		events[i] = res.Event
+		events[i].Verifiers = []string(res.Verifiers)
 
-		loc := strings.TrimPrefix(re.Loc, "POINT(")
+		// Parse POINT(lng lat)
+		loc := strings.TrimPrefix(res.LocationText, "POINT(")
 		loc = strings.TrimSuffix(loc, ")")
 		parts := strings.Split(loc, " ")
 		if len(parts) == 2 {
