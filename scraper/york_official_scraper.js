@@ -1,3 +1,7 @@
+const axios = require('axios');
+const cheerio = require('cheerio');
+const https = require('https');
+
 const BUILDINGS = {
     'tait mckenzie': { lat: 43.7766, lng: -79.5074 },
     'dbac': { lat: 43.7749, lng: -79.5042 },

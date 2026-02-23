@@ -115,8 +115,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             <X className="w-5 h-5" />
                         </button>
 
-                        <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 p-3">
-                            <img src="/logo.svg" alt="UniSpot" className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(79,70,229,0.8)]" style={{ filter: 'brightness(0) saturate(100%) invert(43%) sepia(87%) saturate(2250%) hue-rotate(227deg) brightness(89%) contrast(92%)' }} />
+                        <div className="w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                            <img src="/logo.svg" alt="UniSpot" className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(99,102,241,0.3)]" />
                         </div>
 
                         <h2 className="text-3xl font-extrabold tracking-tight mb-2 text-white">Join UniSpot</h2>
@@ -164,8 +164,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
             <div className={`fixed top-6 left-0 w-full flex justify-center z-[100] px-4 sm:px-6 transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-32 opacity-0 pointer-events-none'}`}>
                 <nav className={`w-full max-w-5xl px-6 md:px-8 py-3.5 flex justify-between items-center backdrop-blur-2xl border transition-all duration-500 rounded-[2rem] shadow-sm ${isDarkMode ? 'bg-white/[0.02] border-white/5 hover:border-white/10' : 'bg-black/[0.01] border-black/5 hover:border-black/10'}`}>
                     <div className="flex items-center gap-3 cursor-pointer">
-                        <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center shadow-md bg-gradient-to-br from-primary to-primary-dark p-2 transition-transform hover:scale-105">
-                            <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain brightness-0 invert" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-transform hover:scale-110 duration-500">
+                            <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain" />
                         </div>
                         <span className="text-xl md:text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">UniSpot</span>
                     </div>
@@ -257,9 +257,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
 
                 <footer className={`mt-20 pt-10 border-t pb-8 px-6 text-center ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
                     <div className="flex flex-col sm:flex-row items-center justify-between max-w-5xl mx-auto gap-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary to-accent p-1">
-                                <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain brightness-0 invert" />
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 flex items-center justify-center">
+                                <img src="/logo.svg" alt="UniSpot Logo" className="w-full h-full object-contain" />
                             </div>
                             <span className={`text-sm font-bold tracking-tight ${isDarkMode ? 'text-white/90' : 'text-slate-800'}`}>UniSpot</span>
                         </div>

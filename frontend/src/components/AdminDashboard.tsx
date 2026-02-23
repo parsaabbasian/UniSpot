@@ -22,7 +22,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
     }, [error]);
     const [password, setPassword] = useState('');
 
-    const ADMIN_PASSWORD = 'admin'; // You should change this or use env variables
+    const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin';
 
     const fetchEvents = async () => {
         setLoading(true);
