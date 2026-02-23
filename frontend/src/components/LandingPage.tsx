@@ -161,7 +161,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
 
                                 <button
                                     onClick={handleLaunch}
-                                    className="w-full relative group/btn overflow-hidden"
+                                    className="w-full relative group/btn overflow-hidden rounded-[2rem]"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent opacity-100 group-hover/btn:scale-110 transition-transform duration-500"></div>
                                     <div className="relative flex items-center justify-center gap-3 bg-primary text-white font-bold py-6 rounded-[2rem] transition-all text-xl uppercase tracking-widest group-hover/btn:bg-transparent">
