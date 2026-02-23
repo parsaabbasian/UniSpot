@@ -319,6 +319,8 @@ function App() {
   if (showAdmin) {
     return (
       <AdminDashboard
+        isDarkMode={isDarkMode}
+        onToggleTheme={() => setIsDarkMode(!isDarkMode)}
         onBack={() => {
           window.location.hash = 'map';
         }}
