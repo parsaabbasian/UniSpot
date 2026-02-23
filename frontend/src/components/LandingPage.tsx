@@ -127,7 +127,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                                     <img src="/logo.svg" alt="UniSpot" className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(99,102,241,0.5)]" />
                                 </div>
 
-                                <h2 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 text-white bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-white bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
                                     Welcome to UniSpot
                                 </h2>
                                 <p className="text-white/50 text-base sm:text-lg font-medium mb-12 max-w-sm mx-auto leading-relaxed">
@@ -148,12 +148,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                                                 setError('');
                                             }}
                                             onKeyDown={(e) => e.key === 'Enter' && handleLaunch()}
-                                            className={`w-full bg-white/5 border-[1.5px] rounded-[2rem] py-6 pl-16 pr-6 text-lg font-bold transition-all placeholder:text-white/10 text-white focus:outline-none focus:bg-white/10 ${error ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.1)]' : 'border-white/5 focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
+                                            className={`w-full bg-white/5 border-[1.5px] rounded-[2rem] py-6 pl-16 pr-6 text-lg font-semibold transition-all placeholder:text-white/10 text-white focus:outline-none focus:bg-white/10 ${error ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.1)]' : 'border-white/5 focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
                                             autoFocus
                                         />
                                         {error && (
                                             <div className="absolute -bottom-7 left-6 animate-in slide-in-from-top-1">
-                                                <p className="text-red-400 text-xs font-black uppercase tracking-widest">{error}</p>
+                                                <p className="text-red-400 text-xs font-bold uppercase tracking-widest">{error}</p>
                                             </div>
                                         )}
                                     </div>
@@ -164,14 +164,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                                     className="w-full relative group/btn overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent opacity-100 group-hover/btn:scale-110 transition-transform duration-500"></div>
-                                    <div className="relative flex items-center justify-center gap-3 bg-primary text-white font-black py-6 rounded-[2rem] transition-all text-xl uppercase tracking-widest group-hover/btn:bg-transparent">
+                                    <div className="relative flex items-center justify-center gap-3 bg-primary text-white font-bold py-6 rounded-[2rem] transition-all text-xl uppercase tracking-widest group-hover/btn:bg-transparent">
                                         Enter Reality <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-2 transition-transform" />
                                     </div>
                                 </button>
 
                                 <div className="mt-8 flex items-center justify-center gap-2">
                                     <ShieldCheck className="w-4 h-4 text-primary" />
-                                    <span className="text-[10px] uppercase font-black tracking-[0.2em] text-white/20 italic">Encrypted Campus Access</span>
+                                    <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/20 italic">Encrypted Campus Access</span>
                                 </div>
                             </div>
                         </div>
