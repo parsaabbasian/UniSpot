@@ -291,9 +291,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter, isDarkMode, onToggle
                             </div>
                             <span className={`text-sm font-bold tracking-tight ${isDarkMode ? 'text-white/90' : 'text-slate-800'}`}>UniSpot</span>
                         </div>
-                        <p className={`text-sm font-medium ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                            © {new Date().getFullYear()} York University Students. All rights reserved.
-                        </p>
+                        <div className="flex flex-col items-center sm:items-end gap-1">
+                            <p className={`text-sm font-medium ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                © {new Date().getFullYear()} York University Students.
+                            </p>
+                            <a
+                                href="https://yorkunispot.vercel.app"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:text-primary ${isDarkMode ? 'text-white/20' : 'text-slate-400'}`}
+                            >
+                                yorkunispot.vercel.app
+                            </a>
+                        </div>
                     </div>
                 </footer>
             </main>
