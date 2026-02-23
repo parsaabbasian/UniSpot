@@ -204,7 +204,7 @@ const EventForm: React.FC<EventFormProps> = ({ lat, lng, onClose, onCreated, cur
                                     onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                                     className={`w-full bg-black/40 dark:bg-white/5 border rounded-2xl px-5 py-4 flex items-center justify-between transition-all group ${isCategoryOpen ? 'border-primary shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'border-white/10 hover:border-white/20'}`}
                                 >
-                                    <span className="text-sm font-black italic uppercase text-foreground">{category}</span>
+                                    <span className="text-sm font-black italic uppercase text-foreground">{categories.find(c => c.id === category)?.name || category}</span>
                                     <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-500 ${isCategoryOpen ? 'rotate-180' : ''}`} />
                                 </button>
 
